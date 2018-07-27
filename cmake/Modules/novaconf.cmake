@@ -1,0 +1,43 @@
+
+# boost configure
+SET( BOOST_VERSION "1.58" )
+SET( BOOST_COMPONENTS "" )
+LIST( APPEND BOOST_COMPONENTS "thread" "filesystem" "program_options" "system" "chrono" )
+
+SET( Boost_USE_STATIC_LIBS    ON )
+SET( Boost_USE_MULTITHREAD    ON )
+SET( Boost_USE_STATIC_RUNTIME OFF )
+
+FIND_PACKAGE( Boost ${BOOST_VERSION} REQUIRED COMPONENTS ${BOOST_COMPONENTS} )
+
+IF( NOT Boost_FOUND )
+   MESSAGE( FATAL_ERROR "Boost not found" )
+ELSE()
+   MESSAGE( STATUS "Boost version is: ${Boost_MAJOR_VERSION}.${Boost_MINOR_VERSION}" )
+   MESSAGE( STATUS "Boost include dir is: ${Boost_INCLUDE_DIRS}")
+   INCLUDE_DIRECTORIES( ${Boost_INCLUDE_DIRS} )
+   MESSAGE( STATUS "Boost library dir is: ${Boost_LIBRARY_DIRS}")
+   LINK_DIRECTORIES( ${Boost_LIBRARY_DIRS} )
+   LINK_LIBRARIES( ${Boost_LIBRARIES} )
+ENDIF()
+
+# Mozjs configure
+SET ( MOZJS_VERSION "185" )
+SET ( MOZJS_VERION_EXACT TRUE )
+
+FIND_PACKAGE( Mozjs ${MOZJS_VERSION} REQUIRED )
+IF ( NOT Mozjs_FOUND )
+   MESSAGE( FATAL_ERROR "Mozjs not found" )
+ELSE()
+   INCLUDE_DIRECTORIES( ${Mozjs_INCLUDE_DIRS} )
+   LINK_DIRECTORIES( ${Mozjs_LIBRARY_DIRS} )
+   LINK_LIBRARIES( ${Mozjs_LIBRARIES} )
+   
+   # Nspr
+   IF ( Mozjs_JS_THREADSAFE )
+      FIND_PACKAGE( Nspr REQUIRED )
+      INCLUDE_DIRECTORIES( ${Nspr_INCLUDE_DIRS} )
+      LINK_DIRECTORIES( ${Nspr_LIBRARY_DIRS} )
+      LINK_LIBRARIES( ${Nspr_LIBRARIES} )
+   ENDIF()
+ENDIF()
