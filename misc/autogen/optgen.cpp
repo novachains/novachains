@@ -32,10 +32,10 @@ void OptGen::run ()
 {
     genHeaderC() ;
     genHeaderCpp() ;
-    genCatalogSample() ;
-    genCoordSample() ;
-    genDataSample() ;
-	getStandAloneSample() ;
+    //genCatalogSample() ;
+    //genCoordSample() ;
+    //genDataSample() ;
+	 //getStandAloneSample() ;
 }
 
 void OptGen::loadFromXML ()
@@ -48,7 +48,7 @@ void OptGen::loadFromXML ()
     catch ( std::exception &e )
     {
         cout<<"Can not read xml file, not exist or wrong directory for OptGen: " << e.what() <<endl;
-        exit(0);
+        exit( 1 );
     }
 
     try
@@ -59,7 +59,7 @@ void OptGen::loadFromXML ()
             if ( !newele )
             {
                cout<<"Failed to allocate memory for OptElement"<<endl ;
-               exit(0) ;
+               exit( 1 ) ;
             }
             // name and long tag
             try
@@ -158,7 +158,7 @@ void OptGen::loadFromXML ()
     catch ( std::exception&)
     {
         cout<<"XML format error, unknown node name or description language, please check!"<<endl;
-        exit(0);
+        exit( 1 );
     }
 }
 
@@ -169,7 +169,7 @@ void OptGen::genHeaderC ()
     if ( fout == NULL )
     {
         cout<<"can not open file: "<<HEADERPATHC<<endl;
-        exit(0);
+        exit( 1 );
     }
     string comment =
         "/*    Copyright (C) 2011-2018 SequoiaDB Ltd.\n"
@@ -210,7 +210,7 @@ void OptGen::genHeaderCpp ()
     if ( fout == NULL )
     {
         cout<<"can not open file: "<<HEADERPATHCPP<<endl;
-        exit(0);
+        exit( 1 );
     }
     string comment =
         "/*    Copyright 2012 SequoiaDB Inc.\n"
@@ -323,7 +323,7 @@ void OptGen::genCatalogSample()
     if ( fout == NULL )
     {
         cout<<"can not open file: "<<CATALOGSAMPLEPATH<<endl;
-        exit(0);
+        exit( 1 ) ;
     }
     genSampleHeader ( fout ) ;
     // unhidden variables
@@ -347,7 +347,7 @@ void OptGen::getStandAloneSample()
 	if ( fout == NULL )
     {
         cout<<"can not open file: "<<STANDALONESAMPLEPATH<<endl;
-        exit(0);
+        exit( 1 ) ;
     }
 	genSampleHeader ( fout ) ;
 
@@ -374,7 +374,7 @@ void OptGen::genCoordSample()
     if ( fout == NULL )
     {
         cout<<"can not open file: "<<COORDSAMPLEPATH<<endl;
-        exit(0);
+        exit( 1 ) ;
     }
     genSampleHeader ( fout ) ;
     // unhidden variables
@@ -397,7 +397,7 @@ void OptGen::genDataSample()
     if ( fout == NULL )
     {
         cout<<"can not open file: "<<DATASAMPLEPATH<<endl;
-        exit(0);
+        exit( 1 );
     }
     genSampleHeader ( fout ) ;
     // unhidden variables

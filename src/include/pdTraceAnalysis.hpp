@@ -29,7 +29,7 @@
    Change Activity:
    defect Date        Who            Description
    ====== =========== ===            ==============================================
-          06/16/2017  Huangansheng   Initial Draft
+          20/07/2018  Huangansheng   Initial Draft
 
    Last Changed =
 

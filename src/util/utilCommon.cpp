@@ -30,7 +30,7 @@
    Change Activity:
    defect Date        Who Description
    ====== =========== === ==============================================
-          09/14/2012  TW  Initial Draft
+          20/07/2018  TW  Initial Draft
 
    Last Changed =
 
@@ -290,18 +290,6 @@ namespace engine
       }
 
       return modeFlag ;
-   }
-
-   BOOLEAN utilCheckInstanceID ( UINT32 instanceID, BOOLEAN includeUnknown )
-   {
-      if ( ( includeUnknown &&
-             NODE_INSTANCE_ID_UNKNOWN == instanceID ) ||
-           ( instanceID > NODE_INSTANCE_ID_MIN &&
-             instanceID < NODE_INSTANCE_ID_MAX ) )
-      {
-         return TRUE ;
-      }
-      return FALSE ;
    }
 
    BSONObj utilGetErrorBson( INT32 flags, const CHAR *detail )

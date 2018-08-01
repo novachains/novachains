@@ -56,7 +56,7 @@ void RCGen::loadFromXML ()
     catch ( std::exception& )
     {
         cout<<"Can not read xml file, not exist or wrong directory!"<<endl;
-        exit(0);
+        exit( 1 ) ;
     }
 
     try
@@ -91,7 +91,7 @@ void RCGen::loadFromXML ()
     catch ( std::exception&)
     {
         cout<<"XML format error, unknown node name or description language, please check!"<<endl;
-        exit(0);
+        exit( 1 ) ;
     }
 }
 
@@ -101,7 +101,7 @@ void RCGen::genC ()
     if ( fout == NULL )
     {
         cout<<"can not open file: "<<CPATH<<endl;
-        exit(0);
+        exit( 1 );
     }
     string comment =
         "/** \\file ossErr.h\n"
@@ -165,7 +165,7 @@ void RCGen::genCPP ()
     if ( fout == NULL )
     {
         cout<<"can not open file: "<<CPPPATH<<endl;
-        exit(0);
+        exit( 1 );
     }
 
     string comment =
@@ -236,7 +236,7 @@ void RCGen::genJS ()
    if ( fout == NULL )
    {
       cout << "can't open file: " << JSPATH << endl ;
-      exit (-1) ;
+      exit ( 1 ) ;
    }
 
    fout << std::left ;

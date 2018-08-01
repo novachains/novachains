@@ -81,14 +81,14 @@ void OptGenForWeb::loadOtherInfoFromXML ()
     {
         cout << "Can not read xml file, not exist or wrong directory forOptGenForWeb: "
              << e.what() << endl ;
-        exit ( 0 ) ;
+        exit ( 1 ) ;
     }
 
     OptOtherInfoEle *newele = new OptOtherInfoEle() ;
     if ( !newele )
     {
         cout << "Failed to allocate memory for OptOtherInfoEle!" << endl ;
-        exit ( 0 ) ;
+        exit ( 1 ) ;
     }
 
     try
@@ -206,7 +206,7 @@ void OptGenForWeb::loadOtherInfoFromXML ()
         cout << "XML format error: " << e.what()
              << ", unknown node name or description language,please check!"
              << endl ;
-        exit(0) ;
+        exit( 1 ) ;
     }
     optOtherInfo.push_back ( newele ) ;
 }
@@ -373,7 +373,7 @@ string OptGenForWeb::genOptions ()
     if ( optOtherInfo.end() == ite )
     {
         cout << "Nothing in 'optOtherInfo'." << endl ;
-        exit( 0 ) ;
+        exit( 1 ) ;
     }
 
     oss << "##" << (*ite)->subtitletag << "##" << endl ;
@@ -460,7 +460,7 @@ void OptGenForWeb::gendoc()
     if ( "" == optStr )
     {
         cout << "Failed to generate database configuration options." << endl ;
-        exit ( 0 ) ;
+        exit ( 1 ) ;
     }
 
     suppleStr = genSupplement() ;
@@ -471,6 +471,6 @@ void OptGenForWeb::gendoc()
 
 void OptGenForWeb::run ()
 {
-   gendoc () ;
+   //gendoc () ;
 }
 

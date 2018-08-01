@@ -30,7 +30,7 @@
    Change Activity:
    defect Date        Who Description
    ====== =========== === ==============================================
-          09/14/2012  TW  Initial Draft
+          20/07/2018  XJH Initial Draft
 
    Last Changed =
 
@@ -89,7 +89,6 @@ namespace engine
       std::string _service[MSG_ROUTE_SERVICE_TYPE_MAX] ;
       MsgRouteID  _id ;
       BOOLEAN     _isActive ;
-      UINT8       _instanceID ;
 
    private:
       SINT32 _status;     // make sure the addr of _status is aligned 4 bytes,
@@ -98,8 +97,7 @@ namespace engine
 
    public:
       _netRouteNode()
-      : _instanceID( NODE_INSTANCE_ID_UNKNOWN ),
-        _status( NET_NODE_STAT_NORMAL ),
+      : _status( NET_NODE_STAT_NORMAL ),
         _faultTime( 0 )
       {
          _id.value = MSG_INVALID_ROUTEID ;
@@ -107,8 +105,7 @@ namespace engine
          _host[0] = 0 ;
       }
       _netRouteNode( const _netRouteNode &node )
-      : _instanceID( node._instanceID ),
-        _status( NET_NODE_STAT_NORMAL )
+      : _status( NET_NODE_STAT_NORMAL )
       {
          SDB_ASSERT( (UINT64)&_status % 4 == 0,
                      "the addr of _status must be aligned 4 bytes!" );
@@ -131,7 +128,6 @@ namespace engine
          {
             _service[i] = node._service[i];
          }
-         _instanceID = node._instanceID ;
          return *this ;
       }
 

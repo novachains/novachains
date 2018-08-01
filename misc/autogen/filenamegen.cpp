@@ -36,7 +36,7 @@ void FileNameGen::genList ()
       if ( fout == NULL )
       {
          cout << "can not open file: " << FILENAMEPATH << endl ;
-         exit(0) ;
+         exit( 1 ) ;
       }
       
       ofstream codeout ( FILENAME_CODE_PATH );

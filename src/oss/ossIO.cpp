@@ -30,7 +30,7 @@
    Change Activity:
    defect Date        Who Description
    ====== =========== === ==============================================
-          09/14/2012  TW  Initial Draft
+          20/07/2018  TW  Initial Draft
 
    Last Changed =
 
@@ -50,7 +50,6 @@
 #include "ossMem.hpp"
 #include "pd.hpp"
 #include "ossPath.hpp"
-//#include "../util/text.h"
 #include "pdTrace.hpp"
 #include "ossTrace.hpp"
 #include <iostream>

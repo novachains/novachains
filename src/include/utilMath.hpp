@@ -30,7 +30,7 @@
    Change Activity:
    defect Date        Who Description
    ====== =========== === ==============================================
-          09/04/2017  HAS Initial Draft
+          20/07/2018  HAS Initial Draft
 
    Last Changed =
 

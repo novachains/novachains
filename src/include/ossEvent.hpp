@@ -27,7 +27,7 @@
    Change Activity:
    defect Date        Who Description
    ====== =========== === ==============================================
-          07/12/2012  Xu Jianhui  Initial Draft
+          20/07/2018  XJH Initial Draft
 
    Last Changed =
 

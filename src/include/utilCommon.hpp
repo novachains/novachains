@@ -30,7 +30,7 @@
    Change Activity:
    defect Date        Who Description
    ====== =========== === ==============================================
-          26/08/2014  XJH Initial Draft
+          20/07/2018  XJH Initial Draft
 
    Last Changed =
 
@@ -86,10 +86,6 @@ namespace engine
    string      utilDBModeStr( UINT32 dbMode ) ;
    UINT32      utilGetDBModeFlag( const string &mode ) ;
 
-   /*
-      instance ID
-    */
-   BOOLEAN     utilCheckInstanceID ( UINT32 instanceID, BOOLEAN includeUnknown ) ;
    /*
       util get error bson
    */

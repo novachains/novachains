@@ -25,7 +25,7 @@
    Change Activity:
    defect Date        Who Description
    ====== =========== === ==============================================
-          12/06/2016  YW  Initial Draft
+          20/07/2018  YW  Initial Draft
 
    Last Changed =
 

@@ -29,7 +29,7 @@
    Change Activity:
    defect Date        Who Description
    ====== =========== =========== ==============================================
-          20/04/2016  Chen Chucai Initial Draft
+          20/07/2018  Chen Chucai Initial Draft
 
    Last Changed =
 

@@ -38,7 +38,7 @@ void TraceGen::genList ()
       if ( fout1 == NULL )
       {
          cout << "can not open file: " << TRACEFILENAMEPATH1 << endl ;
-         exit(0) ;
+         exit( 1 ) ;
       }
 
       string comment =

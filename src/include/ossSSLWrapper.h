@@ -24,7 +24,7 @@
    Change Activity:
    defect Date        Who Description
    ====== =========== === ==============================================
-          30/1/2015  David Li  Initial Draft
+          20/07/2018  XJH Initial Draft
 
    Last Changed =
 
