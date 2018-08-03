@@ -49,6 +49,7 @@ namespace engine
      JS_ADD_MEMBER_FUNC( "toJson", toJson )
      JS_ADD_CONSTRUCT_FUNC( construct )
      JS_ADD_DESTRUCT_FUNC( destruct )
+     JS_SET_CVT_TO_BSON_FUNC( _sptBsonobj::cvtToBSON )
    JS_MAPPING_END()
 
    _sptBsonobj::_sptBsonobj()
@@ -98,6 +99,27 @@ namespace engine
    INT32 _sptBsonobj::destruct()
    {
       return SDB_OK ;
+   }
+
+   INT32 _sptBsonobj::cvtToBSON( const CHAR* key, const sptObject &value,
+                                 BOOLEAN isSpecialObj, BSONObjBuilder& builder,
+                                 string &errMsg )
+   {
+      INT32 rc = SDB_OK ;
+
+      _sptBsonobj *pBsonObj ;
+      rc = value.getUserObj( _sptBsonobj::__desc, (const void **)&pBsonObj ) ;
+      if( SDB_OK != rc )
+      {
+         errMsg = "Failed to get BSONObj field" ;
+         goto error ;
+      }
+      builder.append( key, pBsonObj->getBson() ) ;
+
+   done:
+      return rc ;
+   error:
+      goto done ;
    }
 
 }

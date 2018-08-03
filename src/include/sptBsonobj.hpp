@@ -64,6 +64,10 @@ namespace engine
 
       INT32 destruct() ;
 
+      static INT32 cvtToBSON( const CHAR* key, const sptObject &value,
+                              BOOLEAN isSpecialObj, BSONObjBuilder& builder,
+                              string &errMsg ) ;
+
    private:
       bson::BSONObj _obj ;
    } ;
