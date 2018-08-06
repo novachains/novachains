@@ -110,7 +110,7 @@ namespace engine
    /*
       _IPmdParam define
    */
-   class _IPmdParam
+   class _IPmdParam : public SDBObject
    {
       public:
          _IPmdParam() {}
@@ -137,7 +137,7 @@ namespace engine
    /*
       _IPmdIOService define
    */
-   class _IPmdIOService
+   class _IPmdIOService : public SDBObject
    {
       public:
          _IPmdIOService() {}
@@ -150,9 +150,63 @@ namespace engine
    typedef _IPmdIOService IPmdIOService ;
 
    /*
+      _IPmdClient define
+   */
+   class _IPmdClient : public SDBObject
+   {
+      public:
+         _IPmdClient() {}
+         virtual ~_IPmdClient() {}
+
+      public:
+         virtual const CHAR*  clientName() const = 0 ;
+
+         virtual INT32        authenticate( const CHAR *username,
+                                            const CHAR *password ) = 0 ;
+         virtual void         logout() = 0 ;
+         virtual INT32        disconnect() = 0 ;
+
+         virtual BOOLEAN      isAuthed() const = 0 ;
+         virtual BOOLEAN      isConnected() const = 0 ;
+         virtual BOOLEAN      isClosed() const = 0 ;
+
+         virtual UINT16       getLocalPort() const = 0 ;
+         virtual const CHAR*  getLocalIPAddr() const = 0 ;
+         virtual UINT16       getPeerPort() const = 0 ;
+         virtual const CHAR*  getPeerIPAddr() const = 0 ;
+         virtual const CHAR*  getUsername() const = 0 ;
+         virtual const CHAR*  getPassword() const = 0 ;
+
+         virtual const CHAR*  getFromIPAddr() const = 0 ;
+         virtual UINT16       getFromPort() const = 0 ;
+
+   } ;
+   typedef _IPmdClient IPmdClient ;
+
+   /*
+      _IPmdSession define
+   */
+   class _IPmdSession : public SDBObject
+   {
+      public:
+         _IPmdSession() {}
+         virtual ~_IPmdSession() {}
+
+      public:
+         virtual const CHAR*        sessionName() const = 0 ;
+         virtual IPmdClient*        getClient() = 0 ;
+
+      protected:
+         virtual void               _onAttach () {}
+         virtual void               _onDetach () {}
+
+   } ;
+   typedef _IPmdSession IPmdSession ;
+
+   /*
       _IPmdExecutor define
    */
-   class _IPmdExecutor
+   class _IPmdExecutor : public SDBObject
    {
       public:
          _IPmdExecutor() {}
@@ -170,8 +224,7 @@ namespace engine
          /*
             Session Related
          */
-         virtual ISession* getSession() = 0 ;
-         virtual IRemoteSite* getRemoteSite() = 0 ;
+         virtual IPmdSession* getSession() = 0 ;
 
          /*
             Status and Control
@@ -202,7 +255,7 @@ namespace engine
                                            UINT32 *pRealSize = NULL,
                                            UINT32 alignment =
                                            OSS_FILE_DIRECT_IO_ALIGNMENT ) = 0 ;
-
+         
          virtual void      releaseAlignedBuff() = 0 ;
 
    } ;
@@ -218,8 +271,10 @@ namespace engine
          _IPmdCB () {}
          virtual ~_IPmdCB () {}
 
-         virtual PMD_CB_TYPE cbType() const = 0 ;
-         virtual const CHAR* cbName() const = 0 ;
+         virtual PMD_CB_TYPE  cbType() const = 0 ;
+         virtual const CHAR*  cbName() const = 0 ;
+
+         virtual void   dependentcy( vector<PMD_CB_TYPE> &cbs ) const {}
 
          virtual INT32  init ( _IPmdResource *pResource ) = 0 ;
          virtual INT32  active () = 0 ;
@@ -232,6 +287,57 @@ namespace engine
    typedef _IPmdCB IPmdCB ;
 
    /*
+      _IPmdCBConfig define
+   */
+   class _IPmdCBConfig : public SDBObject
+   {
+      public:
+         enum INSTALL_MODE
+         {
+            INSTALL_ALL,
+            INSTALL_LIST
+         } ;
+      public:
+         _IPmdCBConfig() {}
+         virtual ~_IPmdCBConfig() {}
+
+         virtual INSTALL_MODE getInstallMode() const
+         {
+            return INSTALL_LIST ;
+         }
+         virtual void getInstallList( vector<PMD_CB_TYPE> &vecCBs ) const
+         {
+         }
+   } ;
+   typedef _IPmdCBConfig IPmdCBConfig ;
+
+   /*
+      _IPmdCmdArg define
+   */
+   class _IPmdCmdArg : public SDBObject
+   {
+      public:
+         _IPmdCmdArg() {}
+         virtual ~_IPmdCmdArg() {}
+
+         virtual INT32        getArgc() const = 0 ;
+         virtual const CHAR** getArgv() const = 0 ;
+         virtual const CHAR*  getCmdLine() const = 0 ;
+   } ;
+   typedef _IPmdCmdArg IPmdCmdArg ;
+
+   /*
+      _IPmdEnv define
+   */
+   class _IPmdEnv : public SDBObject
+   {
+      public:
+         _IPmdEnv() {}
+         virtual ~_IPmdEnv() {}
+   } ;
+   typedef _IPmdEnv IPmdEnv ;
+
+   /*
       _IPmdResource define
    */
    class _IPmdResource : public SDBObject, public IPmdRoot
@@ -242,6 +348,8 @@ namespace engine
 
       public:
          virtual IPmdParam*         getParam() = 0 ;
+         virtual IPmdCmdArg*        getCmdArg() = 0 ;
+         virtual IPmdEnv*           getEnv() = 0 ;
 
    } ;
    typedef _IPmdResource IPmdResource ;
