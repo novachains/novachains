@@ -78,6 +78,29 @@ namespace engine
    } ;
 
    /*
+      PMD_NODE_STATUS define
+   */
+   enum PMD_NODE_STATUS
+   {
+      PMD_NODE_NORMAL           = 0,
+      PMD_NODE_SHUTDOWN,
+
+      PMD_NODE_STATUS_MAX
+   } ;
+
+   /*
+      PMD_NODE_ROLE define
+   */
+   enum PMD_NODE_ROLE
+   {
+      PMD_NODE_WITNESS        = 1,  /// Witness node
+      PMD_NODE_FULL,                /// Full node
+      PMD_NODE_SPV,
+
+      PMD_NODE_ROLE_MAX
+   } ;
+
+   /*
       _IPmdRoot define
    */
    class _IPmdRoot
@@ -261,6 +284,27 @@ namespace engine
    } ;
    typedef _IPmdExecutor IPmdExecutor ;
 
+   /*
+      _IPmdExecutorMgr define
+   */
+   class _IPmdExecutorMgr : public SDBObject
+   {
+      public:
+         _IPmdExecutorMgr() {}
+         virtual ~_IPmdExecutorMgr() {}
+
+      public:
+         virtual INT32     startEDU( INT32 type,
+                                     void *args,
+                                     EDUID *pEDUID = NULL,
+                                     const CHAR *pInitName = "" ) = 0 ;
+
+         virtual void      addIOService( IPmdIOService *pIOService ) = 0 ;
+         virtual void      delIOSerivce( IPmdIOService *pIOService ) = 0 ;
+
+   } ;
+   typedef _IPmdExecutorMgr IPmdExecutorMgr ;
+
    class _IPmdResource ;
    /*
       _IPmdCB define
@@ -334,6 +378,27 @@ namespace engine
       public:
          _IPmdEnv() {}
          virtual ~_IPmdEnv() {}
+
+         virtual PMD_NODE_STATUS    getNodeStatus() const = 0 ;
+         virtual BOOLEAN            isShutdown() const = 0 ;
+         virtual BOOLEAN            isNormal() const = 0 ;
+         virtual INT32              getShutdownCode() const = 0 ;
+
+         virtual PMD_NODE_ROLE      getNodeRole() const = 0 ;
+
+         virtual const CHAR*        getHostName() const = 0 ;
+
+         virtual UINT64             getStartTime() const = 0 ;
+
+         virtual void               getVersion( INT32 &ver,
+                                                INT32 &subVer,
+                                                INT32 &fixVer,
+                                                INT32 &release,
+                                                const CHAR **build ) const = 0 ;
+
+         virtual const CHAR*        getDataPath() const = 0 ;
+
+         virtual void               shutdownNode( INT32 shutdownCode ) = 0 ;
    } ;
    typedef _IPmdEnv IPmdEnv ;
 
@@ -350,6 +415,8 @@ namespace engine
          virtual IPmdParam*         getParam() = 0 ;
          virtual IPmdCmdArg*        getCmdArg() = 0 ;
          virtual IPmdEnv*           getEnv() = 0 ;
+
+         virtual IPmdCB*            getCB( PMD_CB_TYPE type ) = 0 ;
 
    } ;
    typedef _IPmdResource IPmdResource ;
