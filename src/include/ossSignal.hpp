@@ -51,9 +51,6 @@
    #define OSS_STACK_DUMP_SIGNAL SIGURG
    #define OSS_STACK_DUMP_SIGNAL_INTERNAL SIGUSR1
 
-   #define OSS_TEST_SIGNAL                35       /// SIGRTMIN+1
-   #define OSS_INTERNAL_TEST_SIGNAL       36       /// SIGRTMIN+2
-
    typedef ucontext_t * ossSignalContext ;
 
    /* Set Handler for Signal */
