@@ -72,7 +72,7 @@ namespace engine
 
    PMD_NODE_STATUS _pmdEnv::getNodeStatus() const
    {
-      _status ;
+      return _status ;
    }
 
    BOOLEAN _pmdEnv::isShutdown() const
