@@ -40,7 +40,6 @@
 #include "netFrame.hpp"
 #include "netMsgHandler.hpp"
 #include "msgDef.h"
-#include "utilEnv.hpp"
 #include "pd.hpp"
 #include "msgMessageFormat.hpp"
 #include "pdTrace.hpp"
@@ -141,7 +140,7 @@ namespace engine
       _local.value = MSG_INVALID_ROUTEID ;
       _beatInterval = NET_HEARTBEAT_INTERVAL ;
       _beatTimeout = 0 ;
-      _beatLastTick = utilGetDBTick() ;
+      _beatLastTick = ossGetCurrentMilliseconds() ;
       _checkBeat = FALSE ;
 
       _maxSockPerNode = 1 ;
@@ -281,7 +280,7 @@ namespace engine
       NET_EH eh ;
       NET_HANDLE handle = NET_INVALID_HANDLE ;
       MAP_EVENT_IT itr ;
-      UINT64 curTick = utilGetDBTick() ;
+      UINT64 curTick = ossGetCurrentMilliseconds() ;
 
       while( TRUE )
       {
@@ -328,6 +327,8 @@ namespace engine
       NET_HANDLE handle = NET_INVALID_HANDLE ;
       MAP_EVENT_IT itr ;
 
+      UINT64 curTick = ossGetCurrentMilliseconds() ;
+
       beat.messageLength = sizeof( MsgHeader ) ;
       beat.opCode = MSG_HEARTBEAT ;
       beat.requestID = 0 ;
@@ -353,7 +354,7 @@ namespace engine
          }
 
          /// send msg
-         if ( utilGetTickSpanTime( eh->getLastBeatTick() ) >= _beatInterval &&
+         if ( curTick - eh->getLastBeatTick() >= _beatInterval &&
               ( -1 == serviceType ||
                 serviceType == eh->id().columns.serviceID ) )
          {
@@ -392,7 +393,7 @@ namespace engine
             continue ;
          }
 
-         spanTime = utilGetTickSpanTime( eh->getLastRecvTick() ) ;
+         spanTime = ossGetCurrentMilliseconds() - eh->getLastRecvTick() ;
          /// check break
          if ( ( -1 == serviceType ||
                 serviceType == eh->id().columns.serviceID ) &&
@@ -411,7 +412,8 @@ namespace engine
    void _netFrame::heartbeat( UINT32 interval, INT32 serviceType )
    {
       UINT32 beatTimeout = _beatTimeout ;
-      UINT64 spanTime = utilGetTickSpanTime( _beatLastTick ) ;
+      UINT64 curTick = ossGetCurrentMilliseconds() ;
+      UINT64 spanTime = curTick - _beatLastTick ;
 
       if ( 0 == beatTimeout )
       {
@@ -425,7 +427,7 @@ namespace engine
       }
       else if ( spanTime >= _beatInterval )
       {
-         _beatLastTick = utilGetDBTick() ;
+         _beatLastTick = curTick ;
          _checkBeat = TRUE ;
          _heartbeat( serviceType ) ;
 
@@ -1478,7 +1480,6 @@ namespace engine
             PD_LOG( PDERROR, "Can not accept more connections because of "
                     "open files upto limits, restart listening" ) ;
             _innerTimeHandle.startTimer() ;
-            utilIncErrNum( SDB_TOO_MANY_OPEN_FD ) ;
          }
 
          goto done ;

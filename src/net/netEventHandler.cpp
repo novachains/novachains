@@ -39,7 +39,6 @@
 #include "netEventHandler.hpp"
 #include "netFrame.hpp"
 #include "ossMem.hpp"
-#include "utilEnv.hpp"
 #include "msgDef.h"
 #include "pd.hpp"
 #include "pdTrace.hpp"
@@ -70,9 +69,9 @@ namespace engine
       _isConnected   = FALSE ;
       _isNew         = TRUE ;
       _hasRecvMsg    = FALSE ;
-      _lastSendTick  = utilGetDBTick() ;
-      _lastRecvTick  = utilGetDBTick() ;
-      _lastBeatTick  = utilGetDBTick() ;
+      _lastSendTick  = ossGetCurrentMilliseconds() ;
+      _lastRecvTick  = ossGetCurrentMilliseconds() ;
+      _lastBeatTick  = ossGetCurrentMilliseconds() ;
       _msgid         = 0 ;
 
       _srDataLen     = 0 ;
@@ -162,13 +161,13 @@ namespace engine
 
    void _netEventHandler::syncLastBeatTick()
    {
-      _lastBeatTick = utilGetDBTick() ;
+      _lastBeatTick = ossGetCurrentMilliseconds() ;
    }
 
    void _netEventHandler::makeStat( UINT64 curTick )
    {
-      UINT64 spanTime = utilDBTickSpan2Time( curTick - _lastStatTick ) ;
-      if ( spanTime > 0 )
+      UINT64 spanTime = curTick - _lastStatTick ;
+      if ( (INT64)spanTime > 0 )
       {
          _lastStatTick = curTick ;
          _mbps = _srDataLen / spanTime ;
@@ -466,7 +465,7 @@ namespace engine
       UINT32 send = 0 ;
 
       /// not care send suc or failed
-      _lastSendTick = utilGetDBTick() ;
+      _lastSendTick = ossGetCurrentMilliseconds() ;
       _srDataLen += len ;
 
       while ( send < len )
@@ -574,7 +573,7 @@ namespace engine
          goto error_close ;
       }
 
-      _lastRecvTick = utilGetDBTick() ;
+      _lastRecvTick = ossGetCurrentMilliseconds() ;
       _lastBeatTick = _lastRecvTick ;
 
       if ( NET_EVENT_HANDLER_STATE_HEADER == _state )
