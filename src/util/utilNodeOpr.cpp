@@ -972,7 +972,7 @@ namespace engine
             PD_LOG( PDERROR, "Enum %s failed, rc: %d", localPath.c_str(),
                     rc ) ;
             goto error ;
-        }
+                  }
       }
 
       for ( UINT32 i = 0 ; i < allsvcnames.size() ; ++i )
