@@ -47,7 +47,7 @@
 #include "netEventHandler.hpp"
 #include "netTimer.hpp"
 #include "ossAtomic.hpp"
-#include "sdbInterface.hpp"
+#include "pmdInterface.hpp"
 
 #include <map>
 #include <vector>
@@ -94,7 +94,7 @@ namespace engine
    /*
       _netFrame define
    */
-   class _netFrame : public IIOService
+   class _netFrame : public IPmdIOService
    {
       typedef map<UINT32, NET_TH>         MAP_TIMMER ;
       typedef MAP_TIMMER::iterator        MAP_TIMMER_IT ;
@@ -118,8 +118,11 @@ namespace engine
 
          ~_netFrame() ;
 
+         void  setStartThreadFunc( NET_START_THREAD_FUNC pFunc ) ;
+
       public:
          virtual void      stop() ;
+         virtual INT32     run() ;
          virtual void      resetMon() ;
 
       public:
@@ -149,8 +152,6 @@ namespace engine
          static UINT32 getLocalAddress() ;
 
       public:
-         INT32    run( NET_START_THREAD_FUNC pFunc = NULL ) ;
-
          void     heartbeat( UINT32 interval, INT32 serviceType = -1 ) ;
 
          void     setBeatInfo( UINT32 beatTimeout,

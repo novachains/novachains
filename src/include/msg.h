@@ -71,9 +71,6 @@ enum MSG_TYPE
 
 // 4 bytes aligned, otherwise incompatible with java client
 #pragma pack(4)
-#define OP_ERRNOFIELD     "errno"
-#define OP_ERRDESP_FIELD  "description"
-#define OP_ERR_DETAIL     "detail"
 
 /// 8 bytes
 union _MsgRouteID

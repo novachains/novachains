@@ -52,15 +52,8 @@ namespace engine
       PMD_EDU_EVENT_NONE = 0 ,
       PMD_EDU_EVENT_TERM ,        // terminate EDU
       PMD_EDU_EVENT_RESUME,       // resume a EDU, the data is startEDU's argv
-      PMD_EDU_EVENT_ACTIVE,
-      PMD_EDU_EVENT_DEACTIVE,
       PMD_EDU_EVENT_MSG,          // pmd msg event
       PMD_EDU_EVENT_TIMEOUT,      // pmd edu timeout,
-      PMD_EDU_EVENT_LOCKWAKEUP,   // transaction-lock wake up
-      PMD_EDU_EVENT_BP_RESUME,    // break point resume
-      PMD_EDU_EVENT_TRANS_STOP,   // stop transaction
-      PMD_EDU_EVENT_STEP_DOWN,    // step down
-      PMD_EDU_EVENT_STEP_UP,      // step up
 
       PMD_EDU_EVENT_MAX
    } ;
@@ -137,86 +130,31 @@ namespace engine
 
    } ;
 
-   typedef class _pmdEDUEvent pmdEDUEvent ;
+   typedef _pmdEDUEvent pmdEDUEvent ;
 
 
    #define PMD_INVALID_EDUID              ( 0 )
 
    /*
-      EDU_TYPES define
+      PMD_EDU_TYPES define
    */
-   enum EDU_TYPES
+   enum PMD_EDU_TYPES
    {
-      //System EDU Type
-      EDU_TYPE_TCPLISTENER                = 0,
-      EDU_TYPE_RESTLISTENER,
-      EDU_TYPE_REPR,
-      EDU_TYPE_LOGGW,
-      EDU_TYPE_LOGARCHIVEMGR,
-      EDU_TYPE_DPSROLLBACK,
-      EDU_TYPE_SHARDR,
-      EDU_TYPE_CLUSTER,
-      EDU_TYPE_CLUSTERSHARD,
-      EDU_TYPE_CLSLOGNTY,
-      EDU_TYPE_CATMGR,
-      EDU_TYPE_CATNETWORK,
-      EDU_TYPE_COORDNETWORK,
-      EDU_TYPE_COORDMGR,
-      EDU_TYPE_OMMGR,
-      EDU_TYPE_OMNET,
-      EDU_TYPE_SYNCCLOCK,
-      EDU_TYPE_PIPESLISTENER,
-      EDU_TYPE_FAPLISTENER,
-      EDU_TYPE_DBMONITOR,
-      EDU_TYPE_RTNNETWORK,
-#if defined (_LINUX)
-      EDU_TYPE_SIGNALTEST,
-#endif // _LINUX
+      PMD_EDU_MIN                         = 0,
+      /// {{ Begin user define
 
-      // Agent EDU Type Begin
-      EDU_TYPE_AGENT_BEGIN,
-
-      EDU_TYPE_AGENT,
-      EDU_TYPE_SHARDAGENT,
-      EDU_TYPE_REPLAGENT,
-      EDU_TYPE_RESTAGENT,
-      EDU_TYPE_FAPAGENT,
-      EDU_TYPE_OMAAGENT,
-
-      // Agent EDU Type END
-      EDU_TYPE_AGENT_END,
-
-      //background job EDU Type
-      EDU_TYPE_BACKGROUND_JOB,
-
-      EDU_TYPE_LOADWORKER,
-      EDU_TYPE_PREFETCHER,
-
-      EDU_TYPE_MAIN,
-
-      // edu for search engine adapter.
-      EDU_TYPE_SEADPTMGR,
-      EDU_TYPE_SE_SERVICE,
-      EDU_TYPE_SE_INDEXR,
-      EDU_TYPE_SE_INDEX,
-      EDU_TYPE_SE_AGENT,
-
-      EDU_TYPE_UNKNOWN,
-      EDU_TYPE_MAXIMUM = EDU_TYPE_UNKNOWN
+      /// End user define }}
+      PMD_EDU_MAX
    } ;
 
    /*
-      EDU_STATUS define
+      PMD_EDU_STATUS define
    */
-   enum EDU_STATUS
+   enum PMD_EDU_STATUS
    {
-      // EDU Manager initialize status to this
       PMD_EDU_CREATING = 0,
-      // EDU should change status to running when serve a request
       PMD_EDU_RUNNING,
-      // EDU should change to wait after request result send back
       PMD_EDU_WAITING,
-      // EDU should change status to idle when get into pool
       PMD_EDU_IDLE,
 
       PMD_EDU_UNKNOW,
@@ -229,131 +167,61 @@ namespace engine
    #define PMD_IS_EDU_IDLE(x)          ( PMD_EDU_IDLE     == x )
 
    /*
-      SDB_TYPE_STR DEFINE
+      PMD_NODE_ROLE STR DEFINE
    */
-   #define SDB_TYPE_DB_STR             "sequoiadb"
-   #define SDB_TYPE_OM_STR             "sdbom"
-   #define SDB_TYPE_OMA_STR            "sdbcm"
+   #define PMD_NODE_WITNESS_STR           "witness"
+   #define PMD_NODE_FULL_STR              "full"
+   #define PMD_NODE_USER_STR              "user"
+   #define PMD_NODE_SPV_STR               "spv"
 
    /*
-      SDB_DB_STATUS_STR DEFINE
+      PMD_NODE_TYPE_STR DEFINE
    */
-   #define SDB_DB_NORMAL_STR           "Normal"
-   #define SDB_DB_SHUTDOWN_STR         "Shutdown"
-   #define SDB_DB_REBUILDING_STR       "Rebuilding"
-   #define SDB_DB_FULLSYNC_STR         "FullSync"
-   #define SDB_DB_OFFLINE_BK_STR       "OfflineBackup"
+   #define PMD_TYPE_DN_STR                "novad"
+   #define PMD_TYPE_CM_STR                "novacm"
 
    /*
-      SDB_DATA_STATUS_STR DEFINE
+      PMD_NODE_STATUS_STR DEFINE
    */
-   #define SDB_DATA_NORMAL_STR           "Normal"
-   #define SDB_DATA_REPAIR_STR           "Repairing"
-   #define SDB_DATA_FAULT_STR            "Fault"
+   #define PMD_NODE_NORMAL_STR            "Normal"
+   #define PMD_NODE_SHUTDOWN_STR          "Shutdown"
+   #define PMD_NODE_REBUILDING_STR        "Rebuilding"
+   #define PMD_NODE_PULLINGUP_STR         "PullingUp"
 
    /*
-      SDB_DB_MODE_STR DEFINE
+      PMD_DATA_STATUS_STR DEFINE
    */
-   #define SDB_DB_MODE_READONLY_STR    "Readonly"
-   #define SDB_DB_MODE_DEACTIVATED_STR "Deactivated"
+   #define PMD_DATA_NORMAL_STR            "Normal"
+   #define PMD_DATA_REPAIR_STR            "Repairing"
+   #define PMD_DATA_FAULT_STR             "Fault"
+
+   /*
+      PMD_NODE_MODE_STR DEFINE
+   */
+   #define PMD_NODE_MODE_READONLY_STR     "Readonly"
+   #define PMD_NODE_MODE_DEACTIVATED_STR  "Deactivated"
 
    /*
       define
    */
    #define PMD_CONF_DIR_NAME           "conf"
-   #define PMD_RUN_DIR_NAME            "run"
-   #define PMD_DFT_CONF                "sdb.conf"
-   #define PMD_DFT_CAT                 "sdb.cat"
-   #define PMD_DFT_RUN                 "sdb.id"
-   #define PMD_OPTION_DIAG_PATH        "diaglog"
-   #define PMD_OPTION_AUDIT_PATH       PMD_OPTION_DIAG_PATH
-   #define PMD_OPTION_LOG_PATH         "replicalog"
-   #define PMD_OPTION_BK_PATH          "bakfile"
-   #define PMD_OPTION_WWW_PATH_DIR     "web"
-   #define PMD_OPTION_TMPBLK_PATH      "tmp"
-   #define PMD_OPTION_ARCHIVE_LOG_PATH "archivelog"
+   #define PMD_DFT_CONF                "nova.conf"
    #define PMD_CURRENT_PATH            "./"
 
-   #define ENGINE_NPIPE_PREFIX         "sequoiadb_engine_"
+   #define ENGINE_NPIPE_PREFIX         "novad_engine_"
    #if defined (_LINUX)
    #define PROC_PATH                   "/proc"
    #define PROC_CMDLINE_PATH_FORMAT    PROC_PATH"/%s/cmdline"
-   #define ENGINE_NAME                 "sequoiadb"
-   #define ENGINE_NPIPE_PREFIX_BW      "sequoiadb_engine_bw_"
-   #define PMD_OPTION_IGNOREULIMIT     "ignoreulimit"
-   #elif defined (_WINDOWS)
-   #define ENGINE_NAME                 "sequoiadb.exe"
-   #define PMD_OPTION_AS_PROC          "asproc"
+   #define ENGINE_NPIPE_PREFIX_BW      "novad_engine_bw_"
    #endif // _LINUX
-   #define PMD_OPTION_HELPFULL         "helpfull"
-   #define PMD_OPTION_TYPE             "type"
-   #define PMD_OPTION_MODE             "mode"
-   #define PMD_OPTION_DETAIL           "detail"
-   #define PMD_OPTION_EXPAND           "expand"
-   #define PMD_OPTION_LONG             "long"
-   #define PMD_OPTION_CURUSER          "I"
-   #define PMD_OPTION_PORT             "port"
-   #define PMD_OPTION_STANDALONE       "standalone"      // for om
-   #define PMD_OPTION_ALIVE_TIME       "alivetime"       // for om
-   #define PMD_OPTION_FORCE            "force"
-
-   /*
-      SDB_RUN_MODE_TYPE_STR DEFINE
-   */
-   #define SDB_RUN_MODE_TYPE_LOCAL_STR  "local"
-   #define SDB_RUN_MODE_TYPE_RUN_STR    "run"
-
-   /*
-      limits.conf
-   */
-   #define PMD_OPTION_LIMIT_CORE       "core_file_size"
-   #define PMD_OPTION_LIMIT_DATA       "data_seg_size"
-   #define PMD_OPTION_LIMIT_FILESIZE   "file_size"
-   #define PMD_OPTION_LIMIT_VM         "virtual_memory"
-   #define PMD_OPTION_LIMIT_FD         "open_files"
-
-   /*
-     SDBLIST_TYPE_STR
-   */
-   #define SDBLIST_TYPE_OMA_STR    "cm"
-   #define SDBLIST_TYPE_OM_STR     "om"
-   #define SDBLIST_TYPE_DB_STR     "db"
-   #define SDBLIST_TYPE_ALL_STR    "all"
-
-   /*
-      SDB_RUN_MODE_TYPE define
-   */
-   enum SDB_RUN_MODE_TYPE
-   {
-      RUN_MODE_LOCAL = 1,
-      RUN_MODE_RUN
-   } ;
 
    #define ENGINE_NPIPE_MSG_PID        "$pid"
    #define ENGINE_NPIPE_MSG_SHUTDOWN   "$shutdown"
    #define ENGINE_NPIPE_MSG_TYPE       "$type"
    #define ENGINE_NPIPE_MSG_ROLE       "$role"
-   #define ENGINE_NPIPE_MSG_GID        "$gid"
-   #define ENGINE_NPIPE_MSG_NID        "$nid"
-   #define ENGINE_NPIPE_MSG_GNAME      "$gname"
    #define ENGINE_NPIPE_MSG_PATH       "$path"
-   #define ENGINE_NPIPE_MSG_PRIMARY    "$primary"
    #define ENGINE_NPIPE_MSG_ENDPIPE    "$endpipe"
    #define ENGINE_NPIPE_MSG_STARTTIME  "$starttime"
-
-   /*
-      Config define
-   */
-   #define PMD_MIN_LOG_FILE_SZ                  64
-   #define PMD_MAX_LOG_FILE_SZ                  2048
-   #define PMD_DFT_LOG_FILE_SZ                  PMD_MIN_LOG_FILE_SZ
-   #define PMD_DFT_LOG_FILE_NUM                 20
-
-   #define PMD_REPL_PORT      1  // by default it's service port + 1
-   #define PMD_SHARD_PORT     2  // by default it's service port + 2
-   #define PMD_CAT_PORT       3  // by default it's service port + 3
-   #define PMD_REST_PORT      4  // by default it's service port + 4
-   #define PMD_OM_PORT        5  // by default it's service port + 5
 
    /*
       PMD Option define
@@ -362,17 +230,15 @@ namespace engine
    #define PMD_ADD_PARAM_OPTIONS_END ;
    #define PMD_COMMANDS_STRING( a, b )       (string(a) +string( b)).c_str()
 
-
    /*
-      SDB_TYPE define
+      PMD_NODE_TYPE define
    */
-   enum SDB_TYPE
+   enum PMD_NODE_TYPE
    {
-      SDB_TYPE_DB  = 1,    // sequoiadb: data, standalone, coord, catalog
-      SDB_TYPE_OM,         // om
-      SDB_TYPE_OMA,        // omagent
+      PMD_TYPE_DN  = 1,
+      PMD_TYPE_CM,
 
-      SDB_TYPE_MAX
+      PMD_NODE_TYPE_MAX
    } ;
 
    /*

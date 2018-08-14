@@ -104,11 +104,6 @@ namespace engine
       INT32    _role ;
       OSSPID   _pid ;
       // extra info
-      INT32    _groupID ;
-      INT32    _nodeID ;
-      INT32    _primary ;
-      INT32    _isAlone ;
-      string   _groupName ;
       string   _dbPath ;
       UINT64   _startTime ;
       // extra info end
@@ -118,10 +113,6 @@ namespace engine
          _pid        = OSS_INVALID_PID ;
          _type       = 0 ;
          _role       = 0 ;
-         _groupID    = 0 ;
-         _nodeID     = 0 ;
-         _primary    = -1 ;
-         _isAlone    = 0 ;
          _startTime  = 0 ;
       }
    } ;
@@ -136,8 +127,7 @@ namespace engine
                            INT32 typeFilter = -1,
                            const CHAR *svcnameFilter = NULL,
                            OSSPID pidFilter = OSS_INVALID_PID,
-                           INT32 roleFilter = -1,
-                           BOOLEAN allowAloneCM = FALSE ) ;
+                           INT32 roleFilter = -1 ) ;
 
    /*
       send command to node pipe and read result from node pipe
@@ -170,8 +160,7 @@ namespace engine
                             const CHAR *svcname,
                             OSSPID pid = OSS_INVALID_PID,
                             INT32 typeFilter = -1,
-                            INT32 timeout = UTIL_WAIT_NODE_TIMEOUT,
-                            BOOLEAN allowAloneCM = FALSE ) ;
+                            INT32 timeout = UTIL_WAIT_NODE_TIMEOUT ) ;
 
    #define UTIL_STOP_NODE_TIMEOUT         ( 5 * 60 ) // second
 

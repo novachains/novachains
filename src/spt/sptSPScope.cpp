@@ -628,6 +628,12 @@ namespace engine
       JSFunctionSpec *fSpecs = NULL ;
       JSFunctionSpec *sfSpecs = NULL ;
 
+      if ( _hasPrototype( objName ) )
+      {
+         /// alread created
+         goto done ;
+      }
+
       if ( !desc->isIgnoredParent() )
       {
          parentDesc = desc->getParent() ;
@@ -748,8 +754,14 @@ namespace engine
       }
 
    done:
-      delete []fSpecs ;
-      delete []sfSpecs ;
+      if ( fSpecs )
+      {
+         delete [] fSpecs ;
+      }
+      if ( sfSpecs )
+      {
+         delete [] sfSpecs ;
+      }
       return rc ;
    error:
       goto done ;

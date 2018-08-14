@@ -39,6 +39,10 @@
 #ifndef MSGDEF_H__
 #define MSGDEF_H__
 
+#define OP_ERRNOFIELD                        "errno"
+#define OP_ERRDESP_FIELD                     "description"
+#define OP_ERR_DETAIL                        "detail"
+
 #define SYS_PREFIX                           "SYS"
 
 #define FIELD_NAME_ROLE                      "Role"
@@ -472,155 +476,26 @@
 #define CMD_NAME_ENFORCED                    "enforced"
 
 #define CMD_ADMIN_PREFIX                     "$"
-#define CMD_NAME_BACKUP_OFFLINE              "backup offline"
-#define CMD_NAME_CREATE_COLLECTION           "create collection"
-#define CMD_NAME_CREATE_COLLECTIONSPACE      "create collectionspace"
-#define CMD_NAME_CREATE_INDEX                "create index"
-#define CMD_NAME_CANCEL_TASK                 "cancel task"
-#define CMD_NAME_DROP_COLLECTION             "drop collection"
-#define CMD_NAME_DROP_COLLECTIONSPACE        "drop collectionspace"
-#define CMD_NAME_LOAD_COLLECTIONSPACE        "load collectionspace"
-#define CMD_NAME_UNLOAD_COLLECTIONSPACE      "unload collectionspace"
-#define CMD_NAME_DROP_INDEX                  "drop index"
-#define CMD_NAME_GET_COUNT                   "get count"
-#define CMD_NAME_GET_INDEXES                 "get indexes"
-#define CMD_NAME_GET_DATABLOCKS              "get datablocks"
-#define CMD_NAME_GET_QUERYMETA               "get querymeta"
 #define CMD_NAME_GET_CONFIG                  "get config"
-#define CMD_NAME_GET_DCINFO                  "get dcinfo"
-#define CMD_NAME_LIST_COLLECTIONS            "list collections"
-#define CMD_NAME_LIST_COLLECTIONSPACES       "list collectionspaces"
-#define CMD_NAME_LIST_CONTEXTS               "list contexts"
-#define CMD_NAME_LIST_CONTEXTS_CURRENT       "list contexts current"
-#define CMD_NAME_LIST_SESSIONS               "list sessions"
-#define CMD_NAME_LIST_SESSIONS_CURRENT       "list sessions current"
-#define CMD_NAME_LIST_STORAGEUNITS           "list storageunits"
-#define CMD_NAME_LIST_GROUPS                 "list groups"
-#define CMD_NAME_LIST_DOMAINS                "list domains"
-#define CMD_NAME_LIST_CS_IN_DOMAIN           "list collectionspaces in domain"
-#define CMD_NAME_LIST_CL_IN_DOMAIN           "list collections in domain"
-#define CMD_NAME_LIST_BACKUPS                "list backups"
-#define CMD_NAME_LIST_TASKS                  "list tasks"
-#define CMD_NAME_LIST_TRANSACTIONS           "list transactions"
-#define CMD_NAME_LIST_TRANSACTIONS_CUR       "list transactions current"
-#define CMD_NAME_LIST_SVCTASKS               "list service tasks"
-#define CMD_NAME_RENAME_COLLECTION           "rename collection"
-#define CMD_NAME_RENAME_COLLECTIONSPACE      "rename collectionspace"
-#define CMD_NAME_REORG_OFFLINE               "reorg offline"
-#define CMD_NAME_REORG_ONLINE                "reorg online"
-#define CMD_NAME_REORG_RECOVER               "reorg recover"
 #define CMD_NAME_SHUTDOWN                    "shutdown"
-#define CMD_NAME_SNAPSHOT_CONTEXTS           "snapshot contexts"
-#define CMD_NAME_SNAPSHOT_CONTEXTS_CURRENT   "snapshot contexts current"
-#define CMD_NAME_SNAPSHOT_DATABASE           "snapshot database"
-#define CMD_NAME_SNAPSHOT_RESET              "snapshot reset"
-#define CMD_NAME_SNAPSHOT_SESSIONS           "snapshot sessions"
-#define CMD_NAME_SNAPSHOT_SESSIONS_CURRENT   "snapshot sessions current"
 #define CMD_NAME_SNAPSHOT_SYSTEM             "snapshot system"
-#define CMD_NAME_SNAPSHOT_COLLECTIONS        "snapshot collections"
-#define CMD_NAME_SNAPSHOT_COLLECTIONSPACES   "snapshot collectionspaces"
-#define CMD_NAME_SNAPSHOT_CATA               "snapshot catalog"
-#define CMD_NAME_SNAPSHOT_TRANSACTIONS       "snapshot transactions"
-#define CMD_NAME_SNAPSHOT_TRANSACTIONS_CUR   "snapshot transactions current"
-#define CMD_NAME_SNAPSHOT_ACCESSPLANS        "snapshot accessplans"
-#define CMD_NAME_SNAPSHOT_HEALTH             "snapshot health"
 #define CMD_NAME_SNAPSHOT_CONFIGS            "snapshot configs"
 #define CMD_NAME_SNAPSHOT_SVCTASKS           "snapshot service tasks"
-#define CMD_NAME_TEST_COLLECTION             "test collection"
-#define CMD_NAME_TEST_COLLECTIONSPACE        "test collectionspace"
-#define CMD_NAME_CREATE_GROUP                "create group"
-#define CMD_NAME_REMOVE_GROUP                "remove group"
-#define CMD_NAME_CREATE_NODE                 "create node"
-#define CMD_NAME_REMOVE_NODE                 "remove node"
-#define CMD_NAME_REMOVE_BACKUP               "remove backup"
-#define CMD_NAME_UPDATE_NODE                 "update node"
-#define CMD_NAME_ACTIVE_GROUP                "active group"
-#define CMD_NAME_STARTUP_NODE                "startup node"
-#define CMD_NAME_SHUTDOWN_NODE               "shutdown node"
-#define CMD_NAME_SHUTDOWN_GROUP              "shutdown group"
 #define CMD_NAME_SET_PDLEVEL                 "set pdlevel"
-#define CMD_NAME_SPLIT                       "split"
-#define CMD_NAME_WAITTASK                    "wait task"
-#define CMD_NAME_CREATE_CATA_GROUP           "create catalog group"
 #define CMD_NAME_TRACE_START                 "trace start"
 #define CMD_NAME_TRACE_RESUME                "trace resume"
 #define CMD_NAME_TRACE_STOP                  "trace stop"
 #define CMD_NAME_TRACE_STATUS                "trace status"
-#define CMD_NAME_CREATE_DOMAIN               "create domain"
-#define CMD_NAME_DROP_DOMAIN                 "drop domain"
-#define CMD_NAME_ADD_DOMAIN_GROUP            "add domain group"
-#define CMD_NAME_REMOVE_DOMAIN_GROUP         "remove domain group"
 #define CMD_NAME_EXPORT_CONFIG               "export configuration"
-#define CMD_NAME_CRT_PROCEDURE               "create procedure"
-#define CMD_NAME_RM_PROCEDURE                "remove procedure"
-#define CMD_NAME_LIST_PROCEDURES             "list procedures"
 #define CMD_NAME_EVAL                        "eval"
-#define CMD_NAME_LINK_CL                     "link collection"
-#define CMD_NAME_UNLINK_CL                   "unlink collection"
 #define CMD_NAME_SETSESS_ATTR                "set session attribute"
 #define CMD_NAME_GETSESS_ATTR                "get session attribute"
 #define CMD_NAME_INVALIDATE_CACHE            "invalidate cache"
 #define CMD_NAME_FORCE_SESSION               "force session"
-#define CMD_NAME_LIST_LOBS                   "list lobs"
-#define CMD_NAME_ALTER_DC                    "alter dc"
-#define CMD_NAME_REELECT                     "reelect"
-#define CMD_NAME_FORCE_STEP_UP               "force step up"
-#define CMD_NAME_JSON_LOAD                   "json load"
-#define CMD_NAME_TRUNCATE                    "truncate"
 #define CMD_NAME_LIST_USERS                  "list users"
-#define CMD_NAME_SYNC_DB                     "sync db"
-#define CMD_NAME_POP                         "pop"
 #define CMD_NAME_RELOAD_CONFIG               "reload config"
 #define CMD_NAME_UPDATE_CONFIG               "update config"
 #define CMD_NAME_DELETE_CONFIG               "delete config"
-#define CMD_NAME_ANALYZE                     "analyze"
-
-#define CMD_NAME_SNAPSHOT_DATABASE_INTR      "SNAPSHOT_DB"
-#define CMD_NAME_SNAPSHOT_SYSTEM_INTR        "SNAPSHOT_SYSTEM"
-#define CMD_NAME_SNAPSHOT_COLLECTION_INTR    "SNAPSHOT_CL"
-#define CMD_NAME_SNAPSHOT_SPACE_INTR         "SNAPSHOT_CS"
-#define CMD_NAME_SNAPSHOT_CONTEXT_INTR       "SNAPSHOT_CONTEXT"
-#define CMD_NAME_SNAPSHOT_CONTEXTCUR_INTR    "SNAPSHOT_CONTEXT_CUR"
-#define CMD_NAME_SNAPSHOT_SESSION_INTR       "SNAPSHOT_SESSION"
-#define CMD_NAME_SNAPSHOT_SESSIONCUR_INTR    "SNAPSHOT_SESSION_CUR"
-#define CMD_NAME_SNAPSHOT_CATA_INTR          "SNAPSHOT_CATA"
-#define CMD_NAME_SNAPSHOT_TRANS_INTR         "SNAPSHOT_TRANS"
-#define CMD_NAME_SNAPSHOT_TRANSCUR_INTR      "SNAPSHOT_TRANS_CUR"
-#define CMD_NAME_SNAPSHOT_ACCESSPLANS_INTR   "SNAPSHOT_ACCESSPLANS"
-#define CMD_NAME_SNAPSHOT_HEALTH_INTR        "SNAPSHOT_HEALTH"
-#define CMD_NAME_SNAPSHOT_CONFIGS_INTR       "SNAPSHOT_CONFIGS"
-#define CMD_NAME_SNAPSHOT_SVCTASKS_INTR      "SNAPSHOT_SVCTASKS"
-
-#define CMD_NAME_LIST_COLLECTION_INTR        "LIST_CL"
-#define CMD_NAME_LIST_SPACE_INTR             "LIST_CS"
-#define CMD_NAME_LIST_CONTEXT_INTR           "LIST_CONTEXT"
-#define CMD_NAME_LIST_CONTEXTCUR_INTR        "LIST_CONTEXT_CUR"
-#define CMD_NAME_LIST_SESSION_INTR           "LIST_SESSION"
-#define CMD_NAME_LIST_SESSIONCUR_INTR        "LIST_SESSION_CUR"
-#define CMD_NAME_LIST_STORAGEUNIT_INTR       "LIST_SU"
-#define CMD_NAME_LIST_BACKUP_INTR            "LIST_BACKUP"
-#define CMD_NAME_LIST_TRANS_INTR             "LIST_TRANS"
-#define CMD_NAME_LIST_TRANSCUR_INTR          "LIST_TRANS_CUR"
-#define CMD_NAME_LIST_GROUP_INTR             "LIST_GROUP"
-#define CMD_NAME_LIST_USER_INTR              "LIST_USER"
-#define CMD_NAME_LIST_TASK_INTR              "LIST_TASK"
-#define CMD_NAME_LIST_DOMAIN_INTR            "LIST_DOMAIN"
-#define CMD_NAME_LIST_SVCTASKS_INTR          "LIST_SVCTASKS"
-
-#define SYS_VIRTUAL_CS                       "SYS_VCS"
-#define SYS_VIRTUAL_CS_LEN                   sizeof( SYS_VIRTUAL_CS )
-#define SYS_CL_SESSION_INFO                  SYS_VIRTUAL_CS".SYS_SESSION_INFO"
-
-#define CMD_VALUE_NAME_CREATE                "create image"
-#define CMD_VALUE_NAME_REMOVE                "remove image"
-#define CMD_VALUE_NAME_ATTACH                "attach groups"
-#define CMD_VALUE_NAME_DETACH                "detach groups"
-#define CMD_VALUE_NAME_ENABLE                "enable image"
-#define CMD_VALUE_NAME_DISABLE               "disable image"
-#define CMD_VALUE_NAME_ACTIVATE              "activate"
-#define CMD_VALUE_NAME_DEACTIVATE            "deactivate"
-#define CMD_VALUE_NAME_ENABLE_READONLY       "enable readonly"
-#define CMD_VALUE_NAME_DISABLE_READONLY      "disable readonly"
 
 #define CLS_REPLSET_MAX_NODE_SIZE            7
 #define SDB_MAX_MSG_LENGTH                   ( 512 * 1024 * 1024 )
@@ -653,13 +528,6 @@
 
 #define SDB_INDEX_SORT_BUFFER_DEFAULT_SIZE   64
 
-#define SDB_ROLE_DATA_STR                    "data"
-#define SDB_ROLE_COORD_STR                   "coord"
-#define SDB_ROLE_CATALOG_STR                 "catalog"
-#define SDB_ROLE_STANDALONE_STR              "standalone"
-#define SDB_ROLE_OM_STR                      "om"
-#define SDB_ROLE_OMA_STR                     "cm"
-
 #define SDB_AUTH_USER                        "User"
 #define SDB_AUTH_PASSWD                      "Passwd"
 #define SDB_AUTH_SOURCE                      "Source"
@@ -669,17 +537,6 @@
 #define SDB_SHARDING_PARTITION_DEFAULT    4096       // 2^12
 #define SDB_SHARDING_PARTITION_MIN        8          // 2^3
 #define SDB_SHARDING_PARTITION_MAX        1048576    // 2^20
-
-enum SDB_ROLE
-{
-   SDB_ROLE_DATA = 0,
-   SDB_ROLE_COORD,
-   SDB_ROLE_CATALOG,
-   SDB_ROLE_STANDALONE,
-   SDB_ROLE_OM,
-   SDB_ROLE_OMA,
-   SDB_ROLE_MAX
-} ;
 
 enum SDB_LOB_MODE
 {

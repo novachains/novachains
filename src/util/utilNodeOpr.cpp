@@ -556,67 +556,12 @@ namespace engine
    INT32 utilGetNodeExtraInfo( utilNodeInfo & info )
    {
       INT32 rc = SDB_OK ;
-      CHAR groupName[ OSS_MAX_GROUPNAME_SIZE + 1 ] = { 0 } ;
       CHAR dbPath[ OSS_MAX_PATHSIZE + 1 ] = { 0 } ;
 
-      info._groupID     = 0 ;
-      info._nodeID      = 0 ;
-      info._primary     = -1 ;
-      info._isAlone     = 0 ;
       info._dbPath      = "" ;
-      info._groupName   = "" ;
       info._startTime   = 0 ;
 
-      // group id
-      rc = _utilWriteReadPipe( info._svcname.c_str(), info._pid,
-                               ENGINE_NPIPE_MSG_GID,
-                               sizeof( ENGINE_NPIPE_MSG_GID ),
-                               (CHAR *)&info._groupID,
-                               sizeof( info._groupID ),
-                               TRUE ) ;
-      if ( rc )
-      {
-         goto error ;
-      }
-
-      // node id
-      rc = _utilWriteReadPipe( info._svcname.c_str(), info._pid,
-                               ENGINE_NPIPE_MSG_NID,
-                               sizeof( ENGINE_NPIPE_MSG_NID ),
-                               (CHAR *)&info._nodeID,
-                               sizeof( info._nodeID ),
-                               TRUE ) ;
-      if ( rc )
-      {
-         goto error ;
-      }
-
-      // primary
-      rc = _utilWriteReadPipe( info._svcname.c_str(), info._pid,
-                               ENGINE_NPIPE_MSG_PRIMARY,
-                               sizeof( ENGINE_NPIPE_MSG_PRIMARY ),
-                               (CHAR *)&info._primary,
-                               sizeof( info._primary ),
-                               TRUE ) ;
-      if ( rc )
-      {
-         goto error ;
-      }
-
-      // group name
-      rc = _utilWriteReadPipe( info._svcname.c_str(), info._pid,
-                               ENGINE_NPIPE_MSG_GNAME,
-                               sizeof( ENGINE_NPIPE_MSG_GNAME ),
-                               (CHAR *)groupName,
-                               OSS_MAX_GROUPNAME_SIZE,
-                               FALSE ) ;
-      if ( rc )
-      {
-         goto error ;
-      }
-      info._groupName = groupName ;
-
-      // dbpath
+      // path
       rc = _utilWriteReadPipe( info._svcname.c_str(), info._pid,
                                ENGINE_NPIPE_MSG_PATH,
                                sizeof( ENGINE_NPIPE_MSG_PATH ),
@@ -662,15 +607,14 @@ namespace engine
                         INT32 typeFilter,
                         const CHAR * svcnameFilter,
                         OSSPID pidFilter,
-                        INT32 roleFilter,
-                        BOOLEAN allowAloneCM )
+                        INT32 roleFilter )
    {
       INT32 rc                   = SDB_OK ;
       DIR *pDir                  = NULL ;
       struct dirent *pDirent     = NULL ;
       BOOLEAN isOpen = FALSE ;
       CHAR *pStr                 = NULL ;
-      INT32 beginType            = SDB_TYPE_DB ;
+      INT32 beginType            = PMD_TYPE_DN ;
       CHAR *pSvcBegin            = NULL ;
       CHAR *pSvcEnd              = NULL ;
       UINT32 matchNum            = 0 ;
@@ -708,7 +652,7 @@ namespace engine
          // analysize node info
          pStr = NULL ;
          matchNum = 0 ;
-         beginType = SDB_TYPE_DB ;
+         beginType = PMD_TYPE_DN ;
          pSvcBegin = NULL ;
          pSvcEnd = NULL ;
 
@@ -732,13 +676,13 @@ namespace engine
          }
 
          // 2. type
-         while ( beginType < SDB_TYPE_MAX )
+         while ( beginType < PMD_NODE_TYPE_MAX )
          {
             pStr = ossStrstr( commandLine,
-                              utilDBTypeStr( (SDB_TYPE)beginType ) ) ;
+                              utilNodeType2Str( (PMD_NODE_TYPE)beginType ) ) ;
             if ( pStr == commandLine &&
                  (UINT32)( pSvcBegin - pStr) ==
-                 (UINT32)ossStrlen( utilDBTypeStr( (SDB_TYPE)beginType ) ) )
+                 (UINT32)ossStrlen( utilNodeType2Str( (PMD_NODE_TYPE)beginType ) ) )
             {
                if ( -1 == typeFilter || typeFilter == beginType )
                {
@@ -768,24 +712,18 @@ namespace engine
          }
 
          // 4. role
-         findNode._role = SDB_ROLE_MAX ;
+         findNode._role = PMD_NODE_ROLE_MAX ;
          if ( ' ' == *( pSvcEnd + 1 ) )
          {
-            findNode._role = utilShortStr2DBRole( pSvcEnd + 2 ) ;
+            findNode._role = utilShortStr2Role( pSvcEnd + 2 ) ;
          }
 
-         if ( SDB_ROLE_MAX == findNode._role )
+         if ( PMD_NODE_ROLE_MAX == findNode._role )
          {
             switch( findNode._type )
             {
-               case SDB_TYPE_OM :
-                  findNode._role = SDB_ROLE_OM ;
-                  break ;
-               case SDB_TYPE_OMA :
-                  findNode._role = SDB_ROLE_OMA ;
-                  break ;
-               case SDB_TYPE_DB :
-                  findNode._role = SDB_ROLE_STANDALONE ;
+               case PMD_TYPE_DN :
+                  findNode._role = PMD_NODE_USER ;
                   break ;
                default :
                   break ;
@@ -803,19 +741,6 @@ namespace engine
 
          // get extra info
          utilGetNodeExtraInfo( findNode ) ;
-
-         if ( SDB_TYPE_OMA == findNode._type )
-         {
-            if ( 0 != findNode._groupID )
-            {
-               if ( FALSE == allowAloneCM )
-               {
-                  continue ;
-               }
-               findNode._groupID = 0 ;
-               findNode._isAlone = 1 ;
-            }
-         }
 
          // find it
          nodes.push_back( findNode ) ;
@@ -839,9 +764,11 @@ namespace engine
 
 #else
 
-   INT32 utilListNodes( UTIL_VEC_NODES & nodes, INT32 typeFilter,
-                        const CHAR * svcnameFilter, OSSPID pidFilter,
-                        INT32 roleFilter, BOOLEAN allowAloneCM )
+   INT32 utilListNodes( UTIL_VEC_NODES & nodes,
+                        INT32 typeFilter,
+                        const CHAR * svcnameFilter,
+                        OSSPID pidFilter,
+                        INT32 roleFilter )
    {
       INT32 rc = SDB_OK ;
       vector< string > names ;
@@ -854,7 +781,7 @@ namespace engine
 
       for ( UINT32 i = 0 ; i < names.size() ; ++i )
       {
-         // windows: sequoiadb_engine_11790(svcname)
+         // windows: novad_engine_11790(svcname)
          // get svcname
          findNode._svcname = names[ i ].substr( prefixLen ) ;
 
@@ -918,19 +845,6 @@ namespace engine
          // get extra info
          utilGetNodeExtraInfo( findNode ) ;
 
-         if ( SDB_TYPE_OMA == findNode._type )
-         {
-            if ( 0 != findNode._groupID )
-            {
-               if ( FALSE == allowAloneCM )
-               {
-                  continue ;
-               }
-               findNode._groupID = 0 ;
-               findNode._isAlone = 1 ;
-            }
-         }
-
          // push to vector
          nodes.push_back( findNode ) ;
 
@@ -964,7 +878,7 @@ namespace engine
       node._orgname = "" ;
       node._pid = OSS_INVALID_PID ;
 
-      if ( SDB_TYPE_OMA != typeFilter )
+      if ( PMD_TYPE_CM != typeFilter )
       {
          rc = ossEnumSubDirs( localPath, allsvcnames, 1 ) ;
          if ( rc )
@@ -994,7 +908,7 @@ namespace engine
             continue ;
          }
 
-         node._type = utilRoleToType( (SDB_ROLE)node._role ) ;
+         node._type = utilRoleToType( (PMD_NODE_ROLE)node._role ) ;
          if ( -1 != typeFilter && typeFilter != node._type )
          {
             continue ;
@@ -1014,9 +928,11 @@ namespace engine
       goto done ;
    }
 
-   INT32 utilWaitNodeOK( utilNodeInfo & node, const CHAR * svcname,
-                         OSSPID pid, INT32 typeFilter,
-                         INT32 timeout, BOOLEAN allowAloneCM )
+   INT32 utilWaitNodeOK( utilNodeInfo & node,
+                         const CHAR * svcname,
+                         OSSPID pid,
+                         INT32 typeFilter,
+                         INT32 timeout )
    {
       INT32 rc = SDB_OK ;
       UTIL_VEC_NODES nodes ;
@@ -1036,7 +952,7 @@ namespace engine
 
          nodes.clear() ;
          rc = utilListNodes( nodes, typeFilter, svcname, pid,
-                             -1, allowAloneCM ) ;
+                             -1 ) ;
          if ( SDB_OK == rc && nodes.size() > 0 )
          {
             node = ( *nodes.begin() ) ;

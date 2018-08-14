@@ -159,6 +159,11 @@ namespace engine
       PD_TRACE_EXIT ( SDB__NETFRAME_DECONS );
    }
 
+   void _netFrame::setStartThreadFunc( NET_START_THREAD_FUNC pFunc )
+   {
+      _pThreadFunc = pFunc ;
+   }
+
    void _netFrame::setMaxSockPerNode( UINT32 maxSockPerNode )
    {
       _maxSockPerNode = maxSockPerNode ;
@@ -218,12 +223,10 @@ namespace engine
    }
 
    // PD_TRACE_DECLARE_FUNCTION ( SDB__NETFRAME_RUN, "_netFrame::run" )
-   INT32 _netFrame::run( NET_START_THREAD_FUNC pFunc )
+   INT32 _netFrame::run()
    {
       INT32 rc = SDB_OK ;
       PD_TRACE_ENTRY ( SDB__NETFRAME_RUN ) ;
-
-      _pThreadFunc = pFunc ;
 
       /// start dummy timer
       rc = _innerTimeHandle.startDummyTimer() ;

@@ -84,6 +84,8 @@ namespace engine
    {
       PMD_NODE_NORMAL           = 0,
       PMD_NODE_SHUTDOWN,
+      PMD_NODE_REBUILDING,
+      PMD_NODE_PULLINGUP,
 
       PMD_NODE_STATUS_MAX
    } ;
@@ -95,10 +97,19 @@ namespace engine
    {
       PMD_NODE_WITNESS        = 1,  /// Witness node
       PMD_NODE_FULL,                /// Full node
-      PMD_NODE_SPV,
+      PMD_NODE_USER,                /// User node
+      PMD_NODE_SPV,                 /// SPV node
+
+      PMD_NODE_CM,                  /// cm node
 
       PMD_NODE_ROLE_MAX
    } ;
+
+   /*
+      Define PMD_NODE_MODE value
+   */
+   #define PMD_NODE_MODE_READONLY         0x00000001
+   #define PMD_NODE_MODE_DEACTIVATED      0x00000002
 
    /*
       _IPmdRoot define
@@ -169,6 +180,7 @@ namespace engine
       public:
          virtual INT32     run() = 0 ;
          virtual void      stop() = 0 ;
+         virtual void      resetMon() = 0 ;
    } ;
    typedef _IPmdIOService IPmdIOService ;
 

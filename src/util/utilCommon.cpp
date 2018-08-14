@@ -38,7 +38,6 @@
 
 #include "utilCommon.hpp"
 #include "ossUtil.hpp"
-#include "msg.h"
 #include "ossLatch.hpp"
 #include "pdTrace.hpp"
 #include "utilTrace.hpp"
@@ -49,227 +48,207 @@ using namespace bson ;
 namespace engine
 {
 
-   SDB_ROLE utilGetRoleEnum( const CHAR *role )
+   PMD_NODE_ROLE utilGetRoleEnum( const CHAR *role )
    {
       if ( NULL == role )
-         return SDB_ROLE_MAX;
-      else if ( *role == 0 ||
-                0 == ossStrcasecmp( role, SDB_ROLE_STANDALONE_STR ) )
-         return SDB_ROLE_STANDALONE ;
-      else if ( 0 == ossStrcasecmp( role, SDB_ROLE_DATA_STR ) )
-         return SDB_ROLE_DATA;
-      else if ( 0 == ossStrcasecmp( role, SDB_ROLE_CATALOG_STR ) )
-         return SDB_ROLE_CATALOG;
-      else if ( 0 == ossStrcasecmp( role, SDB_ROLE_COORD_STR ) )
-         return SDB_ROLE_COORD;
-      else if ( 0 == ossStrcasecmp( role, SDB_ROLE_OM_STR ) )
-         return SDB_ROLE_OM ;
-      else if ( 0 == ossStrcasecmp( role, SDB_ROLE_OMA_STR ) )
-         return SDB_ROLE_OMA ;
+         return PMD_NODE_ROLE_MAX;
+      else if ( 0 == ossStrcasecmp( role, PMD_NODE_WITNESS_STR ) )
+         return PMD_NODE_WITNESS ;
+      else if ( 0 == ossStrcasecmp( role, PMD_NODE_FULL_STR ) )
+         return PMD_NODE_FULL ;
+      else if ( 0 == ossStrcasecmp( role, PMD_NODE_USER_STR ) )
+         return PMD_NODE_USER ;
+      else if ( 0 == ossStrcasecmp( role, PMD_NODE_SPV_STR ) )
+         return PMD_NODE_SPV ;
       else
-         return SDB_ROLE_MAX;
+         return PMD_NODE_ROLE_MAX;
    }
 
-   const CHAR* utilDBRoleStr( SDB_ROLE dbrole )
-   {
-      switch ( dbrole )
-      {
-         case SDB_ROLE_DATA :
-            return SDB_ROLE_DATA_STR ;
-         case SDB_ROLE_COORD :
-            return SDB_ROLE_COORD_STR ;
-         case SDB_ROLE_CATALOG :
-            return SDB_ROLE_CATALOG_STR ;
-         case SDB_ROLE_STANDALONE :
-            return SDB_ROLE_STANDALONE_STR ;
-         case SDB_ROLE_OM :
-            return SDB_ROLE_OM_STR ;
-         case SDB_ROLE_OMA :
-            return SDB_ROLE_OMA_STR ;
-         default :
-            break ;
-      }
-      return "" ;
-   }
-
-   const CHAR* utilDBRoleShortStr( SDB_ROLE dbrole )
-   {
-      switch ( dbrole )
-      {
-         case SDB_ROLE_DATA :
-            return "D" ;
-         case SDB_ROLE_COORD :
-            return "S" ;
-         case SDB_ROLE_CATALOG :
-            return "C" ;
-         default :
-            break ;
-      }
-      return "" ;
-   }
-
-   SDB_ROLE utilShortStr2DBRole( const CHAR * role )
-   {
-      if ( NULL == role )
-         return SDB_ROLE_MAX;
-      if ( 0 == ossStrcasecmp( role, "D" ) )
-         return SDB_ROLE_DATA;
-      else if ( 0 == ossStrcasecmp( role, "C" ) )
-         return SDB_ROLE_CATALOG;
-      else if ( 0 == ossStrcasecmp( role, "S" ) )
-         return SDB_ROLE_COORD;
-      else
-         return SDB_ROLE_MAX;
-   }
-
-   SDB_TYPE utilGetTypeEnum( const CHAR * type )
-   {
-      if ( NULL == type )
-      {
-         return SDB_TYPE_MAX ;
-      }
-      else if ( 0 == *type ||
-                0 == ossStrcasecmp( type, SDB_TYPE_DB_STR ) )
-      {
-         return SDB_TYPE_DB ;
-      }
-      else if ( 0 == ossStrcasecmp( type, SDB_TYPE_OM_STR ) )
-      {
-         return SDB_TYPE_OM ;
-      }
-      else if ( 0 == ossStrcasecmp( type, SDB_TYPE_OMA_STR ) )
-      {
-         return SDB_TYPE_OMA ;
-      }
-      else
-      {
-         return SDB_TYPE_MAX ;
-      }
-   }
-
-   const CHAR* utilDBTypeStr( SDB_TYPE type )
-   {
-      switch ( type )
-      {
-         case SDB_TYPE_DB :
-            return SDB_TYPE_DB_STR ;
-         case SDB_TYPE_OM :
-            return SDB_TYPE_OM_STR ;
-         case SDB_TYPE_OMA :
-            return SDB_TYPE_OMA_STR ;
-         default :
-            break ;
-      }
-      return "Unknow" ;
-   }
-
-   SDB_TYPE utilRoleToType( SDB_ROLE role )
+   const CHAR* utilRole2Str( PMD_NODE_ROLE role )
    {
       switch ( role )
       {
-         case SDB_ROLE_DATA :
-         case SDB_ROLE_COORD :
-         case SDB_ROLE_CATALOG :
-         case SDB_ROLE_STANDALONE :
-            return SDB_TYPE_DB ;
-         case SDB_ROLE_OM :
-            return SDB_TYPE_OM ;
-         case SDB_ROLE_OMA :
-            return SDB_TYPE_OMA ;
+         case PMD_NODE_WITNESS :
+            return PMD_NODE_WITNESS_STR ;
+         case PMD_NODE_FULL :
+            return PMD_NODE_FULL_STR ;
+         case PMD_NODE_USER :
+            return PMD_NODE_USER_STR ;
+         case PMD_NODE_SPV :
+            return PMD_NODE_SPV_STR ;
          default :
             break ;
       }
-      return SDB_TYPE_MAX ;
+      return "" ;
    }
 
-   const CHAR* utilDBStatusStr( SDB_DB_STATUS dbStatus )
+   const CHAR* utilRoleShortStr( PMD_NODE_ROLE role )
    {
-      switch( dbStatus )
+      switch ( role )
       {
-         case SDB_DB_NORMAL :
-            return SDB_DB_NORMAL_STR ;
-         case SDB_DB_SHUTDOWN :
-            return SDB_DB_SHUTDOWN_STR ;
-         case SDB_DB_REBUILDING :
-            return SDB_DB_REBUILDING_STR ;
-         case SDB_DB_FULLSYNC :
-            return SDB_DB_FULLSYNC_STR ;
-         case SDB_DB_OFFLINE_BK :
-            return SDB_DB_OFFLINE_BK_STR ;
+         case PMD_NODE_WITNESS :
+            return "W" ;
+         case PMD_NODE_FULL :
+            return "F" ;
+         case PMD_NODE_USER :
+            return "U" ;
+         case PMD_NODE_SPV :
+            return "S" ;
+         default :
+            break ;
+      }
+      return "" ;
+   }
+
+   PMD_NODE_ROLE utilShortStr2Role( const CHAR * role )
+   {
+      if ( NULL == role )
+         return PMD_NODE_ROLE_MAX;
+      if ( 0 == ossStrcasecmp( role, "W" ) )
+         return PMD_NODE_WITNESS ;
+      else if ( 0 == ossStrcasecmp( role, "F" ) )
+         return PMD_NODE_FULL ;
+      else if ( 0 == ossStrcasecmp( role, "U" ) )
+         return PMD_NODE_USER ;
+      else if ( 0 == ossStrcasecmp( role, "S" ) )
+         return PMD_NODE_SPV ;
+      else
+         return PMD_NODE_ROLE_MAX;
+   }
+
+   PMD_NODE_TYPE utilGetNodeTypeEnum( const CHAR * type )
+   {
+      if ( NULL == type )
+      {
+         return PMD_NODE_TYPE_MAX ;
+      }
+      else if ( 0 == ossStrcasecmp( type, PMD_TYPE_DN_STR ) )
+      {
+         return PMD_TYPE_DN ;
+      }
+      else if ( 0 == ossStrcasecmp( type, PMD_TYPE_CM_STR ) )
+      {
+         return PMD_TYPE_CM ;
+      }
+      else
+      {
+         return PMD_NODE_TYPE_MAX ;
+      }
+   }
+
+   const CHAR* utilNodeType2Str( PMD_NODE_TYPE type )
+   {
+      switch ( type )
+      {
+         case PMD_TYPE_DN :
+            return PMD_TYPE_DN_STR ;
+         case PMD_TYPE_CM :
+            return PMD_TYPE_CM_STR ;
          default :
             break ;
       }
       return "Unknow" ;
    }
 
-   SDB_DB_STATUS utilGetDBStatusEnum( const CHAR *status )
+   PMD_NODE_TYPE utilRoleToType( PMD_NODE_ROLE role )
+   {
+      switch ( role )
+      {
+         case PMD_NODE_WITNESS :
+         case PMD_NODE_FULL :
+         case PMD_NODE_USER :
+         case PMD_NODE_SPV :
+            return PMD_TYPE_DN ;
+         case PMD_NODE_CM :
+            return PMD_TYPE_CM ;
+         default :
+            break ;
+      }
+      return PMD_NODE_TYPE_MAX ;
+   }
+
+   const CHAR* utilNodeStatusStr( PMD_NODE_STATUS status )
+   {
+      switch( status )
+      {
+         case PMD_NODE_NORMAL :
+            return PMD_NODE_NORMAL_STR ;
+         case PMD_NODE_SHUTDOWN :
+            return PMD_NODE_SHUTDOWN_STR ;
+         case PMD_NODE_REBUILDING :
+            return PMD_NODE_REBUILDING_STR ;
+         case PMD_NODE_PULLINGUP :
+            return PMD_NODE_PULLINGUP_STR ;
+         default :
+            break ;
+      }
+      return "Unknow" ;
+   }
+
+   PMD_NODE_STATUS utilGetNodeStatusEnum( const CHAR *status )
    {
       if ( NULL == status )
       {
-         return SDB_DB_STATUS_MAX ;
+         return PMD_NODE_STATUS_MAX ;
       }
       else if ( 0 == *status ||
-                0 == ossStrcasecmp( status, SDB_DB_NORMAL_STR ) )
+                0 == ossStrcasecmp( status, PMD_NODE_NORMAL_STR ) )
       {
-         return SDB_DB_NORMAL ;
+         return PMD_NODE_NORMAL ;
       }
-      else if ( 0 == ossStrcasecmp( status, SDB_DB_SHUTDOWN_STR ) )
+      else if ( 0 == ossStrcasecmp( status, PMD_NODE_SHUTDOWN_STR ) )
       {
-         return SDB_DB_SHUTDOWN ;
+         return PMD_NODE_SHUTDOWN ;
       }
-      else if ( 0 == ossStrcasecmp( status, SDB_DB_REBUILDING_STR ) )
+      else if ( 0 == ossStrcasecmp( status, PMD_NODE_REBUILDING_STR ) )
       {
-         return SDB_DB_REBUILDING ;
+         return PMD_NODE_REBUILDING ;
       }
-      else if ( 0 == ossStrcasecmp( status, SDB_DB_FULLSYNC_STR ) )
+      else if ( 0 == ossStrcasecmp( status, PMD_NODE_PULLINGUP_STR ) )
       {
-         return SDB_DB_FULLSYNC ;
-      }
-      else if ( 0 == ossStrcasecmp( status, SDB_DB_OFFLINE_BK_STR ) )
-      {
-         return SDB_DB_OFFLINE_BK ;
+         return PMD_NODE_PULLINGUP ;
       }
       else
       {
-         return SDB_DB_STATUS_MAX ;
+         return PMD_NODE_STATUS_MAX ;
       }
    }
 
-   const CHAR* utilDataStatusStr( BOOLEAN dataIsOK, SDB_DB_STATUS dbStatus )
+   const CHAR* utilDataStatusStr( BOOLEAN dataIsOK, PMD_NODE_STATUS status )
    {
       if ( dataIsOK )
       {
-         return SDB_DATA_NORMAL_STR ;
+         return PMD_DATA_NORMAL_STR ;
       }
-      if ( SDB_DB_REBUILDING == dbStatus || SDB_DB_FULLSYNC == dbStatus )
+      if ( PMD_NODE_REBUILDING == status || PMD_NODE_REBUILDING == status )
       {
-         return SDB_DATA_REPAIR_STR ;
+         return PMD_DATA_REPAIR_STR ;
       }
-      return SDB_DATA_FAULT_STR ;
+      return PMD_DATA_FAULT_STR ;
    }
 
-   std::string utilDBModeStr( UINT32 dbMode )
+   std::string utilNodeMode2Str( UINT32 mode )
    {
       std::stringstream ss ;
       BOOLEAN hasAdd = FALSE ;
 
-      if ( SDB_DB_MODE_READONLY & dbMode )
+      if ( PMD_NODE_MODE_READONLY & mode )
       {
-         ss << SDB_DB_MODE_READONLY_STR ;
+         ss << PMD_NODE_MODE_READONLY_STR ;
          hasAdd = TRUE ;
       }
-      if ( SDB_DB_MODE_DEACTIVATED & dbMode )
+      if ( PMD_NODE_MODE_DEACTIVATED & mode )
       {
          if ( hasAdd )
          {
             ss << " | " ;
          }
-         ss << SDB_DB_MODE_DEACTIVATED_STR ;
+         ss << PMD_NODE_MODE_DEACTIVATED_STR ;
       }
       return ss.str() ;
    }
 
-   UINT32 utilGetDBModeFlag( const string &mode )
+   UINT32 utilGetNodeModeFlag( const string &mode )
    {
       UINT32 modeFlag = 0 ;
       vector< string > parsed ;
@@ -277,15 +256,15 @@ namespace engine
 
       for ( UINT32 i = 0 ; i < parsed.size() ; ++i )
       {
-         if ( 0 == ossStrcasecmp( SDB_DB_MODE_READONLY_STR,
+         if ( 0 == ossStrcasecmp( PMD_NODE_MODE_READONLY_STR,
                                   parsed[ i ].c_str() ) )
          {
-            modeFlag |= SDB_DB_MODE_READONLY ;
+            modeFlag |= PMD_NODE_MODE_READONLY ;
          }
-         else if ( 0 == ossStrcasecmp( SDB_DB_MODE_DEACTIVATED_STR,
+         else if ( 0 == ossStrcasecmp( PMD_NODE_MODE_DEACTIVATED_STR,
                                        parsed[ i ].c_str() ) )
          {
-            modeFlag |= SDB_DB_MODE_DEACTIVATED ;
+            modeFlag |= PMD_NODE_MODE_DEACTIVATED ;
          }
       }
 

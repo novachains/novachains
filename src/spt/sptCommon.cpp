@@ -41,7 +41,7 @@
 #include "ossMem.h"
 #include <string>
 #include <sstream>
-#include "msg.h"
+#include "msgDef.h"
 #include "sptSPDef.hpp"
 #include "jsinterp.h"
 

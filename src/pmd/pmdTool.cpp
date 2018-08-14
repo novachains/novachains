@@ -91,47 +91,6 @@ namespace engine
       return pmdGetSysInfo()->_globalID.inc() ;
    }
 
-   const CHAR* pmdNodeStatus2String( PMD_NODE_STATUS status )
-   {
-      const CHAR *str = "Uknown" ;
-
-      switch( status )
-      {
-         case PMD_NODE_NORMAL:
-            str = "Normal" ;
-            break ;
-         case PMD_NODE_SHUTDOWN :
-            str = "Shutdown" ;
-            break ;
-         default:
-            break ;
-      }
-
-      return str ;
-   }
-
-   const CHAR* pmdNodeRole2String( PMD_NODE_ROLE role )
-   {
-      const CHAR *str = "Uknown" ;
-
-      switch( role )
-      {
-         case PMD_NODE_WITNESS :
-            str = "Witness" ;
-            break ;
-         case PMD_NODE_FULL :
-            str = "Full" ;
-            break ;
-         case PMD_NODE_SPV :
-            str = "SPV" ;
-            break ;
-         default :
-            break ;
-      }
-
-      return str ;
-   }
-
 #if defined (_LINUX)
 
    // PD_TRACE_DECLARE_FUNCTION ( SDB_PMDSIGHND, "pmdSignalHandler" )

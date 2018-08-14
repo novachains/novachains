@@ -53,6 +53,16 @@
 namespace engine
 {
 
+   /*
+      limits.conf
+   */
+   #define PMD_OPTION_LIMIT_CORE       "core_file_size"
+   #define PMD_OPTION_LIMIT_DATA       "data_seg_size"
+   #define PMD_OPTION_LIMIT_FILESIZE   "file_size"
+   #define PMD_OPTION_LIMIT_VM         "virtual_memory"
+   #define PMD_OPTION_LIMIT_FD         "open_files"
+
+
    INT32 utilReadConfigureFile( const CHAR *file,
                                 po::options_description &desc,
                                 po::variables_map &vm )
@@ -149,7 +159,8 @@ namespace engine
       goto done ;
    }
 
-   INT32 utilWriteConfigFile( const CHAR * pFile, const CHAR * pData,
+   INT32 utilWriteConfigFile( const CHAR * pFile,
+                              const CHAR * pData,
                               BOOLEAN createOnly )
    {
       INT32 rc = SDB_OK ;
@@ -296,7 +307,7 @@ namespace engine
       desc.add_options()
          ( PMD_OPTION_ROLE, po::value<string>(), "" ) ;
       CHAR conf[OSS_MAX_PATHSIZE + 1] = { 0 } ;
-      role = SDB_ROLE_STANDALONE ;
+      role = PMD_NODE_ROLE_MAX ;
 
       rc = utilBuildFullPath ( confPath.c_str(), PMD_DFT_CONF,
                                OSS_MAX_PATHSIZE, conf ) ;
@@ -378,58 +389,6 @@ namespace engine
    done :
       return rc ;
    error :
-      goto done ;
-   }
-
-   INT32 utilGetInstallInfo( utilInstallInfo & info )
-   {
-      INT32 rc = SDB_OK ;
-      po::options_description desc ;
-      po::variables_map vm ;
-
-      PMD_ADD_PARAM_OPTIONS_BEGIN( desc )
-         ( SDB_INSTALL_RUN_FILED, po::value<string>(), "after to run cmd" ) \
-         ( SDB_INSTALL_USER_FIELD, po::value<string>(), "user" ) \
-         ( SDB_INSTALL_PATH_FIELD, po::value<string>(), "install path" ) \
-         ( SDB_INSTALL_MD5_FIELD, po::value<string>(), "md5" )
-      PMD_ADD_PARAM_OPTIONS_END
-
-      rc = ossAccess( SDB_INSTALL_FILE_NAME ) ;
-      if ( rc )
-      {
-         PD_LOG( PDERROR, "Access file[%s] failed, rc: %d",
-                 SDB_INSTALL_FILE_NAME, rc ) ;
-         goto error ;
-      }
-
-      rc = utilReadConfigureFile( SDB_INSTALL_FILE_NAME, desc, vm ) ;
-      if ( rc )
-      {
-         PD_LOG( PDERROR, "Failed to read install info from file, rc: %d",
-                 rc ) ;
-         goto error ;
-      }
-
-      if ( vm.count( SDB_INSTALL_RUN_FILED ) )
-      {
-         info._run = vm[ SDB_INSTALL_RUN_FILED ].as<string>() ;
-      }
-      if ( vm.count( SDB_INSTALL_USER_FIELD ) )
-      {
-         info._user = vm[ SDB_INSTALL_USER_FIELD ].as<string>() ;
-      }
-      if ( vm.count( SDB_INSTALL_PATH_FIELD ) )
-      {
-         info._path = vm[ SDB_INSTALL_PATH_FIELD ].as<string>() ;
-      }
-      if ( vm.count( SDB_INSTALL_MD5_FIELD ) )
-      {
-         info._md5 = vm[ SDB_INSTALL_MD5_FIELD ].as<string>() ;
-      }
-
-   done:
-      return rc ;
-   error:
       goto done ;
    }
 
@@ -538,71 +497,6 @@ namespace engine
    done :
       return rc ;
    error :
-      goto done ;
-   }
-
-   INT32 utilCheckAndChangeUserInfo( const CHAR * curFileName )
-   {
-      INT32 rc = SDB_OK ;
-      utilInstallInfo info ;
-      OSSUID fileUID = OSS_INVALID_UID ;
-      OSSGID fileGID = OSS_INVALID_GID ;
-      OSSUID curUID  = OSS_INVALID_UID ;
-      OSSGID curGID  = OSS_INVALID_GID ;
-
-      // first compare file:cur uid/gid
-      ossGetFileUserInfo( curFileName, fileUID, fileGID ) ;
-      curUID = ossGetCurrentProcessUID() ;
-      curGID = ossGetCurrentProcessGID() ;
-
-      if ( OSS_INVALID_UID == fileUID || 0 == fileUID ||
-           OSS_INVALID_GID == fileGID || 0 == fileGID )
-      {
-         // get install user info
-         rc = utilGetInstallInfo( info ) ;
-         if ( rc )
-         {
-            // no install info, not change
-            rc = SDB_OK ;
-            goto done ;
-         }
-         // get install user uid and gid
-         rc = ossGetUserInfo( info._user.c_str(), fileUID, fileGID ) ;
-         if ( rc )
-         {
-            // no install user, not change
-            rc = SDB_OK ;
-            goto done ;
-         }
-      }
-      else
-      {
-         CHAR usrName[ OSS_MAX_PATHSIZE + 1 ] = { 0 } ;
-         ossGetUserInfo( fileUID, usrName, OSS_MAX_PATHSIZE ) ;
-         info._user = usrName ;
-      }
-
-      if ( curGID != fileGID )
-      {
-         rc = ossSetCurrentProcessGID( fileGID ) ;
-         if ( rc )
-         {
-            goto error ;
-         }
-      }
-      if ( curUID != fileUID )
-      {
-         rc = ossSetCurrentProcessUID( fileUID ) ;
-         if ( rc )
-         {
-            goto error ;
-         }
-      }
-
-   done:
-      return rc ;
-   error:
-      std::cout << "Please run it by user: " << info._user << std::endl ;
       goto done ;
    }
 

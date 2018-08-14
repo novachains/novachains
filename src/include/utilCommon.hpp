@@ -42,8 +42,7 @@
 #include "msgDef.h"
 #include "pmdDef.hpp"
 #include "utilStr.hpp"
-#include "sdbInterface.hpp"
-#include "msg.h"
+#include "pmdInterface.hpp"
 
 #include "../bson/bson.h"
 
@@ -53,38 +52,38 @@ namespace engine
 {
 
    /*
-      ROLE ENUM AND STRING TRANSFER
+      PMD_NODE_ROLE ENUM AND STRING TRANSFER
    */
-   SDB_ROLE utilGetRoleEnum( const CHAR *role ) ;
-   const CHAR* utilDBRoleStr( SDB_ROLE dbrole ) ;
+   PMD_NODE_ROLE utilGetRoleEnum( const CHAR *role ) ;
+   const CHAR* utilRole2Str( PMD_NODE_ROLE role ) ;
 
-   const CHAR* utilDBRoleShortStr( SDB_ROLE dbrole ) ;
-   SDB_ROLE utilShortStr2DBRole( const CHAR *role ) ;
+   const CHAR* utilRoleShortStr( PMD_NODE_ROLE role ) ;
+   PMD_NODE_ROLE utilShortStr2Role( const CHAR *role ) ;
 
    /*
-      ROLE_TYPE ENUM AND STRING TRANSFER
+      PMD_NODE_TYPE ENUM AND STRING TRANSFER
    */
-   SDB_TYPE utilGetTypeEnum( const CHAR *type ) ;
-   const CHAR* utilDBTypeStr( SDB_TYPE type ) ;
+   PMD_NODE_TYPE utilGetNodeTypeEnum( const CHAR *type ) ;
+   const CHAR* utilNodeType2Str( PMD_NODE_TYPE type ) ;
 
-   SDB_TYPE utilRoleToType( SDB_ROLE role ) ;
-
-   /*
-      SDB_DB_STATUS AND STRING TRANSFER
-   */
-   const CHAR* utilDBStatusStr( SDB_DB_STATUS dbStatus ) ;
-   SDB_DB_STATUS utilGetDBStatusEnum( const CHAR *status ) ;
+   PMD_NODE_TYPE utilRoleToType( PMD_NODE_ROLE role ) ;
 
    /*
-      SDB_DATA_STATUS AND STRING TRANSFER
+      PMD_NODE_STATUS AND STRING TRANSFER
    */
-   const CHAR* utilDataStatusStr( BOOLEAN dataIsOK, SDB_DB_STATUS dbStatus ) ;
+   const CHAR* utilNodeStatusStr( PMD_NODE_STATUS status ) ;
+   PMD_NODE_STATUS utilGetNodeStatusEnum( const CHAR *status ) ;
 
    /*
-      SDB_DB_MODE AND STRING TRANSFER
+      PMD_NODE_STATUS AND STRING TRANSFER
    */
-   string      utilDBModeStr( UINT32 dbMode ) ;
-   UINT32      utilGetDBModeFlag( const string &mode ) ;
+   const CHAR* utilDataStatusStr( BOOLEAN dataIsOK, PMD_NODE_STATUS status ) ;
+
+   /*
+      PMD_NODE_MODE AND STRING TRANSFER
+   */
+   string      utilNodeMode2Str( UINT32 mode ) ;
+   UINT32      utilGetNodeModeFlag( const string &mode ) ;
 
    /*
       util get error bson

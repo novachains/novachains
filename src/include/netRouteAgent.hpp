@@ -60,7 +60,8 @@ namespace engine
       public:
          OSS_INLINE void run( NET_START_THREAD_FUNC pFunc = NULL )
          {
-            _frame.run( pFunc ) ;
+            _frame.setStartThreadFunc( pFunc ) ;
+            _frame.run() ;
          }
 
          OSS_INLINE void stop()
@@ -112,7 +113,7 @@ namespace engine
             _frame.close() ;
          }
 
-         OSS_INLINE  IIOService* ioservice()
+         OSS_INLINE  IPmdIOService* ioservice()
          {
             return &_frame ;
          }
