@@ -38,6 +38,7 @@
 #define PMD_TOOL_HPP_
 
 #include "pmdInterface.hpp"
+#include "pmdDef.hpp"
 #include "ossAtomic.hpp"
 #include "ossUtil.hpp"
 
@@ -88,9 +89,6 @@ namespace engine
    ossProcLimits* pmdGetLimit() ;
 
    pmdSysInfo*    pmdGetSysInfo () ;
-
-   const CHAR*    pmdNodeStatus2String( PMD_NODE_STATUS status ) ;
-   const CHAR*    pmdNodeRole2String( PMD_NODE_ROLE role ) ;
 
    /*
       pmd trap functions

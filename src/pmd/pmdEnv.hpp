@@ -56,6 +56,8 @@ namespace engine
          virtual BOOLEAN            isNormal() const ;
          virtual INT32              getShutdownCode() const ;
 
+         virtual BOOLEAN            isActive() const ;
+
          virtual PMD_NODE_ROLE      getNodeRole() const ;
 
          virtual const CHAR*        getHostName() const ;
@@ -71,17 +73,24 @@ namespace engine
          virtual const CHAR*        getDataPath() const ;
 
          virtual void               shutdownNode( INT32 shutdownCode ) ;
+         virtual void               restartNode( INT32 code ) ;
 
       public:
 
          void                       setNodeRole( PMD_NODE_ROLE role ) ;
          void                       setDataPath( const CHAR* path ) ;
+         void                       setActive( BOOLEAN bActive ) ;
+
+
+         BOOLEAN                    isNeedRestart() const ;
 
       private:
          UINT64                  _startTime ;
          PMD_NODE_STATUS         _status ;
          PMD_NODE_ROLE           _role ;
          INT32                   _shutdownCode ;
+         BOOLEAN                 _isActive ;
+         BOOLEAN                 _needRestart ;
          CHAR                    _hostName[ OSS_MAX_PATHSIZE + 1 ] ;
          CHAR                    _dbpath[ OSS_MAX_PATHSIZE + 1 ] ;
 

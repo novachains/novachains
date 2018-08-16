@@ -205,6 +205,22 @@ namespace engine
          virtual BOOLEAN      isConnected() const = 0 ;
          virtual BOOLEAN      isClosed() const = 0 ;
 
+         virtual BOOLEAN      isInterrupted() = 0 ;
+
+         virtual INT32        send( const CHAR *pMsg,
+                                    INT32 len,
+                                    INT32 &sentLen,
+                                    INT32 timeout,
+                                    INT32 flags = 0,
+                                    BOOLEAN block = TRUE ) = 0 ;
+
+         virtual INT32        recv ( CHAR *pMsg,
+                                     INT32 len,
+                                     INT32 &receivedLen,
+                                     INT32 timeout,
+                                     INT32 flags = 0,
+                                     BOOLEAN block = TRUE ) = 0 ;
+
          virtual UINT16       getLocalPort() const = 0 ;
          virtual const CHAR*  getLocalIPAddr() const = 0 ;
          virtual UINT16       getPeerPort() const = 0 ;
@@ -292,6 +308,11 @@ namespace engine
                                            OSS_FILE_DIRECT_IO_ALIGNMENT ) = 0 ;
          
          virtual void      releaseAlignedBuff() = 0 ;
+
+         /*
+            Mon stat
+         */
+         virtual void      resetMon() = 0 ;
 
    } ;
    typedef _IPmdExecutor IPmdExecutor ;
@@ -396,6 +417,8 @@ namespace engine
          virtual BOOLEAN            isNormal() const = 0 ;
          virtual INT32              getShutdownCode() const = 0 ;
 
+         virtual BOOLEAN            isActive() const = 0 ;
+
          virtual PMD_NODE_ROLE      getNodeRole() const = 0 ;
 
          virtual const CHAR*        getHostName() const = 0 ;
@@ -411,6 +434,7 @@ namespace engine
          virtual const CHAR*        getDataPath() const = 0 ;
 
          virtual void               shutdownNode( INT32 shutdownCode ) = 0 ;
+         virtual void               restartNode( INT32 code ) = 0 ;
    } ;
    typedef _IPmdEnv IPmdEnv ;
 

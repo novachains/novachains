@@ -62,12 +62,20 @@ namespace engine
       /// start time
       _startTime = ossGetCurrentMilliseconds() ;
 
+      _isActive = FALSE ;
+      _needRestart = FALSE ;
+
       /// data path
       ossMemset( _dbpath, 0, sizeof( _dbpath ) ) ;
    }
 
    _pmdEnv::~_pmdEnv()
    {
+   }
+
+   void _pmdEnv::setActive( BOOLEAN bActive )
+   {
+      _isActive = bActive ;
    }
 
    PMD_NODE_STATUS _pmdEnv::getNodeStatus() const
@@ -83,6 +91,16 @@ namespace engine
    BOOLEAN _pmdEnv::isNormal() const
    {
       return PMD_NODE_NORMAL == _status ? TRUE : FALSE ;
+   }
+
+   BOOLEAN _pmdEnv::isActive() const
+   {
+      return _isActive ;
+   }
+
+   BOOLEAN _pmdEnv::isNeedRestart() const
+   {
+      return _needRestart ;
    }
 
    INT32 _pmdEnv::getShutdownCode() const
@@ -126,6 +144,12 @@ namespace engine
          _status = PMD_NODE_SHUTDOWN ;
          _shutdownCode = shutdownCode ;
       }
+   }
+
+   void _pmdEnv::restartNode( INT32 code )
+   {
+      shutdownNode( code ) ;
+      _needRestart = TRUE ;
    }
 
    void _pmdEnv::setNodeRole( PMD_NODE_ROLE role )
