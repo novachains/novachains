@@ -38,7 +38,7 @@
 #include "pmdTool.hpp"
 #include "ossEDU.hpp"
 #include "pmdSignalHandler.hpp"
-//#include "pmdEDUMgr.hpp"
+#include "pmdEDUMgr.hpp"
 #include "pd.hpp"
 #include "pdTrace.hpp"
 #include "pmdTrace.hpp"
@@ -152,10 +152,10 @@ namespace engine
       {
          goto done ;
       }
-      /*else if ( !pmdGetEDUMgr() )
+      else if ( !pmdGetEDUMgr() )
       {
          goto done ;
-      }*/
+      }
 
       pEduData = ossGetThreadEDUData() ;
 
@@ -175,8 +175,8 @@ namespace engine
          PD_LOG ( PDEVENT, "Signal %d is received, "
                   "prepare to dump stack for all threads", signum ) ;
 
-         /*pmdEDUMgr *pMgr = pmdGetEDUMgr() ;
-         pMgr->killByThreadID( OSS_STACK_DUMP_SIGNAL_INTERNAL ) ;*/
+         pmdEDUMgr *pMgr = pmdGetEDUMgr() ;
+         pMgr->killByThreadID( OSS_STACK_DUMP_SIGNAL_INTERNAL ) ;
 
          ossMemTrace ( dumpPath ) ;
       }
