@@ -43,6 +43,7 @@
 #include "utilStr.hpp"
 #include "pmdDef.hpp"
 #include "oss.h"
+#include "pmdOptions.hpp"
 #include "msgDef.h"
 #include "utilCommon.hpp"
 #include <iostream>
@@ -241,6 +242,155 @@ namespace engine
          }
          ossRenamePath( tmpFile.c_str(), pFile ) ;
       }
+      goto done ;
+   }
+
+   INT32 utilGetServiceByConfigPath( const string & confPath,
+                                     string & svcname,
+                                     const string &defaultName,
+                                     BOOLEAN allowFileNotExist )
+   {
+      INT32 rc = SDB_OK ;
+      po::options_description desc ;
+      po::variables_map vm ;
+      desc.add_options()
+         ( PMD_OPTION_SVCNAME, po::value<string>(), "" ) ;
+      CHAR conf[OSS_MAX_PATHSIZE + 1] = { 0 } ;
+      if ( defaultName.empty() )
+      {
+         svcname = boost::lexical_cast<string>(OSS_DFT_SVCPORT) ;
+      }
+      else
+      {
+         svcname = defaultName ;
+      }
+
+      rc = utilBuildFullPath ( confPath.c_str(), PMD_DFT_CONF,
+                               OSS_MAX_PATHSIZE, conf ) ;
+      if ( rc )
+      {
+         std::cerr << "Failed to build full path, rc: " << rc << std::endl ;
+         goto error ;
+      }
+
+      if ( allowFileNotExist && SDB_OK != ossAccess( conf ) )
+      {
+         goto done ;
+      }
+
+      rc = utilReadConfigureFile( conf, desc, vm ) ;
+      if ( allowFileNotExist && SDB_IO == rc )
+      {
+         rc = SDB_OK ;
+         goto done ;
+      }
+      if ( rc )
+      {
+         goto error ;
+      }
+
+      if ( vm.count ( PMD_OPTION_SVCNAME ) )
+      {
+         svcname = vm [ PMD_OPTION_SVCNAME ].as<string>() ;
+      }
+
+   done :
+      return rc ;
+   error :
+      goto done ;
+   }
+
+   INT32 utilGetRoleByConfigPath( const string &confPath, INT32 &role,
+                                  BOOLEAN allowFileNotExist )
+   {
+      INT32 rc = SDB_OK ;
+      po::options_description desc ;
+      po::variables_map vm ;
+      desc.add_options()
+         ( PMD_OPTION_ROLE, po::value<string>(), "" ) ;
+      CHAR conf[OSS_MAX_PATHSIZE + 1] = { 0 } ;
+      role = PMD_NODE_ROLE_MAX ;
+
+      rc = utilBuildFullPath ( confPath.c_str(), PMD_DFT_CONF,
+                               OSS_MAX_PATHSIZE, conf ) ;
+      if ( rc )
+      {
+         std::cerr << "Failed to build full path, rc: " << rc << std::endl ;
+         goto error ;
+      }
+
+      if ( allowFileNotExist && SDB_OK != ossAccess( conf ) )
+      {
+         goto done ;
+      }
+
+      rc = utilReadConfigureFile( conf, desc, vm ) ;
+      if ( allowFileNotExist && SDB_IO == rc )
+      {
+         rc = SDB_OK ;
+         goto done ;
+      }
+      if ( rc )
+      {
+         goto error ;
+      }
+
+      if ( vm.count ( PMD_OPTION_ROLE ) )
+      {
+         string roleStr = vm [ PMD_OPTION_ROLE ].as<string>() ;
+         role = utilGetRoleEnum( roleStr.c_str() ) ;
+      }
+
+   done :
+      return rc ;
+   error :
+      goto done ;
+   }
+
+   INT32 utilGetDBPathByConfigPath( const string & confPath,
+                                    string &dbPath,
+                                    BOOLEAN allowFileNotExist )
+   {
+      INT32 rc = SDB_OK ;
+      po::options_description desc ;
+      po::variables_map vm ;
+      desc.add_options()
+         ( PMD_OPTION_DBPATH, po::value<string>(), "" ) ;
+      CHAR conf[OSS_MAX_PATHSIZE + 1] = { 0 } ;
+      dbPath = PMD_CURRENT_PATH ;
+
+      rc = utilBuildFullPath ( confPath.c_str(), PMD_DFT_CONF,
+                               OSS_MAX_PATHSIZE, conf ) ;
+      if ( rc )
+      {
+         std::cerr << "Failed to build full path, rc: " << rc << std::endl ;
+         goto error ;
+      }
+
+      if ( allowFileNotExist && SDB_OK != ossAccess( conf ) )
+      {
+         goto done ;
+      }
+
+      rc = utilReadConfigureFile( conf, desc, vm ) ;
+      if ( allowFileNotExist && SDB_IO == rc )
+      {
+         rc = SDB_OK ;
+         goto done ;
+      }
+      if ( rc )
+      {
+         goto error ;
+      }
+
+      if ( vm.count ( PMD_OPTION_DBPATH ) )
+      {
+         dbPath = vm [ PMD_OPTION_DBPATH ].as<string>() ;
+      }
+
+   done :
+      return rc ;
+   error :
       goto done ;
    }
 

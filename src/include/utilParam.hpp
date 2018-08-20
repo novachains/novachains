@@ -67,6 +67,19 @@ namespace engine
                               const CHAR * pData,
                               BOOLEAN createOnly = FALSE ) ;
 
+   INT32 utilGetServiceByConfigPath( const string& confPath,
+                                     string &svcname,
+                                     const string &defaultName,
+                                     BOOLEAN allowFileNotExist = TRUE ) ;
+
+   INT32 utilGetRoleByConfigPath( const string& confPath,
+                                  INT32 &role,
+                                  BOOLEAN allowFileNotExist = TRUE ) ;
+
+   INT32 utilGetDBPathByConfigPath( const string& confPath,
+                                    string &dbPath,
+                                    BOOLEAN allowFileNotExist = TRUE ) ;
+
    INT32 utilSetAndCheckUlimit() ;
 
 }
