@@ -71,7 +71,7 @@ namespace engine
    /*
       _pmdEDUMgr define
    */
-   class _pmdEDUMgr : public IPmdExecutorMgr
+   class _pmdEDUMgr : public IPmdExecutorMgr, public SDBObject
    {
       typedef vector< IPmdIOService* >    VEC_IOSERVICE ;
       typedef map<EDUID, pmdEDUCB*>       MAP_EDUCB ;

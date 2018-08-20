@@ -45,7 +45,7 @@ namespace engine
    /*
       _pmdEnv define
    */
-   class _pmdEnv : public IPmdEnv
+   class _pmdEnv : public IPmdEnv, public SDBObject
    {
       public:
          _pmdEnv() ;

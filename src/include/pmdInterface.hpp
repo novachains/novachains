@@ -142,28 +142,47 @@ namespace engine
    typedef _IPmdRoot IPmdRoot ;
 
    /*
+      _IPmdConfigHandle define
+   */
+   class _IPmdConfigHandle
+   {
+      public:
+         _IPmdConfigHandle () {}
+         virtual ~_IPmdConfigHandle () {}
+
+         virtual void   onConfigChange ( UINT32 changeID ) = 0 ;
+         virtual INT32  onConfigInit () = 0 ;
+         virtual void   onConfigSave () = 0 ;
+   } ;
+   typedef _IPmdConfigHandle IPmdConfigHandle ;
+
+   /*
       _IPmdParam define
    */
-   class _IPmdParam : public SDBObject
+   class _IPmdParam
    {
       public:
          _IPmdParam() {}
          virtual ~_IPmdParam() {}
 
       public:
-         virtual  BOOLEAN  hasField( const CHAR *pFieldName ) = 0 ;
+         virtual  BOOLEAN  hasField( const CHAR *pFieldName ) const = 0 ;
+
          virtual  INT32    getFieldInt( const CHAR *pFieldName,
                                         INT32 &value,
-                                        INT32 *pDefault = NULL ) = 0 ;
+                                        INT32 *pDefault = NULL ) const = 0 ;
+
          virtual  INT32    getFieldUInt( const CHAR *pFieldName,
                                          UINT32 &value,
-                                         UINT32 *pDefault = NULL ) = 0 ;
+                                         UINT32 *pDefault = NULL ) const = 0 ;
+
          virtual  INT32    getFieldStr( const CHAR *pFieldName,
                                         CHAR *pValue, UINT32 len,
-                                        const CHAR *pDefault = NULL ) = 0 ;
+                                        const CHAR *pDefault = NULL ) const = 0 ;
+
          virtual  INT32    getFieldStr( const CHAR *pFieldName,
                                         string &strValue,
-                                        const CHAR *pDefault = NULL ) = 0 ;
+                                        const CHAR *pDefault = NULL ) const = 0 ;
 
    } ;
    typedef _IPmdParam IPmdParam ;
@@ -171,7 +190,7 @@ namespace engine
    /*
       _IPmdIOService define
    */
-   class _IPmdIOService : public SDBObject
+   class _IPmdIOService
    {
       public:
          _IPmdIOService() {}
@@ -187,7 +206,7 @@ namespace engine
    /*
       _IPmdClient define
    */
-   class _IPmdClient : public SDBObject
+   class _IPmdClient
    {
       public:
          _IPmdClient() {}
@@ -237,7 +256,7 @@ namespace engine
    /*
       _IPmdSession define
    */
-   class _IPmdSession : public SDBObject
+   class _IPmdSession
    {
       public:
          _IPmdSession() {}
@@ -257,7 +276,7 @@ namespace engine
    /*
       _IPmdExecutor define
    */
-   class _IPmdExecutor : public SDBObject
+   class _IPmdExecutor
    {
       public:
          _IPmdExecutor() {}
@@ -320,7 +339,7 @@ namespace engine
    /*
       _IPmdExecutorMgr define
    */
-   class _IPmdExecutorMgr : public SDBObject
+   class _IPmdExecutorMgr
    {
       public:
          _IPmdExecutorMgr() {}
@@ -366,7 +385,7 @@ namespace engine
    /*
       _IPmdCBConfig define
    */
-   class _IPmdCBConfig : public SDBObject
+   class _IPmdCBConfig
    {
       public:
          enum INSTALL_MODE
@@ -391,7 +410,7 @@ namespace engine
    /*
       _IPmdCmdArg define
    */
-   class _IPmdCmdArg : public SDBObject
+   class _IPmdCmdArg
    {
       public:
          _IPmdCmdArg() {}
@@ -406,7 +425,7 @@ namespace engine
    /*
       _IPmdEnv define
    */
-   class _IPmdEnv : public SDBObject
+   class _IPmdEnv
    {
       public:
          _IPmdEnv() {}
@@ -441,7 +460,7 @@ namespace engine
    /*
       _IPmdResource define
    */
-   class _IPmdResource : public SDBObject, public IPmdRoot
+   class _IPmdResource : public IPmdRoot
    {
       public:
          _IPmdResource() {}

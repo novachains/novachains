@@ -47,7 +47,7 @@ namespace engine
    /*
       _pmdCmdArg define
    */
-   class _pmdCmdArg : public IPmdCmdArg
+   class _pmdCmdArg : public IPmdCmdArg, public SDBObject
    {
       public:
          _pmdCmdArg() ;

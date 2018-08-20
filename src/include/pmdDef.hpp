@@ -206,7 +206,7 @@ namespace engine
    */
    #define PMD_CONF_DIR_NAME           "conf"
    #define PMD_DFT_CONF                "nova.conf"
-   #define PMD_CURRENT_PATH            "./"
+   #define PMD_CURRENT_PATH            "."
 
    #define ENGINE_NPIPE_PREFIX         "novad_engine_"
    #if defined (_LINUX)

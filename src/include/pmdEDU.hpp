@@ -79,7 +79,7 @@ namespace engine
    /*
       _pmdEDUCB define
    */
-   class _pmdEDUCB : public IPmdExecutor
+   class _pmdEDUCB : public IPmdExecutor, public SDBObject
    {
       friend class _pmdEDUMgr ;
 

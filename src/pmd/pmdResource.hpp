@@ -40,10 +40,36 @@
 #define PMD_RESOURCE_HPP__
 
 #include "pmdInterface.hpp"
+#include "pmdEnv.hpp"
+#include "pmdCmdArg.hpp"
 
 namespace engine
 {
 
+   /*
+      _pmdResource define
+   */
+   class _pmdResource : public IPmdResource, public SDBObject
+   {
+      public:
+         _pmdResource() ;
+         virtual ~_pmdResource() ;
+
+      public:
+         virtual IPmdParam*         getParam() ;
+         virtual IPmdCmdArg*        getCmdArg() ;
+         virtual IPmdEnv*           getEnv() ;
+      
+         virtual IPmdCB*            getCB( PMD_CB_TYPE type ) ;
+
+      private:
+
+         pmdEnv                     _env ;
+         pmdCmdArg                  _arg ;
+
+
+   } ;
+   typedef _pmdResource pmdResource ;
 
 }
 

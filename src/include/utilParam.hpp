@@ -54,30 +54,18 @@ namespace engine
 {
 
    INT32 utilReadConfigureFile( const CHAR *file,
-                                po::options_description &desc,
-                                po::variables_map &vm ) ;
+                                const po::options_description &desc,
+                                po::variables_map &vm,
+                                BOOLEAN allowUnReg = TRUE ) ;
 
    INT32 utilReadCommandLine( INT32 argc, CHAR **argv,
-                              po::options_description &desc,
+                              const po::options_description &desc,
                               po::variables_map &vm,
                               BOOLEAN allowUnreg = TRUE ) ;
 
    INT32 utilWriteConfigFile( const CHAR * pFile,
                               const CHAR * pData,
                               BOOLEAN createOnly = FALSE ) ;
-
-   INT32 utilGetServiceByConfigPath( const string& confPath,
-                                     string &svcname,
-                                     const string &defaultName,
-                                     BOOLEAN allowFileNotExist = TRUE ) ;
-
-   INT32 utilGetRoleByConfigPath( const string& confPath,
-                                  INT32 &role,
-                                  BOOLEAN allowFileNotExist = TRUE ) ;
-
-   INT32 utilGetDBPathByConfigPath( const string& confPath,
-                                    string &dbPath,
-                                    BOOLEAN allowFileNotExist = TRUE ) ;
 
    INT32 utilSetAndCheckUlimit() ;
 

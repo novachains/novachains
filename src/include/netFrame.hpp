@@ -94,7 +94,7 @@ namespace engine
    /*
       _netFrame define
    */
-   class _netFrame : public IPmdIOService
+   class _netFrame : public IPmdIOService, public SDBObject
    {
       typedef map<UINT32, NET_TH>         MAP_TIMMER ;
       typedef MAP_TIMMER::iterator        MAP_TIMMER_IT ;
