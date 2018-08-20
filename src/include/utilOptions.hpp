@@ -78,7 +78,7 @@ namespace engine
 
    public:
       utilOptAdd addOptions(const string& groupName = "", BOOLEAN hidden = FALSE);
-      INT32 parse(INT32 argc, CHAR* argv[]);
+      INT32 parse(INT32 argc, const CHAR* argv[]);
       void print(BOOLEAN printHidden = FALSE);
 
       BOOLEAN has(const string& option);

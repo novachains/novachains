@@ -138,7 +138,7 @@ namespace engine
    */
    class _utilCfgExchange : public SDBObject
    {
-      friend class _pmdCfgRecord ;
+      friend class _utilCfgRecord ;
 
       public:
          _utilCfgExchange ( MAP_K2V *pMapField,
@@ -331,8 +331,8 @@ namespace engine
          /*
             For delete in runtime
          */
-         INT32 delete( const BSONObj &objData,
-                       BSONObj &errorObj ) ;
+         INT32 deleteConf( const BSONObj &objData,
+                           BSONObj &errorObj ) ;
 
          INT32 toBSON ( BSONObj &objData,
                         UINT32 mask = UTIL_CFG_MASK_SKIP_HIDEDFT ) ;

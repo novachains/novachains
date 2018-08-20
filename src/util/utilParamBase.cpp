@@ -537,12 +537,12 @@ namespace engine
    {
    }
 
-   void _utilCfgRecord::setConfigHandler( IConfigHandle * pConfigHandler )
+   void _utilCfgRecord::setConfigHandler( IPmdConfigHandle * pConfigHandler )
    {
       _pConfigHander = pConfigHandler ;
    }
 
-   IConfigHandle* _utilCfgRecord::getConfigHandler() const
+   IPmdConfigHandle* _utilCfgRecord::getConfigHandler() const
    {
       return _pConfigHander ;
    }
@@ -721,8 +721,8 @@ namespace engine
       return _update( userConfig, isWhole, errorObj, FALSE ) ;
    }
 
-   INT32 _utilCfgRecord::delete( const BSONObj &objData,
-                                 BSONObj &errorObj )
+   INT32 _utilCfgRecord::deleteConf( const BSONObj &objData,
+                                     BSONObj &errorObj )
    {
       INT32 rc = SDB_OK ;
       BSONObj curConf ;
@@ -738,7 +738,6 @@ namespace engine
 
       /// erase delete items
       {
-         curConf.filterFieldsUndotted(const BSONObj & filter,bool inFilter)
          BSONObjIterator it( objData ) ;
          while( it.more() )
          {
@@ -1173,8 +1172,9 @@ namespace engine
                                       INT32 *pDefault ) const
    {
       INT32 rc = SDB_OK ;
+      MAP_K2V::const_iterator cit = _mapKeyValue.find( pFieldName ) ;
 
-      if ( !hasField( pFieldName ) )
+      if ( cit == _mapKeyValue.end() )
       {
          if ( pDefault )
          {
@@ -1187,7 +1187,7 @@ namespace engine
       }
       else
       {
-         value = ossAtoi( _mapKeyValue[ pFieldName ]._value.c_str() ) ;
+         value = ossAtoi( cit->second._value.c_str() ) ;
       }
 
       return rc ;
@@ -1215,8 +1215,9 @@ namespace engine
    {
       INT32 rc = SDB_OK ;
       string tmpValue ;
+      MAP_K2V::const_iterator cit = _mapKeyValue.find( pFieldName ) ;
 
-      if ( !hasField( pFieldName ) )
+      if ( cit == _mapKeyValue.end() )
       {
          if ( pDefault )
          {
@@ -1229,7 +1230,7 @@ namespace engine
       }
       else
       {
-         tmpValue = _mapKeyValue[ pFieldName ]._value ;
+         tmpValue = cit->second._value ;
       }
 
       if ( SDB_OK == rc )
@@ -1246,8 +1247,9 @@ namespace engine
                                       const CHAR *pDefault ) const
    {
       INT32 rc = SDB_OK ;
+      MAP_K2V::const_iterator cit = _mapKeyValue.find( pFieldName ) ;
 
-      if ( !hasField( pFieldName ) )
+      if ( cit == _mapKeyValue.end() )
       {
          if ( pDefault )
          {
@@ -1260,7 +1262,7 @@ namespace engine
       }
       else
       {
-         strValue = _mapKeyValue[ pFieldName ]._value ;
+         strValue = cit->second._value ;
       }
       return rc ;
    }

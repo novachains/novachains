@@ -87,7 +87,7 @@ namespace engine
       return group->desc.add_options();
    }
 
-   INT32 utilOptions::parse(INT32 argc, CHAR* argv[])
+   INT32 utilOptions::parse(INT32 argc, const CHAR* argv[])
    {
       INT32 rc = SDB_OK;
 

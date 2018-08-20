@@ -114,7 +114,7 @@ namespace engine
       goto done;
    }
 
-   INT32 utilReadCommandLine( INT32 argc, CHAR **argv,
+   INT32 utilReadCommandLine( INT32 argc, const CHAR **argv,
                               const po::options_description &desc,
                               po::variables_map &vm,
                               BOOLEAN allowUnreg )
