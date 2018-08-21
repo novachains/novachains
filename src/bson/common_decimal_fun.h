@@ -19,7 +19,7 @@
 
 #include "common_decimal_type.h"
 
-SDB_EXTERN_C_START
+//SDB_EXTERN_C_START
 
 SDB_EXPORT void decimal_init( bson_decimal *decimal );
 SDB_EXPORT int decimal_init1( bson_decimal *decimal, int precision, 
@@ -109,6 +109,6 @@ int decimal_update_typemod( bson_decimal *decimal, int typemod ) ;
 int decimal_is_out_of_precision( bson_decimal *decimal, int typemod ) ;
 
 
-SDB_EXTERN_C_END
+//SDB_EXTERN_C_END
 
 #endif
