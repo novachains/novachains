@@ -44,29 +44,13 @@
  *    SequoiaDB Engine Version
  */
 #define SDB_ENGINE_VERSION_0           0
-#define SDB_ENGINE_VERSION_1           1
-#define SDB_ENGINE_VERSION_2           2
-#define SDB_ENGINE_VERSION_3           3
 
-#define SDB_ENGINE_VERISON_CURRENT     SDB_ENGINE_VERSION_3
+#define SDB_ENGINE_VERISON_CURRENT     SDB_ENGINE_VERSION_0
 
 /*
  *    SequoiaDB Engine Subversion
  */
 #define SDB_ENGINE_SUBVERSION_0        0
-#define SDB_ENGINE_SUBVERSION_1        1
-#define SDB_ENGINE_SUBVERSION_2        2
-#define SDB_ENGINE_SUBVERSION_3        3
-#define SDB_ENGINE_SUBVERSION_5        5
-#define SDB_ENGINE_SUBVERSION_6        6
-#define SDB_ENGINE_SUBVERSION_7        7
-#define SDB_ENGINE_SUBVERSION_8        8
-#define SDB_ENGINE_SUBVERSION_9        9
-#define SDB_ENGINE_SUBVERSION_10       10
-#define SDB_ENGINE_SUBVERSION_11       11
-#define SDB_ENGINE_SUBVERSION_12       12
-#define SDB_ENGINE_SUBVERSION_13       13
-#define SDB_ENGINE_SUBVERSION_14       14
 
 #define SDB_ENGINE_SUBVERSION_CURRENT  SDB_ENGINE_SUBVERSION_0
 
