@@ -1,4 +1,9 @@
 
+# base library
+IF ( CMAKE_SYSTEM_NAME MATCHES "Linux" )
+   LINK_LIBRARIES( "dl" "pthread" )
+ENDIF()
+
 # boost configure
 SET( BOOST_VERSION "1.58" )
 SET( BOOST_COMPONENTS "" )
