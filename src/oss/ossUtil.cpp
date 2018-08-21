@@ -36,7 +36,6 @@
    Last Changed =
 
 *******************************************************************************/
-#include "ossUtil.c"
 #include "ossUtil.hpp"
 #include "pd.hpp"
 #include "pdTrace.hpp"
