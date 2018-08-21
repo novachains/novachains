@@ -53,7 +53,7 @@
 #define SDB_EXTERN_C_END
 #endif
 
-//SDB_EXTERN_C_START
+SDB_EXTERN_C_START
 
 #define DECIMAL_SIGN_MASK           0xC000
 #define SDB_DECIMAL_POS             0x0000
@@ -137,8 +137,7 @@ typedef struct
 
 #pragma pack()
 
-//SDB_EXTERN_C_END
-
+SDB_EXTERN_C_END
 
 #endif
 
