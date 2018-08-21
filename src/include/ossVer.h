@@ -98,6 +98,8 @@
 
 #endif // SDB_ENTERPRISE
 
+SDB_EXTERN_C_START
+
 /*
  *    Get the version, subversion and release version.
  */
@@ -113,6 +115,8 @@ void ossPrintVersion( const CHAR *prompt ) ;
 
 void ossSprintVersion( const CHAR *prompt, CHAR *pBuff, UINT32 len,
                        BOOLEAN multiLine ) ;
+
+SDB_EXTERN_C_END
 
 #endif /* OSSVER_HPP_ */
 
