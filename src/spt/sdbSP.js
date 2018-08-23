@@ -31,6 +31,16 @@ function jsonFormat(pretty) {
    SDB_PRINT_JSON_FORMAT = pretty;
 }
 
+function println ( val ) {
+   if ( arguments.length > 0 )
+      print ( val ) ;
+   print ( '\n' ) ;
+}
+// return a double number between 0 and 1
+function rand () {
+   return Math.random() ;
+}
+
 // BSONObj
 BSONObj.prototype.toObj = function() {
    return JSON.parse( this.toJson() ) ;
@@ -197,6 +207,7 @@ BSONArray.prototype._formatStr = function() {
 // end BSONArray
 
 // Oma member function
+/*
 Oma.prototype.getOmaInstallFile = function() {
    return this._runCommand( "oma get oma install file" ).toObj().installFile ;
 }
@@ -3112,5 +3123,5 @@ File.prototype.readLine = function() {
    }
    return retStr ;
 }
-
+*/
 // end File
