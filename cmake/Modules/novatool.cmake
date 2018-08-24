@@ -33,6 +33,7 @@ MACRO( AUTOADDSUBDIR curdir bindir )
 		  FOREACH( exdir ${EXCLUDEDIRS} )
 			 IF( ${subdir} STREQUAL ${exdir} )
 				SET ( USEDIR 0 )
+                BREAK()
 			 ENDIF()
 		  ENDFOREACH()
 
