@@ -10,8 +10,8 @@ set ( EXECUTABLE_OUTPUT_PATH "${AUTOGEN_CUR_DIR}/bin" )
 # set root directory
 IF ( NOT NOVA_ROOT_DIR )
    MESSAGE( STATUS "SET NOVA_ROOT_DIR" )
-   STRING ( REGEX REPLACE "/[^/]*$" "" NOVA_ROOT_DIR_TMP ${AUTOGEN_CUR_DIR} )
-   STRING ( REGEX REPLACE "/[^/]*$" "" NOVA_ROOT_DIR ${NOVA_ROOT_DIR_TMP} )
+   STRING ( REGEX REPLACE "/[^/|\\]*$" "" NOVA_ROOT_DIR_TMP ${AUTOGEN_CUR_DIR} )
+   STRING ( REGEX REPLACE "/[^/|\\]*$" "" NOVA_ROOT_DIR ${NOVA_ROOT_DIR_TMP} )
 
    # add modules directory
    list( APPEND CMAKE_MODULE_PATH "${NOVA_ROOT_DIR}/cmake/Modules" )
@@ -19,6 +19,8 @@ IF ( NOT NOVA_ROOT_DIR )
    set ( NOVA_INCLUDE_DIR "${NOVA_ROOT_DIR}/src/include" )
    # include directory and import novaconf
    INCLUDE_DIRECTORIES( ${NOVA_INCLUDE_DIR} )
+   INCLUDE( novaenv )
+   INCLUDE( novatool )
    INCLUDE( novaconf )
 
    # print tip
@@ -66,5 +68,5 @@ ADD_EXECUTABLE( autogen ${AUTOGEN_SRCS} )
 
 # run auto gen
 ADD_CUSTOM_TARGET( DOGEN ALL
-                   COMMAND ${EXECUTABLE_OUTPUT_PATH}/autogen
+                   COMMAND autogen
                    DEPENDS autogen )
