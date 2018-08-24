@@ -104,7 +104,7 @@ INT32 _ossModuleHandle::init ()
       ) ;
       PD_RC_CHECK ( rc, PDERROR, "Failed to access path %s, rc = %d",
                     _libPath, rc ) ;
-      ossStrncat ( strPath, _libPath, sizeof(strPath) ) ;
+      ossStrncat ( strPath, _libPath, sizeof(strPath) - 1 ) ;
       pathLen = ossStrlen ( strPath ) ;
       // to add / at end of path
       if ( strPath[pathLen-1] != OSS_FILE_SEP_CHAR )

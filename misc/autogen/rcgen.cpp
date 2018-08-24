@@ -131,7 +131,7 @@ void RCGen::genC ()
         <<"#include \"core.h\""<<endl
         <<"#include \"ossFeat.h\""<<endl<<endl;
 
-    for (int i = 0; i < conslist.size(); ++i)
+    for (int i = 0; i < (int)conslist.size(); ++i)
     {
         fout<<"#define "<<setw(maxErrorNameWidth + 2)<<conslist[i].first<<conslist[i].second<<endl;
     }
@@ -146,7 +146,7 @@ void RCGen::genC ()
     fout<<comment<<endl;
     fout<<"const CHAR* getErrDesp ( INT32 errCode );"<<endl<<endl;
 
-    for (int i = 0; i < errcodes.size(); ++i)
+    for (int i = 0; i < (int)errcodes.size(); ++i)
     {
         fout<<"#define "
             <<setw(maxErrorNameWidth + 2)<<errcodes[i].name
@@ -242,7 +242,7 @@ void RCGen::genJS ()
    fout << std::left ;
 
    fout << "/* Error Constants */" << endl ;
-   for ( int i = 0 ; i < conslist.size() ; i++ )
+   for ( int i = 0 ; i < (int)conslist.size() ; i++ )
    {
       fout << "const " << setw(maxErrorNameWidth + 2) << conslist[i].first << " = "
          << setw(6) << conslist[i].second << ";" << endl ;
@@ -250,7 +250,7 @@ void RCGen::genJS ()
    fout << endl ;
 
    fout << "/* Error Codes */" << endl ;
-   for ( int i = 0 ; i < errcodes.size() ; i++ )
+   for ( int i = 0 ; i < (int)errcodes.size() ; i++ )
    {
       fout << "const " << setw(maxErrorNameWidth + 2) << errcodes[i].name << " = "
          << setw(6) << -(i + 1) << "; // "
@@ -261,10 +261,10 @@ void RCGen::genJS ()
    fout << "function _getErr (errCode) {" << endl ;
    fout << "   var errDesp = [ " << endl ;
    fout << "      \"Succeed\"," << endl ;
-   for ( int i = 0 ; i < errcodes.size() ; i++ )
+   for ( int i = 0 ; i < (int)errcodes.size() ; i++ )
    {
       fout << "      \"" << errcodes[i].getDesc(language)
-         << ((i == errcodes.size() - 1) ? "\"" : "\",") << endl ;
+         << ((i == (int)errcodes.size() - 1) ? "\"" : "\",") << endl ;
    }
    fout << "   ]; " << endl ;
    fout << "   var index = -errCode ;" << endl ;

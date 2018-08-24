@@ -5,6 +5,7 @@ ENABLE_TESTING()
 
 # options
 OPTION ( USE_AUTOGEN "Use auto gen" ON )
+OPTION ( USE_QUIET "Ignore all warnings" OFF )
 
 # set root directory
 set ( NOVA_ROOT_DIR "${CMAKE_CURRENT_SOURCE_DIR}" )
@@ -24,6 +25,8 @@ list( APPEND CMAKE_MODULE_PATH "${NOVA_ROOT_DIR}/cmake/Modules" )
 set ( NOVA_INCLUDE_DIR "${NOVA_ROOT_DIR}/src/include" )
 INCLUDE_DIRECTORIES( ${NOVA_INCLUDE_DIR} )
 LINK_DIRECTORIES(${LIBRARY_OUTPUT_PATH})
+
+INCLUDE( novaenv )
 INCLUDE( novatool )
 INCLUDE( novaconf )
 

@@ -171,7 +171,6 @@ void TraceGen::_genList ( const CHAR *pPath,
                           std::ofstream &fout1,
                           INT32 compid )
 {
-   const CHAR *pathSep = OSS_FILE_SEP ;
    fs::path directory ( pPath ) ;
    fs::directory_iterator end_iter ;
    if ( fs::exists(directory) && fs::is_directory(directory) )
@@ -210,7 +209,7 @@ void TraceGen::_genList ( const CHAR *pPath,
                else
                   pFileName++ ;
                // loop through the components we want to extract
-               for ( INT32 i = 0; i < comsSize ; i++ )
+               for ( UINT32 i = 0; i < comsSize ; i++ )
                {
                   // compare last dir with our components
                   if ( ossStrcmp ( pFileName,

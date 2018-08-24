@@ -2529,7 +2529,6 @@ int decimal_from_bsonvalue( const char *value, bson_decimal *decimal )
    int typemod  = 0 ;
    short scale  = 0 ;
    short weight = 0 ;
-   short dig    = 0 ;
    int ndig     = 0 ;
    int index    = 0 ;
    int rc       = 0 ;

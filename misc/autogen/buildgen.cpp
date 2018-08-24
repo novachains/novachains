@@ -66,7 +66,7 @@ void BuildGen::run ()
       goto error ;
    }
    readSize = fread ( pBuffer, 1, fileSize, pInFile ) ;
-   if ( readSize != fileSize )
+   if ( (INT64)readSize != fileSize )
    {
       printf ( "Failed to read %lld bytes from file, actual read %lld\n",
                fileSize, (INT64)readSize ) ;
@@ -100,7 +100,7 @@ void BuildGen::run ()
 
    ossMemcpy ( pPos, timeInfo, ossStrlen ( timeInfo ) ) ;
    writeSize = fwrite ( pBuffer, 1, fileSize, pOutFile ) ;
-   if ( writeSize != fileSize )
+   if ( (INT64)writeSize != fileSize )
    {
       printf ( "Failed to write %lld bytes from file, actual write %lld, errno = %d\n",
                fileSize, (INT64)writeSize, errno ) ;

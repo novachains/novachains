@@ -195,7 +195,7 @@ void OptGen::genHeaderC ()
     fout<<"#define PMDOPTIONS_H_"<<endl ;
 
     // list variables
-    for (int i = 0; i < optlist.size(); ++i)
+    for (int i = 0; i < (int)optlist.size(); ++i)
     {
         OptElement *optEle = optlist[i] ;
         fout<<"#define "<<setw(64)<<optEle->nametag<<"\""<<optEle->longtag<<"\""<<endl ;
@@ -251,7 +251,7 @@ void OptGen::genHeaderCpp ()
     fout <<"#include \""HEADERNAME".h\"" << endl ;
     // unhidden tags
     fout<<"#define PMD_COMMANDS_OPTIONS \\"<<endl ;
-    for (int i = 0; i < optlist.size(); ++i)
+    for (int i = 0; i < (int)optlist.size(); ++i)
     {
         OptElement *optEle = optlist[i] ;
         if ( !optEle->hiddentag )
@@ -269,7 +269,7 @@ void OptGen::genHeaderCpp ()
 
     // hidden tags
     fout<<"#define PMD_HIDDEN_COMMANDS_OPTIONS \\"<<endl ;
-    for (int i = 0; i < optlist.size(); ++i)
+    for (int i = 0; i < (int)optlist.size(); ++i)
     {
         OptElement *optEle = optlist[i] ;
         if ( optEle->hiddentag )
@@ -327,7 +327,7 @@ void OptGen::genCatalogSample()
     }
     genSampleHeader ( fout ) ;
     // unhidden variables
-    for (int i = 0; i < optlist.size(); ++i)
+    for (int i = 0; i < (int)optlist.size(); ++i)
     {
         OptElement *optEle = optlist[i] ;
         if ( !optEle->hiddentag && optEle->typetag.length() != 0 )
@@ -352,7 +352,7 @@ void OptGen::getStandAloneSample()
 	genSampleHeader ( fout ) ;
 
 	// unhidden variables
-    for (int i = 0; i < optlist.size(); ++i)
+    for (int i = 0; i < (int)optlist.size(); ++i)
     {
         OptElement *optEle = optlist[i] ;
         if ( !optEle->hiddentag && optEle->typetag.length() != 0 )
@@ -378,7 +378,7 @@ void OptGen::genCoordSample()
     }
     genSampleHeader ( fout ) ;
     // unhidden variables
-    for (int i = 0; i < optlist.size(); ++i)
+    for (int i = 0; i < (int)optlist.size(); ++i)
     {
         OptElement *optEle = optlist[i] ;
         if ( !optEle->hiddentag && optEle->typetag.length() != 0 )
@@ -401,7 +401,7 @@ void OptGen::genDataSample()
     }
     genSampleHeader ( fout ) ;
     // unhidden variables
-    for (int i = 0; i < optlist.size(); ++i)
+    for (int i = 0; i < (int)optlist.size(); ++i)
     {
         OptElement *optEle = optlist[i] ;
         if ( !optEle->hiddentag && optEle->typetag.length() != 0 )

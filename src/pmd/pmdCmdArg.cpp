@@ -75,7 +75,7 @@ namespace engine
       _argv = argv ;
       _cmdstr.clear() ;
 
-      for ( UINT32 i = 0 ; i < argc ; ++i )
+      for ( INT32 i = 0 ; i < argc ; ++i )
       {
          if ( i != 0 )
          {

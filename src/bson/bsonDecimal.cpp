@@ -26,7 +26,7 @@
    #include <assert.h>
    #define SDB_ASSERT(cond,str)  assert(cond)
 #else
-   #define SDB_ASSERT(cond,str)  
+   #define SDB_ASSERT(cond,str)  (cond)
 #endif // _DEBUG
 
 namespace bson {

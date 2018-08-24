@@ -66,7 +66,7 @@ UINT32 pdGetCompoentSize()
 
 const CHAR *pdGetTraceComponent ( UINT32 id )
 {
-   if ( (INT32)id >= pdGetCompoentSize() )
+   if ( id >= pdGetCompoentSize() )
    {
       return NULL ;
    }

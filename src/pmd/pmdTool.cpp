@@ -139,7 +139,6 @@ namespace engine
    // PD_TRACE_DECLARE_FUNCTION ( SDB_PMDEDUUSERTRAPHNDL, "pmdEDUUserTrapHandler" )
    void pmdEDUUserTrapHandler( OSS_HANDPARMS )
    {
-      INT32 rc = SDB_OK ;
       PD_TRACE_ENTRY ( SDB_PMDEDUUSERTRAPHNDL );
       oss_edu_data * pEduData = NULL ;
       const CHAR *dumpPath = ossGetTrapExceptionPath () ;
@@ -152,7 +151,7 @@ namespace engine
       {
          goto done ;
       }
-      else if ( !pmdGetEDUMgr() )
+      else if ( !pmdGetThreadEDUCB() )
       {
          goto done ;
       }
@@ -175,7 +174,7 @@ namespace engine
          PD_LOG ( PDEVENT, "Signal %d is received, "
                   "prepare to dump stack for all threads", signum ) ;
 
-         pmdEDUMgr *pMgr = pmdGetEDUMgr() ;
+         pmdEDUMgr *pMgr = pmdGetThreadEDUCB()->getEDUMgr() ;
          pMgr->killByThreadID( OSS_STACK_DUMP_SIGNAL_INTERNAL ) ;
 
          ossMemTrace ( dumpPath ) ;
@@ -195,7 +194,6 @@ namespace engine
       }
       OSS_LEAVE_SIGNAL_HANDLER( pEduData ) ;
    done :
-      PD_TRACE1 ( SDB_PMDEDUUSERTRAPHNDL, PD_PACK_INT(rc) );
       PD_TRACE_EXIT ( SDB_PMDEDUUSERTRAPHNDL ) ;
       return ;
    }

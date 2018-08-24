@@ -88,7 +88,6 @@ static BOOLEAN isFirstFile = TRUE ;
 
 void FileNameGen::_genList ( const CHAR *pPath, std::ofstream &fout, std::ofstream &codeout )
 {
-   const CHAR *pathSep = OSS_FILE_SEP ;
    fs::path directory ( pPath ) ;
    fs::directory_iterator end_iter ;
 
