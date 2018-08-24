@@ -48,5 +48,7 @@ IF( USE_AUTOGEN )
 ENDIF()
 # source directory
 ADD_SUBDIRECTORY( src ${NOVA_BUILD_DIR}/src )
+# pro gramme directory
+ADD_SUBDIRECTORY( src/programs ${NOVA_BUILD_DIR}/src/programs )
 # test directory
 ADD_SUBDIRECTORY( test ${NOVA_BUILD_DIR}/test )
