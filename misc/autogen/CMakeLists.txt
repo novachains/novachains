@@ -19,6 +19,8 @@ IF ( NOT NOVA_ROOT_DIR )
    set ( NOVA_INCLUDE_DIR "${NOVA_ROOT_DIR}/src/include" )
    # include directory and import novaconf
    INCLUDE_DIRECTORIES( ${NOVA_INCLUDE_DIR} )
+
+   INCLUDE( novaoption )
    INCLUDE( novaenv )
    INCLUDE( novatool )
    INCLUDE( novaconf )

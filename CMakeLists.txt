@@ -3,10 +3,6 @@ cmake_minimum_required( VERSION 2.6 )
 project( NOVA )
 ENABLE_TESTING()
 
-# options
-OPTION ( USE_AUTOGEN "Use auto gen" ON )
-OPTION ( USE_QUIET "Ignore all warnings" OFF )
-
 # set root directory
 set ( NOVA_ROOT_DIR "${CMAKE_CURRENT_SOURCE_DIR}" )
 # set output directory
@@ -26,6 +22,7 @@ set ( NOVA_INCLUDE_DIR "${NOVA_ROOT_DIR}/src/include" )
 INCLUDE_DIRECTORIES( ${NOVA_INCLUDE_DIR} )
 LINK_DIRECTORIES(${LIBRARY_OUTPUT_PATH})
 
+INCLUDE( novaoption )
 INCLUDE( novaenv )
 INCLUDE( novatool )
 INCLUDE( novaconf )
