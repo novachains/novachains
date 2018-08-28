@@ -32,7 +32,6 @@
 #include "mdoc.h"
 #include "out.h"
 #include "html.h"
-#include "main.h"
 
 #define	INDENT		 5
 

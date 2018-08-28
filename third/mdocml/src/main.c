@@ -26,6 +26,8 @@
 #include <ctype.h>
 #if HAVE_ERR
 #include <err.h>
+#else
+#include "compat_err.h"
 #endif
 #include <errno.h>
 #include <fcntl.h>

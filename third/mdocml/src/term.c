@@ -29,7 +29,6 @@
 #include "mandoc_aux.h"
 #include "out.h"
 #include "term.h"
-#include "main.h"
 
 static	size_t		 cond_width(const struct termp *, int, int *);
 static	void		 adjbuf(struct termp *p, size_t);

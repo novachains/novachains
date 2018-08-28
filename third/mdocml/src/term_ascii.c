@@ -38,7 +38,7 @@
 #include "out.h"
 #include "term.h"
 #include "manconf.h"
-#include "main.h"
+#include "common.h"
 
 static	struct termp	 *ascii_init(enum termenc, const struct manoutput *);
 static	int		  ascii_hspan(const struct termp *,

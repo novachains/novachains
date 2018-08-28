@@ -29,7 +29,6 @@
 #include "roff.h"
 #include "mdoc.h"
 #include "man.h"
-#include "main.h"
 
 static	void	print_box(const struct eqn_box *, int);
 static	void	print_man(const struct roff_node *, int);

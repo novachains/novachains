@@ -30,7 +30,6 @@
 #include "man.h"
 #include "out.h"
 #include "html.h"
-#include "main.h"
 
 /* TODO: preserve ident widths. */
 /* FIXME: have PD set the default vspace width. */

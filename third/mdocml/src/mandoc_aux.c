@@ -21,6 +21,8 @@
 
 #if HAVE_ERR
 #include <err.h>
+#else
+#include "compat_err.h"
 #endif
 #include <stdarg.h>
 #include <stdlib.h>
@@ -29,6 +31,7 @@
 
 #include "mandoc.h"
 #include "mandoc_aux.h"
+#include "compat_vasprintf.h"
 
 
 int

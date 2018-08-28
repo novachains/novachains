@@ -4,6 +4,7 @@
 #include <string.h>
 #include <wchar.h>
 #include "common.h"
+
 #if defined _WIN32
 struct interval {
   unsigned short first;
@@ -61,6 +62,64 @@ static int bisearch(wchar_t ucs, const struct interval *table, int max) {
  * in ISO 10646.
  */
 
+size_t snprintf(char* pBuffer, size_t iLength, const char* pFormat, ...)
+{
+   va_list ap;
+   size_t n;
+   va_start(ap, pFormat);
+   n=_vsnprintf_s(pBuffer, iLength, _TRUNCATE, pFormat, ap);
+   va_end(ap);
+   // Set terminate if the length is greater than buffer size
+   if((n<0) || (size_t)n>=iLength)
+      n=iLength-1;
+   pBuffer[n]='\0';
+   return n;
+}
+
+size_t asprintf ( char **ret, const char *format, ... )
+{
+	int count = 0 ;
+	va_list ap ;
+	*ret = NULL ;
+	va_start ( ap, format ) ;
+	count = vsnprintf ( NULL, 0, format, ap ) ;
+	va_end ( ap ) ;
+	if ( count >= 0 )
+	{
+		char *buffer = malloc ( count + 1 ) ;
+		if ( NULL == buffer )
+			return -1 ;
+		va_start ( ap, format ) ;
+		count = vsnprintf ( buffer, count + 1, format, ap ) ;
+		va_end ( ap ) ;
+		if ( count < 0 )
+			free ( buffer ) ;
+		else
+			*ret = buffer ;
+	}
+	return count ;
+}
+
+int strcasecmp ( const char *pString1, const char *pString2 )
+{
+   while (tolower(*pString1)==tolower(*pString2))
+   {
+      if(*pString1=='\0'||*pString2=='\0')
+         break;
+      pString1++;
+      pString2++;
+   }
+   return tolower(*(unsigned char*)pString1) - tolower(*(unsigned
+                    char*)pString2);
+}
+
+int isblank ( char c )
+{
+	return ( c == ' ' || c == '\t' ) ;
+}
+#endif
+
+#if HAVE_WCHAR
 int wcwidth(wchar_t ucs)
 {
   /* sorted list of non-overlapping intervals of non-spacing characters */
@@ -146,60 +205,4 @@ int wcwidth(wchar_t ucs)
     return 1 ;
     */
 }
-
-size_t snprintf(char* pBuffer, size_t iLength, const char* pFormat, ...)
-{
-   va_list ap;
-   size_t n;
-   va_start(ap, pFormat);
-   n=_vsnprintf_s(pBuffer, iLength, _TRUNCATE, pFormat, ap);
-   va_end(ap);
-   // Set terminate if the length is greater than buffer size
-   if((n<0) || (size_t)n>=iLength)
-      n=iLength-1;
-   pBuffer[n]='\0';
-   return n;
-}
-
-size_t asprintf ( char **ret, const char *format, ... )
-{
-	int count = 0 ;
-	va_list ap ;
-	*ret = NULL ;
-	va_start ( ap, format ) ;
-	count = vsnprintf ( NULL, 0, format, ap ) ;
-	va_end ( ap ) ;
-	if ( count >= 0 )
-	{
-		char *buffer = malloc ( count + 1 ) ;
-		if ( NULL == buffer )
-			return -1 ;
-		va_start ( ap, format ) ;
-		count = vsnprintf ( buffer, count + 1, format, ap ) ;
-		va_end ( ap ) ;
-		if ( count < 0 )
-			free ( buffer ) ;
-		else
-			*ret = buffer ;
-	}
-	return count ;
-}
-
-int strcasecmp ( const char *pString1, const char *pString2 )
-{
-   while (tolower(*pString1)==tolower(*pString2))
-   {
-      if(*pString1=='\0'||*pString2=='\0')
-         break;
-      pString1++;
-      pString2++;
-   }
-   return tolower(*(unsigned char*)pString1) - tolower(*(unsigned
-                    char*)pString2);
-}
-
-int isblank ( char c )
-{
-	return ( c == ' ' || c == '\t' ) ;
-}
-#endif
+#endif //HAVE_WCHAR

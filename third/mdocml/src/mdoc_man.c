@@ -28,7 +28,6 @@
 #include "mdoc.h"
 #include "man.h"
 #include "out.h"
-#include "main.h"
 
 #define	DECL_ARGS const struct roff_meta *meta, struct roff_node *n
 

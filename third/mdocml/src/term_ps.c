@@ -22,6 +22,8 @@
 #include <assert.h>
 #if HAVE_ERR
 #include <err.h>
+#else
+#include "compat_err.h"
 #endif
 #include <stdarg.h>
 #include <stdint.h>
@@ -35,7 +37,6 @@
 #include "out.h"
 #include "term.h"
 #include "manconf.h"
-#include "main.h"
 
 /* These work the buffer used by the header and footer. */
 #define	PS_BUFSLOP	  128

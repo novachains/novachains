@@ -34,8 +34,7 @@
 #include "mdoc.h"
 #include "out.h"
 #include "term.h"
-//#include "tag.h"
-//#include "main.h"
+#include "tag.h"
 
 struct	termpair {
 	struct termpair	 *ppair;

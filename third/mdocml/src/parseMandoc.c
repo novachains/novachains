@@ -28,6 +28,8 @@
 #include <ctype.h>
 #if HAVE_ERR
 #include <err.h>
+#else
+#include "compat_err.h"
 #endif
 #include <errno.h>
 #include <fcntl.h>
@@ -51,8 +53,7 @@
 #include "roff.h"
 #include "mdoc.h"
 #include "man.h"
-//#include "tag.h"
-//#include "main.h"
+#include "tag.h"
 #include "parseMandoc.h"
 #include "manconf.h"
 #include "mansearch.h"
@@ -115,8 +116,6 @@ static	void		  usage(enum argmode) __attribute__((noreturn));
 static	int		  woptions(struct curparse *, char *);
 
 static	const int sec_prios[] = {1, 4, 5, 8, 6, 3, 7, 2, 9};
-static	char		  help_arg[] = "help";
-static	char		 *help_argv[] = {help_arg, NULL};
 static	enum mandoclevel  rc;
 
 int
@@ -127,17 +126,10 @@ parse_mandoc(int argc, const char *argv[])
 	struct mansearch search;
 	const char	*progname;
 	char		*defos;
-	unsigned char	*uc;
-	struct manpage	*res, *resp;
-	char		*conf_file, *defpaths;
-	const char	*sec;
-	size_t		 i, sz;
-	int		 prio, best_prio;
+	struct manpage	*resp;
 	enum outmode	 outmode;
 	int		 fd;
 	int		 options;
-	int		 status, signum;
-	int		 c;
 
     progname = argv[0];
 	setprogname(progname);
@@ -145,7 +137,6 @@ parse_mandoc(int argc, const char *argv[])
 	/* Search options. */
 
 	memset(&conf, 0, sizeof(conf));
-	conf_file = defpaths = NULL;
 
 	memset(&search, 0, sizeof(struct mansearch));
 	search.outkey = "Nd";

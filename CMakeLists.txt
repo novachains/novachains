@@ -43,6 +43,8 @@ MESSAGE( STATUS "" )
 IF( USE_AUTOGEN )
    ADD_SUBDIRECTORY( misc/autogen )
 ENDIF()
+# third party
+ADD_SUBDIRECTORY( third ${NOVA_BUILD_DIR}/third )
 # source directory
 ADD_SUBDIRECTORY( src ${NOVA_BUILD_DIR}/src )
 # pro gramme directory

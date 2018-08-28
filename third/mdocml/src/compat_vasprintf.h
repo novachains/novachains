@@ -1,4 +1,5 @@
-/*	$Id: test-err.c,v 1.1 2015/10/11 21:12:55 schwarze Exp $	*/
+
+/*	$Id: compat_vasprintf.c,v 1.3 2015/10/06 18:32:19 schwarze Exp $	*/
 /*
  * Copyright (c) 2015 Ingo Schwarze <schwarze@openbsd.org>
  *
@@ -13,20 +14,18 @@
  * WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
  * ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+ *
+ * This fallback implementation is not efficient:
+ * It does the formatting twice.
+ * Short of fiddling with the unknown internals of the system's
+ * printf(3) or completely reimplementing printf(3), i can't think
+ * of another portable solution.
  */
 
-#if HAVE_ERR
-#include <err.h>
-#else
-#include "compat_err.h"
-#endif
+#if HAVE_VASPRINTF
 
-int
-main(void)
-{
-	warnx("%d. warnx", 1);
-	warn("%d. warn", 2);
-	err(0, "%d. err", 3);
-	/* NOTREACHED */
-	return 1;
-}
+#else
+
+int vasprintf( char **ret, const char *format, va_list ap ) ;
+
+#endif // HAVE_VASPRINTF

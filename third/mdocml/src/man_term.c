@@ -32,7 +32,6 @@
 #include "man.h"
 #include "out.h"
 #include "term.h"
-#include "main.h"
 
 #define	MAXMARGINS	  64 /* maximum number of indented scopes */
 

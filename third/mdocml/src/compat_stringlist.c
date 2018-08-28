@@ -35,6 +35,8 @@ int dummy;
 
 #if HAVE_ERR
 #include <err.h>
+#else
+#include "compat_err.h"
 #endif
 #include <stdlib.h>
 #include <string.h>
