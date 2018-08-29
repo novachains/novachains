@@ -56,3 +56,21 @@ MACRO( SUBVERSION rootdir version )
       ENDIF()
    ENDIF()
 ENDMACRO()
+
+# define macro: NOVA_TARGET_LINK_WHOLE_LIBRARIES
+MACRO( NOVA_TARGET_LINK_WHOLE_LIBRARIES dest )
+   IF ( WIN32 )
+      TARGET_LINK_LIBRARIES( ${dest} ${ARGN} )
+   ELSE()
+      TARGET_LINK_LIBRARIES( ${dest} -Wl,--start-group -Wl,--whole-archive ${ARGN} -Wl,--no-whole-archive -Wl,--end-group )
+   ENDIF()
+ENDMACRO()
+
+# define macro: NOVA_LINK_WHOLE_LIBRARIES
+MACRO( NOVA_LINK_WHOLE_LIBRARIES )
+   IF ( WIN32 )
+      LINK_LIBRARIES( ${ARGN} )
+   ELSE()
+      LINK_LIBRARIES( -Wl,--start-group -Wl,--whole-archive ${ARGN} -Wl,--no-whole-archive -Wl,--end-group )
+   ENDIF()
+ENDMACRO()
