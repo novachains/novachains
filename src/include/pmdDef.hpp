@@ -143,6 +143,8 @@ namespace engine
       PMD_EDU_MIN                         = 0,
       /// {{ Begin user define
 
+      PMD_EDU_TYPE_MAIN,
+
       /// End user define }}
       PMD_EDU_MAX
    } ;

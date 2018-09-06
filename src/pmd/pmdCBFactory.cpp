@@ -167,6 +167,16 @@ namespace engine
       }
    }
 
+   void _pmdCBFactory::getAllCBType( vector< PMD_CB_TYPE > &vecType ) const
+   {
+      MAP_TYPE_2_FUNC::const_iterator cit = _mapCB2Func.begin() ;
+      while ( cit != _mapCB2Func.end() )
+      {
+         vecType.push_back( cit->first ) ;
+         ++cit ;
+      }
+   }
+
    /*
       Global functions implement
    */

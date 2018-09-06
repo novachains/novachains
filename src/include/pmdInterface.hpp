@@ -57,8 +57,6 @@ namespace engine
       PMD_CB_MIN                 = 0,
       /// {{ Begin user control block define
 
-      PMD_CB_PARAM,
-
       /// End user control block define }}
       PMD_CB_MAX
    } ;
@@ -70,8 +68,6 @@ namespace engine
    {
       PMD_IF_MIN                 = 0,
       /// {{ Begin user interface define
-
-      PMD_IF_PARAM,
 
       // End user interface define }}
       PMD_IF_MAX
@@ -183,6 +179,8 @@ namespace engine
          virtual  INT32    getFieldStr( const CHAR *pFieldName,
                                         string &strValue,
                                         const CHAR *pDefault = NULL ) const = 0 ;
+
+         virtual  void     setConfigHandler( IPmdConfigHandle *pConfigHandler ) = 0 ;
 
    } ;
    typedef _IPmdParam IPmdParam ;
@@ -470,11 +468,42 @@ namespace engine
          virtual IPmdParam*         getParam() = 0 ;
          virtual IPmdCmdArg*        getCmdArg() = 0 ;
          virtual IPmdEnv*           getEnv() = 0 ;
+         virtual IPmdExecutorMgr*   getExecutorMgr() = 0 ;
 
          virtual IPmdCB*            getCB( PMD_CB_TYPE type ) = 0 ;
 
    } ;
    typedef _IPmdResource IPmdResource ;
+
+   /*
+      _IPmdMainCallback
+   */
+   class _IPmdMainCallback
+   {
+      public:
+         _IPmdMainCallback() {}
+         virtual ~_IPmdMainCallback() {}
+
+      public:
+
+         virtual INT64  getStopTimeout() const = 0 ;
+
+         virtual void   attach( IPmdResource *pResource ) = 0 ;
+         virtual void   detach() = 0 ;
+
+         virtual INT32  onPreStart() = 0 ;
+         virtual INT32  onPostStart() = 0 ;
+
+         virtual void   onRunTimer( UINT32 interval ) = 0 ;
+
+         virtual void   onPreStop() = 0 ;
+         virtual void   onPreEDUStop() = 0 ;
+         virtual void   onPostEDUStop() = 0 ;
+         virtual void   onPostStop() = 0 ;
+
+   } ;
+   typedef _IPmdMainCallback IPmdMainCallback ;
+
 
 }
 

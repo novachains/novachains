@@ -40,6 +40,12 @@
 #define PMD_CONTROLLER_HPP__
 
 #include "pmdInterface.hpp"
+#include "pmdContainer.hpp"
+#include "pmdIFAdapter.hpp"
+#include "pmdCmdArg.hpp"
+#include "pmdEnv.hpp"
+#include "pmdEDUMgr.hpp"
+#include "pmdResource.hpp"
 
 namespace engine
 {
@@ -47,13 +53,21 @@ namespace engine
    /*
       _pmdController define
    */
-   class _pmdController : public SDBObject
+   class _pmdController : public IPmdConfigHandle, public SDBObject
    {
       public:
          _pmdController() ;
          ~_pmdController() ;
 
+      public:
+         virtual void   onConfigChange ( UINT32 changeID ) ;
+         virtual INT32  onConfigInit () ;
+         virtual void   onConfigSave () ;
+
+      public:
          INT32       init( const IPmdCBConfig &config,
+                           IPmdParam *pParam,
+                           IPmdMainCallback *pMainCallBack,
                            INT32 argc,
                            const CHAR *argv[] ) ;
 
@@ -63,8 +77,18 @@ namespace engine
 
       protected:
 
-      private:
+         void        destory() ;
 
+      private:
+         pmdContainer            _container ;
+         pmdIFAdapter            _ifAdapter ;
+         pmdCmdArg               _cmdArg ;
+         pmdEnv                  _env ;
+         pmdEDUMgr               _eduMgr ;
+         pmdResource             _resource ;
+
+         IPmdParam               *_pParam ;
+         IPmdMainCallback        *_pMainCallBack ;
    } ;
    typedef _pmdController pmdController ;
 

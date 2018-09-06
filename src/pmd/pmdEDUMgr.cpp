@@ -69,11 +69,18 @@ namespace engine
       _pMonitorThd = NULL ;
       _pDeadCheckThd = NULL ;
       _maxPooledEDU = PMD_MAX_POOLED_EDU_DFT ;
+      _pMainEDU = NULL ;
    }
 
    _pmdEDUMgr::~_pmdEDUMgr()
    {
       fini() ;
+
+      if ( _pMainEDU )
+      {
+         SDB_OSS_DEL _pMainEDU ;
+         _pMainEDU = NULL ;
+      }
    }
 
    void _pmdEDUMgr::addIOService( IPmdIOService *pIOService )
@@ -110,6 +117,21 @@ namespace engine
       }
       _pResource = pResource ;
       _maxPooledEDU = maxPooledEDU ;
+
+      _pMainEDU = SDB_OSS_NEW pmdEDUCB( this, PMD_EDU_TYPE_MAIN ) ;
+      if ( !_pMainEDU )
+      {
+         PD_LOG( PDERROR, "Alloc main edu failed" ) ;
+         rc = SDB_OOM ;
+         goto error ;
+      }
+
+      _pMainEDU->setName( "Main" ) ;
+      _pMainEDU->setID( _EDUID++ ) ;
+      _pMainEDU->setTID ( ossGetCurrentThreadID() ) ;
+#if defined (_LINUX )
+      _pMainEDU->setThreadID ( ossPThreadSelf() ) ;
+#endif // _LINUX
 
       /// create monitor thread
       try
@@ -860,6 +882,11 @@ namespace engine
       }
 
       return _calIdleLowSize( runSize, idleSize, sysSize, maxPool ) ;
+   }
+
+   pmdEDUCB* _pmdEDUMgr::getMainEDU()
+   {
+      return _pMainEDU ;
    }
 
    BOOLEAN _pmdEDUMgr::forceDestory( pmdEDUCB *cb, UINT32 idleTime )

@@ -53,6 +53,11 @@ namespace engine
    {
    }
 
+   void _pmdIFAdapter::clear()
+   {
+      _mapType2IF.clear() ;
+   }
+
    BOOLEAN _pmdIFAdapter::hasIF( PMD_IF_TYPE type ) const
    {
       if ( _mapType2IF.find( type ) != _mapType2IF.end() )

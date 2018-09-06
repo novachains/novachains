@@ -60,6 +60,8 @@ namespace engine
          _pmdIFAdapter() ;
          ~_pmdIFAdapter() ;
 
+         void              clear() ;
+
          BOOLEAN           hasIF( PMD_IF_TYPE type ) const ;
          void*             queryIF( PMD_IF_TYPE type ) ;
 

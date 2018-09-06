@@ -86,6 +86,8 @@ namespace engine
          _pmdContainer() ;
          ~_pmdContainer() ;
 
+         void              clear() ;
+
          IPmdCB*           getCB( PMD_CB_TYPE type ) ;
 
          INT32             initCB( IPmdResource *pResource ) ;
@@ -93,6 +95,9 @@ namespace engine
 
          INT32             deactiveCB() ;
          INT32             finiCB() ;
+
+         void              onConfigChange( UINT32 changeID ) ;
+         void              onConfigSave() ;
 
       public:
 

@@ -151,6 +151,8 @@ namespace engine
          pmdEDUCB*         getEDU() ;
          pmdEDUCB*         getEDU( UINT32 tid ) ;
 
+         pmdEDUCB*         getMainEDU() ;
+
 #if defined (_LINUX)
          void              killByThreadID( INT32 signo ) ;
          void              getEDUThreadID ( set<pthread_t> &tidList ) ;
@@ -222,6 +224,8 @@ namespace engine
 
          UINT32                     _maxPooledEDU ;
 
+         pmdEDUCB                   *_pMainEDU ;
+
       private:
          /*
             Entry Functions define
@@ -234,12 +238,6 @@ namespace engine
          void  deadCheck( INT64 timeout ) ;
    } ;
    typedef _pmdEDUMgr pmdEDUMgr ;
-
-   /*
-      Global Func
-   */
-   void        pmdSetEDUMgr( pmdEDUMgr *pMgr ) ;
-   pmdEDUMgr*  pmdGetEDUMgr() ;
 
 }
 

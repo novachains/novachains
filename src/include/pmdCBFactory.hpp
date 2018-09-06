@@ -109,6 +109,8 @@ namespace engine
          IPmdCB*           createCB( const string &name ) ;
          void              releaseCB( IPmdCB *&cb ) ;
 
+         void              getAllCBType( vector<PMD_CB_TYPE> &vecType ) const ;
+
       protected:
 
          BOOLEAN           registerCB( PMD_CB_TYPE type,

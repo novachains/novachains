@@ -59,6 +59,15 @@ namespace engine
    {
    }
 
+   void _pmdContainer::clear()
+   {
+      for ( UINT32 i = 0 ; i < PMD_CB_MAX ; ++i )
+      {
+         _arrayCB[ i ] = NULL ;
+      }
+      _vecCB.clear() ;
+   }
+
    IPmdCB* _pmdContainer::getCB( PMD_CB_TYPE type )
    {
       if ( type >= 0 && type < PMD_CB_MAX )
@@ -319,6 +328,24 @@ namespace engine
       }
 
       return SDB_OK ;
+   }
+
+   void _pmdContainer::onConfigChange( UINT32 changeID )
+   {
+      VEC_CB::iterator it ;
+      for ( it = _vecCB.begin() ; it != _vecCB.end() ; ++it )
+      {
+         (*it)._cb->onConfigChange() ;
+      }
+   }
+
+   void _pmdContainer::onConfigSave()
+   {
+      VEC_CB::iterator it ;
+      for ( it = _vecCB.begin() ; it != _vecCB.end() ; ++it )
+      {
+         (*it)._cb->onConfigSave() ;
+      }
    }
 
 }

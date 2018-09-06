@@ -40,8 +40,6 @@
 #define PMD_RESOURCE_HPP__
 
 #include "pmdInterface.hpp"
-#include "pmdEnv.hpp"
-#include "pmdCmdArg.hpp"
 
 namespace engine
 {
@@ -55,17 +53,20 @@ namespace engine
          _pmdResource() ;
          virtual ~_pmdResource() ;
 
+         INT32    init( IPmdParam *pParam,
+                        IPmdCmdArg *pCmdArg,
+                        IPmdEnv *pEnv,
+                        IPmdExecutorMgr *pEDUMgr ) ;
+
       public:
          virtual IPmdParam*         getParam() ;
          virtual IPmdCmdArg*        getCmdArg() ;
          virtual IPmdEnv*           getEnv() ;
+         virtual IPmdExecutorMgr*   getExecutorMgr() ;
       
          virtual IPmdCB*            getCB( PMD_CB_TYPE type ) ;
 
       private:
-
-         pmdEnv                     _env ;
-         pmdCmdArg                  _arg ;
 
 
    } ;

@@ -66,7 +66,7 @@ namespace engine
       _needRestart = FALSE ;
 
       /// data path
-      ossMemset( _dbpath, 0, sizeof( _dbpath ) ) ;
+      ossMemset( _datapath, 0, sizeof( _datapath ) ) ;
    }
 
    _pmdEnv::~_pmdEnv()
@@ -134,7 +134,7 @@ namespace engine
 
    const CHAR* _pmdEnv::getDataPath() const
    {
-      return _dbpath ;
+      return _datapath ;
    }
 
    void _pmdEnv::shutdownNode( INT32 shutdownCode )
@@ -161,7 +161,7 @@ namespace engine
    {
       if ( path )
       {
-         ossStrncpy( _dbpath, path, OSS_MAX_PATHSIZE ) ;
+         ossStrncpy( _datapath, path, OSS_MAX_PATHSIZE ) ;
       }
    }
 

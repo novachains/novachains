@@ -81,7 +81,6 @@ namespace engine
          void                       setDataPath( const CHAR* path ) ;
          void                       setActive( BOOLEAN bActive ) ;
 
-
          BOOLEAN                    isNeedRestart() const ;
 
       private:
@@ -92,7 +91,7 @@ namespace engine
          BOOLEAN                 _isActive ;
          BOOLEAN                 _needRestart ;
          CHAR                    _hostName[ OSS_MAX_PATHSIZE + 1 ] ;
-         CHAR                    _dbpath[ OSS_MAX_PATHSIZE + 1 ] ;
+         CHAR                    _datapath[ OSS_MAX_PATHSIZE + 1 ] ;
 
    } ;
    typedef _pmdEnv pmdEnv ;
