@@ -25,17 +25,18 @@ Building Prerequisites:
 
 	# 2 download spidermonkey 1.85
 	# 2.1 download source code
-	#    http://ftp.mozilla.org/pub/mozilla.org/js/js185-1.0.0.tar.gz
-	#    tar -xvf js185-1.0.0.tar.gz
-	#    cd js/src
-	#    autoconf-2.13
-	#    make build_OPT.OBJ
-	#    cd build_OPT.OBJ
-	#    ../configure
-	#    make
-	#    sudo make install
-	# or install spidermonkey lib binary
-	#   sudo apt-get install libmozjs185-1.0
+	http://ftp.mozilla.org/pub/mozilla.org/js/js185-1.0.0.tar.gz
+	# 2.2.1 compile and install
+	tar -xvf js185-1.0.0.tar.gz
+	cd js/src
+	autoconf-2.13
+	make build_OPT.OBJ
+	cd build_OPT.OBJ
+	../configure
+	make
+	sudo make install
+	# 2.2.2 or install spidermonkey lib binary
+	sudo apt-get install libmozjs185-1.0
 
 	#install openssl
 	sudo apt-get install libssl-dev
