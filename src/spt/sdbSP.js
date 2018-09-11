@@ -208,9 +208,9 @@ BSONArray.prototype._formatStr = function() {
 
 
 
-#if 0
-/// Comment out Oma for now
-
+/**************************
+ * Comment out Oma for now
+ **************************
 
 // Oma member function
 /*
@@ -3131,8 +3131,9 @@ File.prototype.readLine = function() {
 }
 */
 
-/// Comment out Oma for now
-#endif
+**************************
+* Comment out Oma for now
+**************************/
 
 
 // end File
