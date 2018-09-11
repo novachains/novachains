@@ -206,6 +206,12 @@ BSONArray.prototype._formatStr = function() {
 }
 // end BSONArray
 
+
+
+/**************************
+ * Comment out Oma for now
+ **************************
+
 // Oma member function
 /*
 Oma.prototype.getOmaInstallFile = function() {
@@ -3124,4 +3130,10 @@ File.prototype.readLine = function() {
    return retStr ;
 }
 */
+
+**************************
+* Comment out Oma for now
+**************************/
+
+
 // end File

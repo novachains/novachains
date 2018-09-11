@@ -15,7 +15,7 @@
    You should have received a copy of the GNU Affero General Public License
    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-   Source File Name = sdb.cpp
+   Source File Name = nova.cpp
 
    Descriptive Name =
 
@@ -78,14 +78,14 @@ po::options_description display ( "Command options" ) ;
 po::positional_options_description destd ;
 po::variables_map vm ;
 
-#if !defined (SDB_SHELL)
-  #error "sdbbp should always have SDB_SHELL defined"
-#endif
+// #if !defined (SDB_SHELL)
+//  #error "sdbbp should always have SDB_SHELL defined"
+// #endif
 
 #if defined (_WINDOWS)
-   #define SDB_PB_PROGRAM_NAME         "sdbbp.exe"
+   #define SDB_PB_PROGRAM_NAME         "novabp.exe"
 #else
-   #define SDB_PB_PROGRAM_NAME         "sdbbp"
+   #define SDB_PB_PROGRAM_NAME         "novabp"
 #endif // _WINDOWS
 
 #define SPT_LANG_EN                    "en"
@@ -169,9 +169,9 @@ error :
 void printUsage()
 {
    ossPrintf ( "Usage:"OSS_NEWLINE ) ;
-   ossPrintf ( "   ./sdb (Interactive mode)"OSS_NEWLINE ) ;
-   ossPrintf ( "   ./sdb -f <FILE> (Batch mode), eg: ./sdb -e \"var v = \'123\'\" -f example.js"OSS_NEWLINE ) ;
-   ossPrintf ( "   ./sdb -s <CMD> (Front end mode), eg: ./sdb -s \"var db = new Sdb(\'localhost\', 11810)\""OSS_NEWLINE ) ;
+   ossPrintf ( "   ./nova (Interactive mode)"OSS_NEWLINE ) ;
+   ossPrintf ( "   ./nova -f <FILE> (Batch mode), eg: ./nova -e \"var v = \'123\'\" -f example.js"OSS_NEWLINE );
+   ossPrintf ( "   ./nova -s <CMD> (Front end mode), eg: ./nova -s \"var db = new Sdb(\'localhost\', 11810)\""OSS_NEWLINE ) ;
 }
 
 // PD_TRACE_DECLARE_FUNCTION ( SDB_PARSEARGUMENTS, "parseArguments" )
@@ -226,7 +226,7 @@ INT32 parseArguments ( int argc , CHAR ** argv , ArgInfo & argInfo )
    }
    if ( vm.count( "version" ) )
    {
-      ossPrintVersion( "SequoiaDB shell version" ) ;
+      ossPrintVersion( "Nova shell version" ) ;
       rc = SDB_SDB_VERSION_ONLY ;
       goto done ;
    }
@@ -430,7 +430,7 @@ INT32 enterInteractiveMode ( sptScope *scope, const CHAR *lang )
    linenoiseHistoryLoad( historyFile.c_str() ) ;
    g_lnBuilder.loadCmd( historyFile.c_str() ) ;
 
-   ossPrintf ( "Welcome to SequoiaDB shell!"OSS_NEWLINE ) ;
+   ossPrintf ( "Welcome to Nova shell!"OSS_NEWLINE ) ;
    ossPrintf ( "help() for help, Ctrl+c or quit to exit"OSS_NEWLINE ) ;
 
    while ( TRUE )
@@ -571,7 +571,7 @@ INT32 createDaemonProcess ( const CHAR * program , const OSSPID & ppid ,
    SH_VERIFY_RC
 
    // clear the name pipe fd in windows
-   clearDirtyShellPipe( SDB_SHELL_WAIT_PIPE_PREFIX ) ;
+   clearDirtyShellPipe( NOVA_SHELL_WAIT_PIPE_PREFIX ) ;
 
    // waitPipe is deleted in done:
    rc = ossCreateNamedPipe ( waitName , 0 , 0 , OSS_NPIPE_INBOUND ,
@@ -665,8 +665,8 @@ INT32 enterFrontEndMode ( const CHAR * program , const CHAR * cmd )
    }
 
    // clear the name pipe fd in windows
-   clearDirtyShellPipe( SDB_SHELL_F2B_PIPE_PREFIX ) ;
-   clearDirtyShellPipe( SDB_SHELL_B2F_PIPE_PREFIX ) ;
+   clearDirtyShellPipe( NOVA_SHELL_F2B_PIPE_PREFIX ) ;
+   clearDirtyShellPipe( NOVA_SHELL_B2F_PIPE_PREFIX ) ;
 
    // get current process id
    ppid = ossGetParentProcessID () ;

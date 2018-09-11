@@ -53,9 +53,9 @@
       SH_VERIFY_RC                 \
    }
 
-#define SDB_SHELL_WAIT_PIPE_PREFIX        "sdb-shell-wait-"
-#define SDB_SHELL_F2B_PIPE_PREFIX         "sdb-shell-f2b-"
-#define SDB_SHELL_B2F_PIPE_PREFIX         "sdb-shell-b2f-"
+#define NOVA_SHELL_WAIT_PIPE_PREFIX        "nova-shell-wait-"
+#define NOVA_SHELL_F2B_PIPE_PREFIX         "nova-shell-f2b-"
+#define NOVA_SHELL_B2F_PIPE_PREFIX         "nova-shell-b2f-"
 
 INT32 getWaitPipeName ( const OSSPID & ppid , CHAR * buf , UINT32 bufSize ) ;
 INT32 getPipeNames( const OSSPID & ppid , CHAR * f2bName , UINT32 f2bSize ,
