@@ -15,7 +15,7 @@
    You should have received a copy of the GNU Affero General Public License
    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-   Source File Name = sdbbp.cpp
+   Source File Name = novabp.cpp
 
    Descriptive Name =
 
@@ -54,11 +54,11 @@
 using std::string ;
 using namespace engine ;
 
-#define SDB_BP_LOG_FILE "sdbbp.log"
+#define NOVA_BP_LOG_FILE "novabp.log"
 
-#if !defined (SDB_SHELL)
-  #error "sdbbp should always have SDB_SHELL defined"
-#endif
+// #if !defined (SDB_SHELL)
+//  #error "sdbbp should always have SDB_SHELL defined"
+// #endif
 
 // caller should free output in the case of success
 // PD_TRACE_DECLARE_FUNCTION ( SDB_READFROMPIPE, "readFromPipe" )
@@ -235,7 +235,7 @@ INT32 enterDaemonMode ( sptScope *scope ,
          exit = TRUE ;
 
       if ( ! exit )
-         scope->eval( code, ossStrlen( code ), "(sdbbp)", 1,
+         scope->eval( code, ossStrlen( code ), "(novabp)", 1,
                       SPT_EVAL_FLAG_PRINT, NULL ) ;
       SAFE_OSS_FREE ( code ) ;
       // shell always have errno defined
@@ -289,7 +289,7 @@ int main ( int argc , const char * argv[] )
 
    // redirect stdout to log file, so, when we printf error info,
    // thay will be redirected to log file
-   if ( ! freopen ( SDB_BP_LOG_FILE , "a" , stdout ) )
+   if ( ! freopen ( NOVA_BP_LOG_FILE , "a" , stdout ) )
    {
       rc = ossResetTty() ;
       if ( SDB_OK != rc )
@@ -300,7 +300,7 @@ int main ( int argc , const char * argv[] )
       // share the same terminal, but in window, the follow info display in 
       // a terminal where we can't see
       ossPrintf( "warning: failed to freopen stdout to log "
-                 "file[%s]"OSS_NEWLINE, SDB_BP_LOG_FILE ) ;
+                 "file[%s]"OSS_NEWLINE, NOVA_BP_LOG_FILE ) ;
    }
 
 #if defined( _LINUX )
