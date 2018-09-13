@@ -58,7 +58,7 @@ INT32 getWaitPipeName ( const OSSPID & ppid , CHAR * buf , UINT32 bufSize )
    SDB_ASSERT ( buf && bufSize > 0 , "invalid argument" ) ;
 
    nWritten = ossSnprintf ( buf, bufSize,
-                            SDB_SHELL_WAIT_PIPE_PREFIX"%u",
+                            NOVA_SHELL_WAIT_PIPE_PREFIX"%u",
                             ppid ) ;
    SH_VERIFY_COND ( nWritten >= 0 , SDB_SYS ) ;
    SH_VERIFY_COND ( (UINT32) nWritten < bufSize , SDB_INVALIDSIZE ) ;
@@ -79,13 +79,13 @@ INT32 getPipeNames( const OSSPID & ppid , CHAR * f2bName , UINT32 f2bSize ,
                 "Invalid arguments" ) ;
 
    nWritten = ossSnprintf ( f2bName, f2bSize,
-                            SDB_SHELL_F2B_PIPE_PREFIX"%u",
+                            NOVA_SHELL_F2B_PIPE_PREFIX"%u",
                             ppid ) ;
    SH_VERIFY_COND ( nWritten >= 0 , SDB_SYS ) ;
    SH_VERIFY_COND ( (UINT32) nWritten < f2bSize , SDB_INVALIDSIZE ) ;
 
    nWritten = ossSnprintf ( b2fName, b2fSize,
-                            SDB_SHELL_B2F_PIPE_PREFIX"%u",
+                            NOVA_SHELL_B2F_PIPE_PREFIX"%u",
                             ppid ) ;
    SH_VERIFY_COND ( nWritten >= 0 , SDB_SYS ) ;
    SH_VERIFY_COND ( (UINT32) nWritten < b2fSize , SDB_INVALIDSIZE ) ;
@@ -107,13 +107,13 @@ INT32 getPipeNames2( const OSSPID & ppid , const OSSPID & pid ,
                 "Invalid arguments" ) ;
 
    nWritten = ossSnprintf ( f2bName, f2bSize,
-                            SDB_SHELL_F2B_PIPE_PREFIX"%u-%u",
+                            NOVA_SHELL_F2B_PIPE_PREFIX"%u-%u",
                             ppid, pid ) ;
    SH_VERIFY_COND ( nWritten >= 0 , SDB_SYS ) ;
    SH_VERIFY_COND ( (UINT32) nWritten < f2bSize , SDB_INVALIDSIZE ) ;
 
    nWritten = ossSnprintf ( b2fName, b2fSize,
-                            SDB_SHELL_B2F_PIPE_PREFIX"%u-%u",
+                            NOVA_SHELL_B2F_PIPE_PREFIX"%u-%u",
                             ppid, pid ) ;
    SH_VERIFY_COND ( nWritten >= 0 , SDB_SYS ) ;
    SH_VERIFY_COND ( (UINT32) nWritten < b2fSize , SDB_INVALIDSIZE ) ;
