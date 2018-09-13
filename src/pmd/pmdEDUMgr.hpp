@@ -90,6 +90,10 @@ namespace engine
                                      EDUID *pEDUID = NULL,
                                      const CHAR *pInitName = "" ) ;
 
+         virtual INT32     forkEDU( void *args,
+                                    EDUID *pEDUID = NULL,
+                                    const CHAR *pInitName = "" ) ;
+
          virtual void      addIOService( IPmdIOService *pIOService ) ;
          virtual void      delIOSerivce( IPmdIOService *pIOService ) ;
 
