@@ -1192,6 +1192,27 @@ namespace engine
       goto done ;
    }
 
+   INT32 _pmdEDUMgr::forkEDU( void *args,
+                              EDUID *pEDUID,
+                              const CHAR *pInitName )
+   {
+      INT32 rc = SDB_OK ;
+      pmdEDUCB *cb = pmdGetThreadEDUCB() ;
+      if ( !cb )
+      {
+         rc = SDB_SYS ;
+      }
+      else
+      {
+         if ( !pInitName || !*pInitName )
+         {
+            pInitName = cb->getName() ;
+         }
+         rc = startEDU( cb->getType(), args, pEDUID, pInitName ) ;
+      }
+      return rc ;
+   }
+
    INT32 _pmdEDUMgr::createIdleEDU( EDUID *pEDUID )
    {
       INT32 rc       = SDB_OK ;
