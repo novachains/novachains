@@ -164,6 +164,11 @@ namespace engine
       _pThreadFunc = pFunc ;
    }
 
+   void _netFrame::setName( const string &name )
+   {
+      _name = name ;
+   }
+
    void _netFrame::setMaxSockPerNode( UINT32 maxSockPerNode )
    {
       _maxSockPerNode = maxSockPerNode ;
@@ -274,6 +279,11 @@ namespace engine
       _stopAllEvSuit() ;
       close() ;
       PD_TRACE_EXIT ( SDB__NETFRAME_STOP );
+   }
+
+   const CHAR* _netFrame::getName() const
+   {
+      return _name.c_str() ;
    }
 
    // PD_TRACE_DECLARE_FUNCTION ( SDB__NETFRAME_MAKESTAT, "_netFrame::makeStat" )

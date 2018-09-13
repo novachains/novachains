@@ -46,7 +46,9 @@ namespace engine
    /*
       PMD Entry point function define
    */
-   typedef INT32 (*pmdEntryPointFunc)( IPmdExecutor *cb, void *pData ) ;
+   typedef INT32 (*pmdEntryPointFunc)( IPmdResource *pResource,
+                                       IPmdExecutor *cb,
+                                       void *pData ) ;
 
    /*
       _pmdEPItem define

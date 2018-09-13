@@ -218,6 +218,12 @@ namespace engine
       _ctrlFlag &= ~PMD_EDU_CTRL_DISCONNECTED ;
    }
 
+   void _pmdEDUCB::resetForLoopOnce()
+   {
+      resetInterrupt() ;
+      resetInfo( PMD_EDU_INFO_ERROR ) ;
+   }
+
    void _pmdEDUCB::setName ( const CHAR * name )
    {
       ossStrncpy ( _name, name, PMD_EDU_NAME_LENGTH ) ;

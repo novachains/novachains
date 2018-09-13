@@ -109,7 +109,10 @@ namespace engine
 
          BOOLEAN           _isInOrder( IPmdCB *cb ) const ;
 
+         INT32             _postActive() ;
+
       private:
+         IPmdResource               *_pResource ;
          IPmdCB*                    _arrayCB[ PMD_CB_MAX ] ;
          VEC_CB                     _vecCB ;
          BOOLEAN                    _hasChecked ;

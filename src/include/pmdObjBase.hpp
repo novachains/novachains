@@ -48,7 +48,7 @@
 namespace engine
 {
 
-   class _pmdEDUCB ;
+   class _IPmdExecutor ;
 
    struct _msgMapEntry;
    enum MSG_SIG_FLAG { sig_event, sig_msg, sig_end };
@@ -108,12 +108,13 @@ namespace engine
 
          pmdEDUEvent*   getLastEvent() { return &_lastEvent ; }
 
-         virtual void   attachCB( _pmdEDUCB *cb ) {}
-         virtual void   detachCB( _pmdEDUCB *cb ) {}
-
          virtual const CHAR *name () const { return "_pmdObjBase"; }
          virtual INT32 getMaxProcMsgTime() const { return -1 ; }
          virtual INT32 getMaxProcEventTime() const { return -1 ; }
+
+         virtual void   onTimer ( UINT64 timerID, UINT32 interval ) { }
+         virtual void   attachCB( _IPmdExecutor *cb ) {}
+         virtual void   detachCB( _IPmdExecutor *cb ) {}
 
       public:
          OSS_INLINE BOOLEAN isProcess () const { return _bProcess ; }
@@ -123,22 +124,21 @@ namespace engine
                                             INT64 *pTime = NULL ) ;
          OSS_INLINE INT32   dispatchMsg( NET_HANDLE handle, MsgHeader* msg,
                                          INT64 *pTime = NULL ) ;
-         virtual void   onTimer ( UINT64 timerID, UINT32 interval ) { }
 
       protected:
          virtual OSS_INLINE INT32 _defaultMsgFunc ( NET_HANDLE handle,
                                                     MsgHeader* msg )
          {
             PD_LOG( PDWARNING, "[%s]Recieve unknow msg[type:[%d]%u, len:%u]",
-               name(), IS_REPLY_TYPE( msg->opCode ) ? 1 : 0,
-               GET_REQUEST_TYPE( msg->opCode ),
-               msg->messageLength );
-            return SDB_CLS_UNKNOW_MSG;
+                    name(), IS_REPLY_TYPE( msg->opCode ) ? 1 : 0,
+                    GET_REQUEST_TYPE( msg->opCode ),
+                    msg->messageLength );
+            return SDB_CLS_UNKNOW_MSG ;
          }
          virtual OSS_INLINE INT32 _defaultEventFunc ( pmdEDUEvent *event )
          {
             PD_LOG ( PDWARNING, "[%s]Recieve unknown event[type:%u]",
-               name(), event->_eventType ) ;
+                     name(), event->_eventType ) ;
             return SDB_SYS ;
          }
 

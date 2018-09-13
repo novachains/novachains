@@ -53,10 +53,12 @@ namespace engine
          _arrayCB[ i ] = NULL ;
       }
       _hasChecked = FALSE ;
+      _pResource = NULL ;
    }
 
    _pmdContainer::~_pmdContainer()
    {
+      _pResource = NULL ;
    }
 
    void _pmdContainer::clear()
@@ -199,6 +201,8 @@ namespace engine
       INT32 rc = SDB_OK ;
       VEC_CB::iterator it ;
 
+      _pResource = pResource ;
+
       /// check dependency
       rc = _checkDependency() ;
       if ( rc )
@@ -260,10 +264,65 @@ namespace engine
          item._stat = CB_OPR_ACTIVE ;
       }
 
+      rc = _postActive() ;
+      if ( rc )
+      {
+         goto error ;
+      }
+
    done:
       return rc ;
    error:
-      goto done ;      
+      goto done ;
+   }
+
+   INT32 _pmdContainer::_postActive()
+   {
+      INT32 rc = SDB_OK ;
+      VEC_CB::iterator it ;
+      IPmdExecutorMgr *pMgr = _pResource->getExecutorMgr() ;
+      IPmdIOService *pIOSvc = NULL ;
+
+      vector<IPmdIOService*>  vecIOSvc ;
+
+      it = _vecCB.begin() ;
+      while( it != _vecCB.end() )
+      {
+         pmdCBOprItem &item = *it ;
+         ++it ;
+
+         /// start io service edu
+         vecIOSvc.clear() ;
+         item._cb->getIOSvc( vecIOSvc ) ;
+         for ( UINT32 i = 0 ; i < vecIOSvc.size() ; ++i )
+         {
+            pIOSvc = vecIOSvc[ i ] ;
+            rc = pMgr->startEDU( PMD_EDU_IOSVC, (void*)pIOSvc,
+                                 NULL, pIOSvc->getName() ) ;
+            if ( rc )
+            {
+               PD_LOG( PDERROR, "Start EDU failed, rc: %d", rc ) ;
+               goto error ;
+            }
+         }
+
+         /// start cb edu
+         if ( item._cb->enableCBMain() )
+         {
+            rc = pMgr->startEDU( PMD_EDU_CBMAIN, (void*)item._cb,
+                                 NULL, item._cb->cbName() ) ;
+            if ( rc )
+            {
+               PD_LOG( PDERROR, "Start EDU failed, rc: %d", rc ) ;
+               goto error ;
+            }
+         }
+      }
+
+   done:
+      return rc ;
+   error:
+      goto done ;
    }
 
    INT32 _pmdContainer::deactiveCB()

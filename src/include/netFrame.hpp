@@ -119,11 +119,13 @@ namespace engine
          ~_netFrame() ;
 
          void  setStartThreadFunc( NET_START_THREAD_FUNC pFunc ) ;
+         void  setName( const string &name ) ;
 
       public:
-         virtual void      stop() ;
-         virtual INT32     run() ;
-         virtual void      resetMon() ;
+         virtual const CHAR*  getName() const ;
+         virtual void         stop() ;
+         virtual INT32        run() ;
+         virtual void         resetMon() ;
 
       public:
          OSS_INLINE void setLocal( const MsgRouteID &id )
@@ -249,6 +251,7 @@ namespace engine
          void     _checkBreak( UINT32 timeout, INT32 serviceType ) ;
 
       private:
+         string                           _name ;
          _netRoute                        *_pRoute ;
          netEvSuitPtr                     _mainSuitPtr ;
          NET_START_THREAD_FUNC            _pThreadFunc ;

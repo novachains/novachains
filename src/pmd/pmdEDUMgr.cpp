@@ -1484,12 +1484,13 @@ namespace engine
    }
 
    // PD_TRACE_DECLARE_FUNCTION ( SDB__PMDEDUMGR_WAITEDU2, "_pmdEDUMgr::waitEDU" )
-   INT32 _pmdEDUMgr::waitEDU( pmdEDUCB * cb )
+   INT32 _pmdEDUMgr::waitEDU( IPmdExecutor * cb )
    {
       PD_TRACE_ENTRY ( SDB__PMDEDUMGR_WAITEDU2 );
 
       INT32 rc = SDB_OK ;
       INT32 eduStatus = 0 ;
+      pmdEDUCB *pEDUCB = NULL ;
 
       if ( !cb )
       {
@@ -1497,7 +1498,8 @@ namespace engine
          goto error ;
       }
 
-      eduStatus = cb->getStatus() ;
+      pEDUCB = ( pmdEDUCB* )cb ;
+      eduStatus = pEDUCB->getStatus() ;
 
       // if it's already waiting, let's do nothing
       if ( PMD_IS_EDU_WAITING ( eduStatus ) )
@@ -1511,7 +1513,7 @@ namespace engine
          rc = SDB_EDU_INVAL_STATUS ;
          goto error ;
       }
-      cb->setStatus ( PMD_EDU_WAITING ) ;
+      pEDUCB->setStatus ( PMD_EDU_WAITING ) ;
 
    done:
       PD_TRACE_EXITRC ( SDB__PMDEDUMGR_WAITEDU2, rc ) ;
@@ -1544,18 +1546,20 @@ namespace engine
    }
 
    // PD_TRACE_DECLARE_FUNCTION ( SDB__PMDEDUMGR_ATVEDU2, "_pmdEDUMgr::activateEDU" )
-   INT32 _pmdEDUMgr::activateEDU( pmdEDUCB * cb )
+   INT32 _pmdEDUMgr::activateEDU( IPmdExecutor *cb )
    {
       INT32 rc = SDB_OK ;
       PD_TRACE_ENTRY ( SDB__PMDEDUMGR_ATVEDU2 ) ;
       INT32  eduStatus = 0 ;
+      pmdEDUCB *pEDUCB = NULL ;
 
       if ( !cb )
       {
          rc = SDB_SYS ;
          goto error ;
       }
-      eduStatus = cb->getStatus() ;
+      pEDUCB = ( pmdEDUCB* )cb ;
+      eduStatus = pEDUCB->getStatus() ;
 
       if ( PMD_IS_EDU_RUNNING( eduStatus ) )
       {
@@ -1567,7 +1571,7 @@ namespace engine
          rc = SDB_EDU_INVAL_STATUS ;
          goto error ;
       }
-      cb->setStatus ( PMD_EDU_RUNNING ) ;
+      pEDUCB->setStatus ( PMD_EDU_RUNNING ) ;
 
    done:
       PD_TRACE_EXITRC ( SDB__PMDEDUMGR_ATVEDU2, rc ) ;
@@ -1576,19 +1580,21 @@ namespace engine
       goto done ;
    }
 
-   void _pmdEDUMgr::lockEDU( pmdEDUCB *cb )
+   void _pmdEDUMgr::lockEDU( IPmdExecutor *cb )
    {
       if ( cb )
       {
-         cb->setLock( TRUE ) ;
+         pmdEDUCB *pEDUCB = ( pmdEDUCB* )cb ;
+         pEDUCB->setLock( TRUE ) ;
       }
    }
 
-   void _pmdEDUMgr::unlockEDU( pmdEDUCB *cb )
+   void _pmdEDUMgr::unlockEDU( IPmdExecutor *cb )
    {
       if ( cb )
       {
-         cb->setLock( FALSE ) ;
+         pmdEDUCB *pEDUCB = ( pmdEDUCB* )cb ;
+         pEDUCB->setLock( FALSE ) ;
       }
    }
 
@@ -1956,7 +1962,7 @@ namespace engine
             eduMgr->waitEDU( cb ) ;
             initCurAuditMask( getAuditMask() ) ;
 
-            rc = pItem->_pFunc( cb, event._Data ) ;
+            rc = pItem->_pFunc( _pResource, cb, event._Data ) ;
             // copy name
             ossStrncpy( eduName, cb->getName(), OSS_MAX_PATHSIZE ) ;
 

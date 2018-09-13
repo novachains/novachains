@@ -93,6 +93,34 @@ namespace engine
          virtual void      addIOService( IPmdIOService *pIOService ) ;
          virtual void      delIOSerivce( IPmdIOService *pIOService ) ;
 
+         /*
+            EDU Interfaces
+         */
+         virtual INT32     activateEDU( EDUID eduID ) ;
+         virtual INT32     activateEDU( IPmdExecutor *cb ) ;
+
+         virtual INT32     waitEDU( EDUID eduID ) ;
+         virtual INT32     waitEDU( IPmdExecutor *cb ) ;
+
+         virtual void      lockEDU( IPmdExecutor *cb ) ;
+         virtual void      unlockEDU( IPmdExecutor *cb ) ;
+
+         virtual INT32     postEDUPost ( EDUID eduID,
+                                         pmdEDUEventTypes type,
+                                         pmdEDUMemTypes dataMemType = PMD_EDU_MEM_NONE,
+                                         void *pData = NULL,
+                                         UINT64 usrData = 0 ) ;
+
+         virtual INT32     forceUserEDU( EDUID eduID ) ;
+         virtual INT32     interruptUserEDU( EDUID eduID ) ;
+         virtual INT32     disconnectUserEDU( EDUID eduID ) ;
+
+         /*
+            Mon stat
+         */
+         virtual void      resetMon( EDUID eduID = PMD_INVALID_EDUID ) ;
+         virtual void      resetIOService() ;
+
       public:
          INT32             init( IPmdResource *pResource,
                                  UINT32 maxPooledEDU = PMD_MAX_POOLED_EDU_DFT ) ;
@@ -122,30 +150,6 @@ namespace engine
          BOOLEAN           isQuiesced() ;
          BOOLEAN           isDestroyed() ;
 
-         INT32             waitEDU( EDUID eduID ) ;
-         INT32             waitEDU( pmdEDUCB *cb ) ;
-
-         INT32             activateEDU( EDUID eduID ) ;
-         INT32             activateEDU( pmdEDUCB *cb ) ;
-
-         void              lockEDU( pmdEDUCB *cb ) ;
-         void              unlockEDU( pmdEDUCB *cb ) ;
-
-         INT32             createIdleEDU( EDUID *pEDUID ) ;
-
-         INT32             forceUserEDU( EDUID eduID ) ;
-         INT32             interruptUserEDU( EDUID eduID ) ;
-         INT32             disconnectUserEDU( EDUID eduID ) ;
-
-         INT32             postEDUPost ( EDUID eduID,
-                                         pmdEDUEventTypes type,
-                                         pmdEDUMemTypes dataMemType = PMD_EDU_MEM_NONE,
-                                         void *pData = NULL,
-                                         UINT64 usrData = 0 ) ;
-
-         void              resetMon( EDUID eduID = PMD_INVALID_EDUID ) ;
-         void              resetIOService() ;
-
          pmdEDUCB*         getEDUByID( EDUID eduID ) ;
          INT32             getEDUTypeByID( EDUID eduID ) ;
          pmdEDUCB*         getEDU() ;
@@ -166,6 +170,8 @@ namespace engine
                                           void* arg,
                                           EDUID *pEDUID,
                                           const CHAR *pInitName ) ;
+
+         INT32             createIdleEDU( EDUID *pEDUID ) ;
 
          pmdEDUCB*         getFromPool( INT32 type ) ;
 

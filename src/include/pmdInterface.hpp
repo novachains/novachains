@@ -41,6 +41,7 @@
 
 #include "core.hpp"
 #include "oss.hpp"
+#include "pmdDef.hpp"
 #include <string>
 #include <vector>
 
@@ -195,9 +196,10 @@ namespace engine
          virtual ~_IPmdIOService() {}
 
       public:
-         virtual INT32     run() = 0 ;
-         virtual void      stop() = 0 ;
-         virtual void      resetMon() = 0 ;
+         virtual const CHAR*  getName() const = 0 ;
+         virtual INT32        run() = 0 ;
+         virtual void         stop() = 0 ;
+         virtual void         resetMon() = 0 ;
    } ;
    typedef _IPmdIOService IPmdIOService ;
 
@@ -288,6 +290,7 @@ namespace engine
          virtual EDUID        getID() const = 0 ;
          virtual UINT32       getTID() const = 0 ;
          virtual const CHAR*  getName() const = 0 ;
+         virtual INT32        getType () const = 0 ;
 
          /*
             Session Related
@@ -306,6 +309,8 @@ namespace engine
 
          virtual UINT32    getQueSize() = 0 ;
 
+         virtual void      resetForLoopOnce() = 0 ;
+
          /*
             Buffer Manager
          */
@@ -323,8 +328,22 @@ namespace engine
                                            UINT32 *pRealSize = NULL,
                                            UINT32 alignment =
                                            OSS_FILE_DIRECT_IO_ALIGNMENT ) = 0 ;
-         
+
          virtual void      releaseAlignedBuff() = 0 ;
+
+         /*
+            Que functions
+         */
+         virtual BOOLEAN   waitEvent( pmdEDUEvent &data,
+                                      INT64 millsec,
+                                      BOOLEAN resetStat = FALSE ) = 0 ;
+
+         virtual BOOLEAN   waitEvent( pmdEDUEventTypes type,
+                                      pmdEDUEvent &data,
+                                      INT64 millsec,
+                                      BOOLEAN resetStat = FALSE ) = 0 ;
+
+         virtual void      postEvent ( pmdEDUEvent const &data ) = 0 ;
 
          /*
             Mon stat
@@ -352,6 +371,34 @@ namespace engine
          virtual void      addIOService( IPmdIOService *pIOService ) = 0 ;
          virtual void      delIOSerivce( IPmdIOService *pIOService ) = 0 ;
 
+         /*
+            EDU Interfaces
+         */
+         virtual INT32     activateEDU( EDUID eduID ) = 0 ;
+         virtual INT32     activateEDU( IPmdExecutor *cb ) = 0 ;
+
+         virtual INT32     waitEDU( EDUID eduID ) = 0 ;
+         virtual INT32     waitEDU( IPmdExecutor *cb ) = 0 ;
+
+         virtual void      lockEDU( IPmdExecutor *cb ) = 0 ;
+         virtual void      unlockEDU( IPmdExecutor *cb ) = 0 ;
+
+         virtual INT32     postEDUPost ( EDUID eduID,
+                                         pmdEDUEventTypes type,
+                                         pmdEDUMemTypes dataMemType = PMD_EDU_MEM_NONE,
+                                         void *pData = NULL,
+                                         UINT64 usrData = 0 ) = 0 ;
+
+         virtual INT32     forceUserEDU( EDUID eduID ) = 0 ;
+         virtual INT32     interruptUserEDU( EDUID eduID ) = 0 ;
+         virtual INT32     disconnectUserEDU( EDUID eduID ) = 0 ;
+
+         /*
+            Mon stat
+         */
+         virtual void      resetMon( EDUID eduID = PMD_INVALID_EDUID ) = 0 ;
+         virtual void      resetIOService() = 0 ;
+
    } ;
    typedef _IPmdExecutorMgr IPmdExecutorMgr ;
 
@@ -368,12 +415,21 @@ namespace engine
          virtual PMD_CB_TYPE  cbType() const = 0 ;
          virtual const CHAR*  cbName() const = 0 ;
 
-         virtual void   dependentcy( vector<PMD_CB_TYPE> &cbs ) const {}
+         virtual void         dependentcy( vector<PMD_CB_TYPE> &cbs ) const {}
+         virtual void         getIOSvc( vector<IPmdIOService*> &iosvc ) {}
+
+         virtual BOOLEAN      enableCBMain() const { return FALSE ; }
+         virtual INT32        runCBMain( _IPmdResource *pResource,
+                                         IPmdExecutor *cb )
+         {
+            return SDB_SYS ;
+         }
 
          virtual INT32  init ( _IPmdResource *pResource ) = 0 ;
          virtual INT32  active () = 0 ;
          virtual INT32  deactive () = 0 ;
          virtual INT32  fini () = 0 ;
+
          virtual void   onConfigChange() {}
          virtual void   onConfigSave() {}
 

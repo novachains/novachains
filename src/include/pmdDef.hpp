@@ -144,6 +144,8 @@ namespace engine
       /// {{ Begin user define
 
       PMD_EDU_TYPE_MAIN,
+      PMD_EDU_IOSVC,
+      PMD_EDU_CBMAIN,
 
       /// End user define }}
       PMD_EDU_MAX
@@ -211,11 +213,11 @@ namespace engine
    #define PMD_CURRENT_PATH            "."
 
    #define ENGINE_NPIPE_PREFIX         "novad_engine_"
-   #if defined (_LINUX)
+#if defined (_LINUX)
    #define PROC_PATH                   "/proc"
    #define PROC_CMDLINE_PATH_FORMAT    PROC_PATH"/%s/cmdline"
    #define ENGINE_NPIPE_PREFIX_BW      "novad_engine_bw_"
-   #endif // _LINUX
+#endif // _LINUX
 
    #define ENGINE_NPIPE_MSG_PID        "$pid"
    #define ENGINE_NPIPE_MSG_SHUTDOWN   "$shutdown"

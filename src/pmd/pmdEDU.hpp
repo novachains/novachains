@@ -101,6 +101,7 @@ namespace engine
          virtual EDUID        getID() const { return _eduID ; }
          virtual UINT32       getTID() const { return _tid ; }
          virtual const CHAR*  getName () const { return _name ; } ;
+         virtual INT32        getType () const { return _eduType ; }
 
          /*
             Session Related
@@ -118,6 +119,8 @@ namespace engine
          virtual void      incEventCount( UINT32 step = 1 ) ;
 
          virtual UINT32    getQueSize() ;
+
+         virtual void      resetForLoopOnce() ;
 
          /*
             Buffer Manager
@@ -140,6 +143,20 @@ namespace engine
          virtual void      releaseAlignedBuff() ;
 
          /*
+            Que functions
+         */
+         virtual BOOLEAN   waitEvent( pmdEDUEvent &data,
+                                      INT64 millsec,
+                                      BOOLEAN resetStat = FALSE ) ;
+
+         virtual BOOLEAN   waitEvent( pmdEDUEventTypes type,
+                                      pmdEDUEvent &data,
+                                      INT64 millsec,
+                                      BOOLEAN resetStat = FALSE ) ;
+
+         virtual void      postEvent ( pmdEDUEvent const &data ) ;
+
+         /*
             Mon stat
          */
          virtual void      resetMon() ;
@@ -149,7 +166,6 @@ namespace engine
          void              clear() ;
          string            toString() const ;
          PMD_EDU_STATUS    getStatus () const { return _status ; }
-         INT32             getType () const { return _eduType ; }
          BOOLEAN           isLocked() const { return _isLocked ; }
 
          _pmdEDUMgr*       getEDUMgr() { return _eduMgr ; }
@@ -161,94 +177,83 @@ namespace engine
          HANDLE            getThreadHandle() const { return _threadHdl ; }
       #endif
 
-   public :
-      void        attachSession( IPmdSession *pSession ) ;
-      void        detachSession() ;
+      public :
+         void        attachSession( IPmdSession *pSession ) ;
+         void        detachSession() ;
 
-      void        restoreBuffs( CATCH_MAP &catchMap ) ;
-      void        saveBuffs( CATCH_MAP &catchMap ) ;
+         void        restoreBuffs( CATCH_MAP &catchMap ) ;
+         void        saveBuffs( CATCH_MAP &catchMap ) ;
 
-      void        interrupt () ;
-      void        resetInterrupt () ;
-      void        resetDisconnect () ;
+         void        interrupt () ;
 
-      INT32       printInfo ( PMD_EDU_INFO_TYPE type, const CHAR *format, ... ) ;
-      const CHAR* getInfo ( PMD_EDU_INFO_TYPE type ) ;
-      void        resetInfo ( PMD_EDU_INFO_TYPE type ) ;
+         INT32       printInfo ( PMD_EDU_INFO_TYPE type, const CHAR *format, ... ) ;
+         const CHAR* getInfo ( PMD_EDU_INFO_TYPE type ) ;
+         void        resetInfo ( PMD_EDU_INFO_TYPE type ) ;
+         void        resetInterrupt () ;
+         void        resetDisconnect () ;
 
-      void        setName ( const CHAR *name ) ;
+         void        setName ( const CHAR *name ) ;
 
-      void        postEvent ( pmdEDUEvent const &data ) ;
+      protected:
+         void     setStatus ( PMD_EDU_STATUS status ) { _status = status ; }
+         void     setID ( EDUID id ) { _eduID = id ; }
+         void     setLock( BOOLEAN lock ) { _isLocked = lock ; }
 
-      BOOLEAN     waitEvent( pmdEDUEvent &data,
-                             INT64 millsec,
-                             BOOLEAN resetStat = FALSE ) ;
+         CHAR*    _getBuffInfo ( PMD_EDU_INFO_TYPE type, UINT32 &size ) ;
+         BOOLEAN  _allocFromCatch( UINT32 len, CHAR **ppBuff, UINT32 *buffLen ) ;
 
-      BOOLEAN     waitEvent( pmdEDUEventTypes type,
-                             pmdEDUEvent &data,
-                             INT64 millsec,
-                             BOOLEAN resetStat = FALSE ) ;
+         void     disconnect () ;
+         void     force () ;
 
-   protected:
-      void     setStatus ( PMD_EDU_STATUS status ) { _status = status ; }
-      void     setID ( EDUID id ) { _eduID = id ; }
-      void     setLock( BOOLEAN lock ) { _isLocked = lock ; }
+      private:
+         void        setType( INT32 type ) ;
+         void        setTID ( UINT32 tid ) { _tid = tid ; }
 
-      CHAR*    _getBuffInfo ( PMD_EDU_INFO_TYPE type, UINT32 &size ) ;
-      BOOLEAN  _allocFromCatch( UINT32 len, CHAR **ppBuff, UINT32 *buffLen ) ;
+      #if defined ( _LINUX )
+         void        setThreadID ( pthread_t id ) { _threadID = id ; }
+         void        setThreadHdl( OSSTID hdl ) { _threadHdl = hdl ; }
+      #elif defined ( _WINDOWS )
+         void        setThreadHdl( HANDLE hdl ) { _threadHdl = hdl ; }
+      #endif
 
-      void     disconnect () ;
-      void     force () ;
+      private :
+         _pmdEDUMgr              *_eduMgr ;
+         ossQueue<pmdEDUEvent>   _queue ;
 
-   private:
-      void        setType( INT32 type ) ;
-      void        setTID ( UINT32 tid ) { _tid = tid ; }
+         PMD_EDU_STATUS          _status ;
+         INT32                   _eduType ;
+         BOOLEAN                 _isLocked ;
 
-   #if defined ( _LINUX )
-      void        setThreadID ( pthread_t id ) { _threadID = id ; }
-      void        setThreadHdl( OSSTID hdl ) { _threadHdl = hdl ; }
-   #elif defined ( _WINDOWS )
-      void        setThreadHdl( HANDLE hdl ) { _threadHdl = hdl ; }
-   #endif
+         // buffer related
+         CATCH_MAP               _catchMap ;
+         ALLOC_MAP               _allocMap ;
+         INT64                   _totalCatchSize ;
+         INT64                   _totalMemSize ;
 
-   private :
-      _pmdEDUMgr              *_eduMgr ;
-      ossQueue<pmdEDUEvent>   _queue ;
+         // thread specific error message buffer, aka SQLCA
+         CHAR                    *_pErrorBuff ;
+      #if defined ( _WINDOWS )
+         HANDLE                  _threadHdl ;
+      #elif defined ( _LINUX )
+         OSSTID                  _threadHdl ;
+         pthread_t               _threadID ;
+      #endif // _WINDOWS
 
-      PMD_EDU_STATUS          _status ;
-      INT32                   _eduType ;
-      BOOLEAN                 _isLocked ;
+         CHAR                    _name[ PMD_EDU_NAME_LENGTH + 1 ] ;
 
-      // buffer related
-      CATCH_MAP               _catchMap ;
-      ALLOC_MAP               _allocMap ;
-      INT64                   _totalCatchSize ;
-      INT64                   _totalMemSize ;
+         /*
+            Interace members
+         */
+         EDUID                   _eduID ;
+         UINT32                  _tid ;
+         IPmdSession             *_pSession ;
 
-      // thread specific error message buffer, aka SQLCA
-      CHAR                    *_pErrorBuff ;
-   #if defined ( _WINDOWS )
-      HANDLE                  _threadHdl ;
-   #elif defined ( _LINUX )
-      OSSTID                  _threadHdl ;
-      pthread_t               _threadID ;
-   #endif // _WINDOWS
+         UINT64                  _processEventCount ;
 
-      CHAR                    _name[ PMD_EDU_NAME_LENGTH + 1 ] ;
-
-      /*
-         Interace members
-      */
-      EDUID                   _eduID ;
-      UINT32                  _tid ;
-      IPmdSession             *_pSession ;
-
-      UINT64                  _processEventCount ;
-
-      INT32                   _ctrlFlag ;
-      /// aligned memory.
-      void                    *_alignedMem ;
-      UINT32                   _alignedMemSize ;
+         INT32                   _ctrlFlag ;
+         /// aligned memory.
+         void                    *_alignedMem ;
+         UINT32                   _alignedMemSize ;
 
    } ;
    typedef _pmdEDUCB pmdEDUCB ;
