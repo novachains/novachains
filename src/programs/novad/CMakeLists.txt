@@ -1,2 +1,8 @@
+
+#add whole lib
+NOVA_LINK_WHOLE_LIBRARIES( pmd )
+
 AUX_SOURCE_DIRECTORY( . SRC_FILES )
 ADD_EXECUTABLE( novad ${SRC_FILES} )
+
+TARGET_LINK_LIBRARIES( novad bson pd oss util )
