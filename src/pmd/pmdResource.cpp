@@ -38,10 +38,97 @@
 *******************************************************************************/
 
 #include "pmdResource.hpp"
+#include "pmdIFAdapter.hpp"
+#include "pmdContainer.hpp"
+#include "pd.hpp"
+#include "pdTrace.hpp"
+#include "pmdTrace.hpp"
 
 namespace engine
 {
 
+   /*
+      _pmdResource implement
+   */
+   _pmdResource::_pmdResource()
+   {
+      _pParam = NULL ;
+      _pArg = NULL ;
+      _pEnv = NULL ;
+      _pEDUMgr = NULL ;
+      _pIFAdapter = NULL ;
+   }
+
+   _pmdResource::~_pmdResource()
+   {
+   }
+
+   INT32 _pmdResource::init( IPmdParam *pParam,
+                             IPmdCmdArg *pCmdArg,
+                             IPmdEnv *pEnv,
+                             IPmdExecutorMgr *pEDUMgr,
+                             _pmdIFAdapter *pIFAdpter,
+                             _pmdContainer *pContainer )
+   {
+      INT32 rc = SDB_OK ;
+
+      if ( !pParam || !pCmdArg || !pEnv || !pEDUMgr ||
+           !pIFAdpter || !pContainer )
+      {
+         rc = SDB_SYS ;
+         goto error ;
+      }
+
+      _pParam = pParam ;
+      _pArg = pCmdArg ;
+      _pEnv = pEnv ;
+      _pEDUMgr = pEDUMgr ;
+      _pIFAdapter = pIFAdpter ;
+      _pContainer = pContainer ;
+
+   done:
+      return rc ;
+   error:
+      goto done ;
+   }
+
+   IPmdParam* _pmdResource::getParam()
+   {
+      return _pParam ;
+   }
+
+   IPmdCmdArg* _pmdResource::getCmdArg()
+   {
+      return _pArg ;
+   }
+
+   IPmdEnv* _pmdResource::getEnv()
+   {
+      return _pEnv ;
+   }
+
+   IPmdExecutorMgr* _pmdResource::getExecutorMgr()
+   {
+      return _pEDUMgr ;
+   }
+
+   IPmdCB* _pmdResource::getCB( PMD_CB_TYPE type )
+   {
+      if ( _pContainer )
+      {
+         return _pContainer->getCB( type ) ;
+      }
+      return NULL ;
+   }
+
+   void* _pmdResource::queryIF( PMD_IF_TYPE type )
+   {
+      if ( _pIFAdapter )
+      {
+         return _pIFAdapter->queryIF( type ) ;
+      }
+      return NULL ;
+   }
 
 }
 

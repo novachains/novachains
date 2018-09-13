@@ -165,7 +165,9 @@ namespace engine
    {
       INT32 rc = SDB_OK ;
 
-      rc = _resource.init( _pParam, &_cmdArg, &_env, &_eduMgr ) ;
+      rc = _resource.init( _pParam, &_cmdArg, &_env,
+                           &_eduMgr, &_ifAdapter,
+                           &_container ) ;
       if ( rc )
       {
          PD_LOG( PDERROR, "Init resource failed, rc: %d" ) ;

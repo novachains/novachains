@@ -44,6 +44,9 @@
 namespace engine
 {
 
+   class _pmdIFAdapter ;
+   class _pmdContainer ;
+
    /*
       _pmdResource define
    */
@@ -56,7 +59,9 @@ namespace engine
          INT32    init( IPmdParam *pParam,
                         IPmdCmdArg *pCmdArg,
                         IPmdEnv *pEnv,
-                        IPmdExecutorMgr *pEDUMgr ) ;
+                        IPmdExecutorMgr *pEDUMgr,
+                        _pmdIFAdapter *pIFAdpter,
+                        _pmdContainer *pContainer ) ;
 
       public:
          virtual IPmdParam*         getParam() ;
@@ -65,9 +70,15 @@ namespace engine
          virtual IPmdExecutorMgr*   getExecutorMgr() ;
       
          virtual IPmdCB*            getCB( PMD_CB_TYPE type ) ;
+         virtual void*              queryIF( PMD_IF_TYPE type ) ;
 
       private:
-
+         IPmdParam                  *_pParam ;
+         IPmdCmdArg                 *_pArg ;
+         IPmdEnv                    *_pEnv ;
+         IPmdExecutorMgr            *_pEDUMgr ;
+         _pmdIFAdapter              *_pIFAdapter ;
+         _pmdContainer              *_pContainer ;
 
    } ;
    typedef _pmdResource pmdResource ;
