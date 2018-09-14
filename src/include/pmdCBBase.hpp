@@ -38,6 +38,8 @@
 
 #include "pmdInterface.hpp"
 #include "pmdObjBase.hpp"
+#include "pmdEPFactory.hpp"
+#include "pmdTool.hpp"
 
 namespace engine
 {
@@ -114,11 +116,8 @@ namespace engine
                }
             }
 
-         done:
             detachCB( cb ) ;
             return rc ;
-         error:
-            goto done ;
          }
 
    } ;

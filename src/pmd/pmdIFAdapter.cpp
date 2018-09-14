@@ -37,7 +37,7 @@
 *******************************************************************************/
 
 #include "pmdIFAdapter.hpp"
-#include "pd.hpp"
+#include "ossUtil.hpp"
 
 namespace engine
 {
@@ -127,7 +127,7 @@ namespace engine
       /// check exist
       if ( hasIF( type ) )
       {
-         PD_LOG( PDSEVERE, "Iterface is already exist: %d", type ) ;
+         ossPrintf( "Iterface is already exist: %d", type ) ;
       }
       else
       {

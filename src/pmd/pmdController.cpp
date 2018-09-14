@@ -111,19 +111,19 @@ namespace engine
             goto error ;
          }
 
-         rc = _ifAdapter.registerRoot( cb ) ;
-         if ( rc )
+         if ( !_ifAdapter.registerRoot( cb ) )
          {
-            ossPrintf( "*Error: Reisget CB[%d]'s interface failed, "
-                       "rc: %d"OSS_NEWLINE, type, rc ) ;
+            ossPrintf( "*Error: Reisget CB[%s(%d)]'s interface "
+                       "failed"OSS_NEWLINE, cb->cbName(),
+                       type ) ;
             goto error ;
          }
 
          rc = _container.registerCB( cb ) ;
          if ( rc )
          {
-            ossPrintf( "*Error: Reister CB[%d] failed, rc: %d"OSS_NEWLINE,
-                       type, rc ) ;
+            ossPrintf( "*Error: Reister CB[%s(%d)] failed, rc: %d"OSS_NEWLINE,
+                       cb->cbName(), type, rc ) ;
             goto error ;
          }
          cb = NULL ;

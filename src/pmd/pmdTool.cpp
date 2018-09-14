@@ -364,6 +364,29 @@ namespace engine
 
 #endif // _LINUX
 
+   /*
+      Common functions
+   */
+   void pmdEduEventRelase( pmdEDUEvent &event, IPmdExecutor *cb )
+   {
+      if ( event._Data && event._dataMemType != PMD_EDU_MEM_NONE )
+      {
+         if ( PMD_EDU_MEM_ALLOC == event._dataMemType )
+         {
+            SDB_OSS_FREE( event._Data ) ;
+         }
+         else if ( PMD_EDU_MEM_SELF == event._dataMemType )
+         {
+            SDB_ASSERT( cb, "cb can't be NULL" ) ;
+            if ( cb )
+            {
+               cb->releaseBuff( (CHAR *)event._Data ) ;
+            }
+         }
+         event._Data = NULL ;
+      }
+   }
+
 }
 
 

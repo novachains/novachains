@@ -39,6 +39,7 @@
 *******************************************************************************/
 #include "pmdEDU.hpp"
 #include "pmdEPFactory.hpp"
+#include "pmdTool.hpp"
 #include "pd.hpp"
 #include "pdTrace.hpp"
 #include "pmdTrace.hpp"
@@ -708,26 +709,6 @@ namespace engine
    void pmdUndeclareEDUCB ()
    {
       __eduCB = NULL ;
-   }
-
-   void pmdEduEventRelase( pmdEDUEvent &event, pmdEDUCB *cb )
-   {
-      if ( event._Data && event._dataMemType != PMD_EDU_MEM_NONE )
-      {
-         if ( PMD_EDU_MEM_ALLOC == event._dataMemType )
-         {
-            SDB_OSS_FREE( event._Data ) ;
-         }
-         else if ( PMD_EDU_MEM_SELF == event._dataMemType )
-         {
-            SDB_ASSERT( cb, "cb can't be NULL" ) ;
-            if ( cb )
-            {
-               cb->releaseBuff( (CHAR *)event._Data ) ;
-            }
-         }
-         event._Data = NULL ;
-      }
    }
 
 }

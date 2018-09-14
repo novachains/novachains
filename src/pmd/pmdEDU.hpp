@@ -265,8 +265,6 @@ namespace engine
    _pmdEDUCB*  pmdDeclareEDUCB( _pmdEDUCB *p ) ;
    void        pmdUndeclareEDUCB() ;
 
-   void        pmdEduEventRelase( pmdEDUEvent &event, _pmdEDUCB *cb ) ;
-
 }
 
 #endif // PMDEDU_HPP__

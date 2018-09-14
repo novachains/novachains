@@ -64,8 +64,7 @@ namespace engine
       virtual const CHAR *name () const ; \
    protected: \
       static const _msgMap* getThisMsgMap(); \
-      virtual const _msgMap* getMsgMap() const; \
-
+      virtual const _msgMap* getMsgMap() const
 
 #define BEGIN_OBJ_MSG_MAP(theClass, baseClass) \
    const CHAR *theClass::name () const \

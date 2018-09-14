@@ -58,6 +58,8 @@ namespace engine
       PMD_CB_MIN                 = 0,
       /// {{ Begin user control block define
 
+      PMD_CB_DAO,                /// Data Access Layer
+
       /// End user control block define }}
       PMD_CB_MAX
    } ;

@@ -105,6 +105,11 @@ namespace engine
    */
    #define  PMD_SIGNUM                 pmdGetSigNum()
 
+   /*
+      Common functions
+   */
+   void pmdEduEventRelase( pmdEDUEvent &event, IPmdExecutor *cb ) ;
+
 }
 
 #endif //PMD_TOOL_HPP_
