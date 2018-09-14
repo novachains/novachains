@@ -37,6 +37,7 @@
 
 #include "pmdMain.hpp"
 #include "pmdMainBaseCallback.hpp"
+#include "utilParamBase.hpp"
 #include <iostream>
 
 using namespace engine ;
@@ -75,13 +76,58 @@ class _novaMainCallback : public pmdMainBaseCallback
 typedef _novaMainCallback novaMainCallback ;
 
 /*
+   _novaParam define
+*/
+class _novaParam : public _utilCfgBase
+{
+   public:
+      _novaParam() {}
+      virtual ~_novaParam() {}
+
+   protected:
+
+      virtual const po::options_description& getOptDesc() const
+      {
+         return _desc ;
+      }
+
+      virtual const CHAR* getConfShortName() const
+      {
+         return "nova.conf" ;
+      }
+      virtual const CHAR* getDefaultPath() const
+      {
+         return "." ;
+      }
+      virtual const CHAR* getConfPathKey() const
+      {
+         return "" ;
+      }
+
+      virtual INT32 onPostParseArgs( const po::variables_map &vm ) const
+      {
+         return SDB_OK ;
+      }
+
+      virtual void  doDataExchange( pmdCfgExchange *pEX )
+      {
+      }
+
+   private:
+      po::options_description    _desc ;
+
+} ;
+typedef _novaParam novaParam ;
+
+/*
    Main entry
 */
 int main( int argc, const char *argv[] )
 {
    novaMainCallback mainCallback ;
    novaCBConfig config ;
+   novaParam param ;
 
-   return pmdMainEntry( config, NULL, &mainCallback, argc, argv ) ;
+   return pmdMainEntry( config, &param, &mainCallback, argc, argv ) ;
 }
 
