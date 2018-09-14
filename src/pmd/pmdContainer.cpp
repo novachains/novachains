@@ -222,7 +222,8 @@ namespace engine
             continue ;
          }
 
-         rc = item._cb->init( pResource ) ;
+         item._cb->setResource( pResource ) ;
+         rc = item._cb->init() ;
          if ( rc )
          {
             PD_LOG( PDERROR, "Init cb[%d,%s] failed, rc: %d", 

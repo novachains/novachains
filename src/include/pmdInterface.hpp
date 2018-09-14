@@ -415,9 +415,19 @@ namespace engine
    class _IPmdCB : public SDBObject, public IPmdRoot
    {
       public:
-         _IPmdCB () {}
+         _IPmdCB () { _pResource = NULL ; }
          virtual ~_IPmdCB () {}
 
+         void setResource( _IPmdResource *pResource )
+         {
+            _pResource = pResource ;
+         }
+         _IPmdResource* getResource()
+         {
+            return _pResource ;
+         }
+
+      public:
          virtual PMD_CB_TYPE  cbType() const = 0 ;
          virtual const CHAR*  cbName() const = 0 ;
 
@@ -431,13 +441,16 @@ namespace engine
             return SDB_SYS ;
          }
 
-         virtual INT32  init ( _IPmdResource *pResource ) = 0 ;
+         virtual INT32  init () = 0 ;
          virtual INT32  active () = 0 ;
          virtual INT32  deactive () = 0 ;
          virtual INT32  fini () = 0 ;
 
          virtual void   onConfigChange() {}
          virtual void   onConfigSave() {}
+
+      private:
+         _IPmdResource           *_pResource ;
 
    } ;
    typedef _IPmdCB IPmdCB ;

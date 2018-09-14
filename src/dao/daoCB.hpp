@@ -61,13 +61,12 @@ namespace engine
 
          virtual BOOLEAN      enableCBMain() const { return TRUE ; }
 
-         virtual INT32  init ( _IPmdResource *pResource ) ;
+         virtual INT32  init () ;
          virtual INT32  active () ;
          virtual INT32  deactive () ;
          virtual INT32  fini () ;
 
       private:
-         _IPmdResource              *_pResource ;
 
    } ;
    typedef _daoCB daoCB ;

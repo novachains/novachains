@@ -53,7 +53,6 @@ namespace engine
    */
    _daoCB::_daoCB()
    {
-      _pResource = NULL ;
    }
 
    _daoCB::~_daoCB()
@@ -70,10 +69,8 @@ namespace engine
       return "DAO" ;
    }
 
-   INT32 _daoCB::init( _IPmdResource *pResource )
+   INT32 _daoCB::init()
    {
-      _pResource = pResource ;
-
       cout << "init dao" << endl ;
 
       return SDB_OK ;
