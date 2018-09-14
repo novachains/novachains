@@ -499,16 +499,18 @@ void pdLogRaw( PDLEVEL level, const CHAR *pData )
    // simply output to screen
 #if defined (_DEBUG)
       ossPrintf ( "%s"OSS_NEWLINE, pData ) ;
-#else
+#endif //_DEBUG
+
    /* We write into log file if the string is not empty */
    if ( _getPDCfgInfo( PD_DIAGLOG ).isEnabled() )
-#endif
    {
       rc = pdLogFileWrite ( PD_DIAGLOG, pData ) ;
       if ( rc )
       {
          ossPrintf ( "Failed to write into log file, rc: %d"OSS_NEWLINE, rc ) ;
+#if !defined (_DEBUG)
          ossPrintf ( "%s"OSS_NEWLINE, pData ) ;
+#endif //_DEBUG
       }
    }
 
