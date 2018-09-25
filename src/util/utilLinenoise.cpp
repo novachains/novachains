@@ -1999,7 +1999,7 @@ error:
 
 /* Free the history, but does not reset it. Only used when we have to
  * exit() to avoid memory leaks are reported by valgrind & co. */
-PD_TRACE_DECLARE_FUNCTION ( SDB_FREEHISTORYINLINENOISE, "linenoiseAtExit" )
+PD_TRACE_DECLARE_FUNCTION ( SDB_FREEHISTORYINLINENOISE, "freeHistory" )
 static void freeHistory(void)
 {
     PD_TRACE_ENTRY ( SDB_FREEHISTORYINLINENOISE );

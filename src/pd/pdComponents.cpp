@@ -50,13 +50,9 @@ const CHAR *_pdTraceComponentDir[] = {
    "net",    // PD_TRACE_COMPONENT_NET
    "oss",    // PD_TRACE_COMPONENT_OSS
    "pd",     // PD_TRACE_COMPONENT_PD
-   "tools",  // PD_TRACE_COMPONENT_TOOL
-   "mon",    // PD_TRACE_COMPONENT_MON
    "pmd",    // PD_TRACE_COMPONENT_PMD
-   "rest",   // PD_TRACE_COMPONENT_REST
    "spt",    // PD_TRACE_COMPONENT_SPT
-   "util",   // PD_TRACE_COMPONENT_UTIL
-   "spd",    // PD_TRACE_COMPONENT_SPD
+   "util"    // PD_TRACE_COMPONENT_UTIL
 } ;
 
 UINT32 pdGetCompoentSize()
