@@ -1,109 +1,37 @@
-#include "core.hpp"
-#include "rcgen.h"
-#include "filenamegen.h"
-#include "optgen.h"
-#include "tracegen.h"
-#include "buildgen.h"
-#include "dbConfForWeb.h"
-#include "vergen.h"
-#include "js2code.hpp"
-#include <iostream>
-using std::cout;
-using std::endl;
+#include "options.hpp"
+#include "generateInterface.hpp"
 
-void displayUsage (const char* argv)
+int main( int argc, char** argv )
 {
-    cout<<"Usage: "<<argv<<" <language>"<<endl
-        <<"    <language>   desciption language as below ( default is english ):"<<endl
-        <<"           en    english descriptions"<<endl
-        <<"           cn    chinese desciptions"<<endl;
-}
+   int rc = 0 ;
+   cmdOptions *opt = getCmdOptions() ;
+   generateRunner *runner = getGenerateRunner() ;
 
-static void genRC ( const char *lang )
-{
-   RCGen xml ( lang ) ;
-   xml.run () ;
-}
-
-static void genOpt ( const char *lang )
-{
-   OptGen xml ( lang ) ;
-   xml.run () ;
-}
-
-static void genTrace ()
-{
-   TraceGen::genList () ;
-}
-
-static void genVer()
-{
-   VerGen verGen ;
-   verGen.run(false) ;
-}
-
-static void genJsCode()
-{
-   jsCodeGen _js2Code ;
-   _js2Code.run() ;
-}
-
-enum supportedLangs
-{
-   LANG_CN = 0,
-   LANG_EN,
-   LANG_MAX
-} ;
-
-const CHAR *pLang[] = {
-   "cn",
-   "en"
-} ;
-
-static void genDoc ( const char *lang )
-{
-   RCGen rcGen ( lang ) ;
-   rcGen.genDoc() ;
-
-   OptGenForWeb optGen ( lang ) ;
-   optGen.run () ;
-
-   VerGen verGen ;
-   verGen.run(true) ;
-}
-
-static void genBuild ()
-{
-   BuildGen gen ;
-   gen.run () ;
-}
-
-static void genFileName ()
-{
-   FileNameGen::genList() ;
-}
-
-int main (int argc, char** argv)
-{
-   if ( ( 2 == argc && argv[1][0] == '?' ) ||
-        ( 2 < argc ))
+   rc = opt->parse( argc, argv ) ;
+   if ( -1 == rc )
    {
-      if ( argv[1][0] == '?' )
-         displayUsage ( argv[0] ) ;
-      return 0 ;
+      rc = 0 ;
+      goto done ;
    }
-   const char * lang = "en" ;
-   if ( 2 == argc )
+   else if ( rc )
    {
-      lang = argv[1] ;
+      goto error ;
    }
-   genRC ( lang ) ;
-   genFileName () ;
-   genOpt ( lang ) ;
-   genTrace () ;
-   genDoc ( "cn" ) ;
-   genBuild () ;
-   genVer() ;
-   genJsCode() ;
-   return 0;
+
+   rc = runner->init() ;
+   if ( rc )
+   {
+      goto error ;
+   }
+
+   rc = runner->run() ;
+   if ( rc )
+   {
+      goto error ;
+   }
+
+done:
+   return rc ;
+error:
+   goto done ;
 }
