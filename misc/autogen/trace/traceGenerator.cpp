@@ -18,6 +18,7 @@ IMPLEMENT_GENERATOR_AUTO_REGISTER( traceGenerator, GENERAL_TRACE_FILE ) ;
 traceGenerator::traceGenerator() : _isFinish( false ),
                                    _funcNum( 0 )
 {
+   _seqNum = 0 ;
 }
 
 traceGenerator::~traceGenerator()
@@ -28,6 +29,11 @@ int traceGenerator::init()
 {
    int rc = 0 ;
 
+   _seqNum = 0 ;
+   _funcNum = 0 ;
+   _isFinish = false ;
+   _traceList.clear() ;
+   
    rc = _getTraceList() ;
 
    return rc ;
@@ -62,7 +68,6 @@ int traceGenerator::_genTraceFile( int id, fileOutStream &fout,
 {
    int rc = 0 ;
    unsigned int one = 1 ;
-   unsigned int seqNum = 0 ;
    vector<_traceFuncInfo>::iterator it ;
    string headerDesc ;
 
@@ -87,14 +92,14 @@ int traceGenerator::_genTraceFile( int id, fileOutStream &fout,
       char hexBuffer[512] = {0} ;
 
       componentID = one << id ;
-      uniqueID = ((unsigned long long)componentID) << 32 | seqNum ;
+      uniqueID = ((unsigned long long)componentID) << 32 | _seqNum ;
 
       utilSnprintf( hexBuffer, sizeof( hexBuffer ), "#define %-50s 0x%llxL",
                     funcInfo.alias.c_str(), uniqueID ) ;
 
       fout << hexBuffer << "\n" ;
 
-      ++seqNum ;
+      ++_seqNum ;
    }
 
    fout << "#endif\n" ;

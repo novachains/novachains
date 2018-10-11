@@ -99,6 +99,7 @@ private:
 private:
    bool _isFinish ;
    int  _funcNum ;
+   int  _seqNum ;
    vector<struct _traceInfo> _traceList ;
 } ;
 
