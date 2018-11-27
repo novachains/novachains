@@ -161,7 +161,7 @@ namespace engine
          {
             cb = _arrayCB[ i ] ;
 
-            if ( !cb )
+            if ( !cb || arrayFlag[i] )
             {
                continue ;
             }
