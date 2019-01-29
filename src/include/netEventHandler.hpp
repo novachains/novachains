@@ -60,7 +60,8 @@ namespace engine
    {
       NET_EVENT_HANDLER_STATE_HEADER         = 0,
       NET_EVENT_HANDLER_STATE_HEADER_LAST,
-      NET_EVENT_HANDLER_STATE_BODY
+      NET_EVENT_HANDLER_STATE_BODY,
+      NET_EVENT_HANDLER_STATE_STREAM
    } ;
 
    class _netEventSuit ;
@@ -76,6 +77,11 @@ namespace engine
       public:
          _netEventHandler( netEvSuitPtr evSuitPtr,
                            const NET_HANDLE &handle  ) ;
+
+         _netEventHandler( netEvSuitPtr evSuitPtr,
+                           const NET_HANDLE &handle,
+			   const UINT32 &bufLen ) ;
+
          ~_netEventHandler() ;
 
          netEvSuitPtr getEVSuitPtr() const { return _evSuitPtr ; }
@@ -160,6 +166,7 @@ namespace engine
          _MsgHeader                       _header ;
          CHAR                             *_buf ;
          UINT32                           _bufLen ;
+	 UINT32				  _lenRecved ;
          NET_EVENT_HANDLER_STATE          _state ;
          _MsgRouteID                      _id ;
          netEvSuitPtr                     _evSuitPtr ;

@@ -16,7 +16,7 @@
    You should have received a copy of the GNU Affero General Public License
    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-   Source File Name = netService.hpp
+   Source File Name = netMsgStream.hpp
 
    Descriptive Name =
 
@@ -35,62 +35,52 @@
    Last Changed =
 
 *******************************************************************************/
-#ifndef NET_SERVICE_HPP__
-#define NET_SERVICE_HPP__
+#ifndef NET_MSGSTREAM_HPP__
+#define NET_MSGSTREAM_HPP__
 
 #include "core.hpp"
 #include "oss.hpp"
-#include "netDef.hpp"
-#include "netRouteAgent.hpp"
-#include "netMsgStream.hpp"
-#include "boost/thread.hpp"
+#include "msg.hpp"
 
-#include <map>
-#include <vector>
 
-using namespace std ;
 namespace engine
 {
-   class _netMsgHandler ;
 
-   class _netServiceItem : public SDBObject
+   class _netMsgStream : public SDBObject
    {
       public:
-	 _netServiceItem( _netMsgHandler* pHandler, MsgRouter& router, MsgParser* parser, NET_START_THREAD_FUNC pFunc = NULL ) ;
-	 ~_netServiceItem() ;
+         _netMsgStream () {}
+         virtual ~_netMsgStream () {}
 
       public:
-	 INT32 listen(const _MsgRouteID& id) ;
-
-	 INT32 send(const MsgStream& msg) ;
-
-	 void close(const _MsgRouteID& id) ;
-
-	 void closeAll() ;
-
-      private:
-	 boost::thread* _pThread ;
-	 _netMsgHandler* _pHandler ;
-	 _netRouteAgent* _pRouteAgent ;
-	 BOOLEAN hdAllocated ;
-//	 MsgParser  *_parser ;
-	 MsgRouter  _router ;
+         virtual UINT32 getSeq() const = 0 ;
+         virtual UINT32 getSenderID() const = 0 ;
+         virtual _MsgRouteID getRouteID() const = 0 ;
+         virtual UINT32 getReceiver() const = 0 ;
+         virtual UINT32 getLen() const = 0 ;
+         virtual char* serialize() const = 0 ;
    } ;
-   typedef _netServiceItem netServiceItem ;
+   typedef _netMsgStream MsgStream ;
 
-   class _netSvcManager : public SDBObject
+   class _netMsgParser :public SDBObject
    {
+      public:
+         _netMsgParser() {}
+         virtual ~_netMsgParser() {}
 
       public:
-	 netServiceItem* createSvcItem( _netMsgHandler* pHandler, MsgRouter& router, MsgParser*  parser, NET_START_THREAD_FUNC pFunc = NULL) ;
+	 // copy the actual object using a point of base type
+	 virtual _netMsgParser* clone() = 0 ;
 
-	 void freeSvcItem( netServiceItem** ppItem) ;
+	 // get length of a standard message
+	 virtual UINT32 getLen() = 0 ;
 
-      private:
-	 vector<netServiceItem*> itemList ;
-	 _ossSpinSLatch _mtx ;
+	 // parse the received msg and return received size
+         virtual INT32 push(const char* pBuf) = 0 ;
+
+         virtual _netMsgStream* get(const char* pBuf) = 0 ;
    } ;
+   typedef _netMsgParser MsgParser ;
 
 }
-
-#endif 
+#endif

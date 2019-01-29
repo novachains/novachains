@@ -61,6 +61,7 @@ namespace engine
    : _sock( evSuitPtr->getIOService() ),
      _buf(NULL),
      _bufLen(0),
+     _lenRecved(0),
      _state(NET_EVENT_HANDLER_STATE_HEADER),
      _handle( handle )
    {
@@ -81,6 +82,36 @@ namespace engine
       /// attach
       _evSuitPtr->addHandle( _handle ) ;
    }
+
+   _netEventHandler::_netEventHandler( netEvSuitPtr evSuitPtr,
+                                       const NET_HANDLE &handle,
+				       const UINT32 &bufLen )
+   : _sock( evSuitPtr->getIOService() ),
+     _buf(NULL),
+     _bufLen(bufLen),
+     _lenRecved(0),
+     _state(NET_EVENT_HANDLER_STATE_STREAM),
+     _handle( handle )
+   {
+      _evSuitPtr     = evSuitPtr ;
+      _id.value      = MSG_INVALID_ROUTEID ;
+      _isConnected   = FALSE ;
+      _isNew         = TRUE ;
+      _hasRecvMsg    = FALSE ;
+      _lastSendTick  = ossGetCurrentMilliseconds() ;
+      _lastRecvTick  = ossGetCurrentMilliseconds() ;
+      _lastBeatTick  = ossGetCurrentMilliseconds() ;
+      _msgid         = 0 ;
+
+      _srDataLen     = 0 ;
+      _mbps          = 0 ;
+      _lastStatTick  = _lastSendTick ;
+
+      /// attach
+      _evSuitPtr->addHandle( _handle ) ;
+   }
+
+
 
    _netEventHandler::~_netEventHandler()
    {
@@ -421,6 +452,30 @@ namespace engine
                                     boost::asio::placeholders::error )) ;
          }
       }
+      else if ( NET_EVENT_HANDLER_STATE_STREAM == _state )
+      {
+	 if ( !_isConnected )
+         {
+            PD_LOG( PDWARNING, "Connection[Handle:%d, Node:%s] is "
+                    "already closed", _handle, routeID2String( _id ).c_str() ) ;
+            goto error ;
+         }
+
+	 if ( _buf == NULL)
+	 {
+//	    UINT32 len = _evSuitPtr->getFrame()->_parser->getLen() ;
+	    if ( SDB_OK != _allocateBuf( _bufLen ) )
+            {
+               goto error ;
+            }
+	 }
+         async_read( _sock, buffer(
+                     (CHAR *)((ossValuePtr)_buf + _lenRecved),
+		     _bufLen - _lenRecved ),
+		     boost::bind(&_netEventHandler::_readCallback,
+				 shared_from_this(),
+				 boost::asio::placeholders::error )) ;
+      }
       else
       {
          UINT32 len = _header.messageLength ;
@@ -662,6 +717,30 @@ namespace engine
 
          _state = NET_EVENT_HANDLER_STATE_BODY ;
          asyncRead() ;
+      }
+      else if ( NET_EVENT_HANDLER_STATE_STREAM == _state )
+      {
+	 UINT32 msgRecvd = _evSuitPtr->getFrame()->_parser->push( _buf + _lenRecved) ;
+         _lenRecved += msgRecvd ;
+         if ( _lenRecved == _bufLen )
+         {
+	    // The msg handler has to free the MsgStream
+            MsgStream *pMsg = _evSuitPtr->getFrame()->_parser->get( _buf ) ;
+	    _evSuitPtr->getFrame()->handleStream( shared_from_this(), pMsg) ;
+            ossMemset( _buf, 0, _bufLen ) ;
+	    _lenRecved = 0 ;
+            asyncRead() ;
+	 }
+	 else if ( _lenRecved < _bufLen )
+	 {
+	    asyncRead() ;
+	 }
+	 else
+	 {
+	    PD_LOG( PDERROR, "Connection[Handle:%d, Node:%s] recieved invalid msg from %s:%d",
+		     _handle, routeID2String( _id ).c_str(), remoteAddr().c_str(), remotePort() ) ;
+	    goto error_close ;
+         }
       }
       else
       {

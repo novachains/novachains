@@ -297,4 +297,50 @@ namespace engine
       }
    }
 
+   _netMsgRouter::_netMsgRouter( const _MsgRouteID &localID )
+   {
+      _routerMap.setLocal( localID ) ;
+   }
+
+   INT32 _netMsgRouter::createRouterItem( const _MsgRouteID &id,
+				    const CHAR *host,
+                                    const CHAR *service )
+   {
+      INT32 rc = SDB_OK ;
+      BOOLEAN newAdd ;
+      rc = _routerMap.update( id, host, service, &newAdd ) ;
+      return rc ;
+   }  
+
+   INT32 _netMsgRouter::updateRouterItem( const _MsgRouteID &id,
+                                    const CHAR *host,
+                                    const CHAR *service )
+   {
+      INT32 rc = SDB_OK ;
+      rc = _routerMap.update( id, host, service) ;
+      return rc ;
+   }
+
+   INT32 _netMsgRouter::deleteRouterItem( const _MsgRouteID &id )
+   {
+      INT32 rc ;
+      BOOLEAN hasDel ;
+      _routerMap.del( id, hasDel ) ;
+      rc = hasDel ? SDB_OK : SDB_SYS ;
+      return rc ;
+   }
+
+/*   void _netMsgRouter::getIDList( set<_MsgRouteID> &idList  )
+   {
+      _MsgRouteID tmp ;
+      map<UINT64, _netRouteNode>::const_iterator itr = _routerMap._route.begin() ;
+      while( itr != _routerMap._route.end() )
+      {
+	 tmp.value = itr->first ;
+	 idList.insert( tmp ) ;
+	 itr++ ;
+      }
+   }*/
+
+
 }

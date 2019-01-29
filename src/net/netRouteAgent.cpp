@@ -42,16 +42,16 @@
 
 namespace engine
 {
-   _netRouteAgent::_netRouteAgent( _netMsgHandler *handler ):
-                                   _frame( handler, &_route )
+   _netRouteAgent::_netRouteAgent( _netMsgHandler *handler, _netRoute *route, MsgParser* parser ):
+   _frame(handler, route, parser)
    {
-
+      _pRoute = route ;
    }
 
    // this updateRoute only change the old routeID to new one. It does NOT
    // change the hostname and servicename, so we do not need to restart services
    // PD_TRACE_DECLARE_FUNCTION ( SDB__NETRTAG_UPRT, "_netRouteAgent::updateRoute" )
-   INT32 _netRouteAgent::updateRoute ( const _MsgRouteID &oldID,
+/*   INT32 _netRouteAgent::updateRoute ( const _MsgRouteID &oldID,
                                        const _MsgRouteID &newID )
    {
       INT32 rc = SDB_OK ;
@@ -132,7 +132,7 @@ namespace engine
       {
          _frame.close( id ) ;
       }
-   }
+   } */
 
    // PD_TRACE_DECLARE_FUNCTION ( SDB__NETRTAG_LSTN, "_netRouteAgent::listen" )
    INT32 _netRouteAgent::listen( const _MsgRouteID &id )
@@ -142,7 +142,7 @@ namespace engine
       _netRouteNode node ;
       CHAR host[ OSS_MAX_HOSTNAME + 1 ] = { 0 } ;
       CHAR service[ OSS_MAX_SERVICENAME + 1] = { 0 } ;
-      rc = _route.route( id, host, OSS_MAX_HOSTNAME,
+      rc = _pRoute->route( id, host, OSS_MAX_HOSTNAME,
                          service, OSS_MAX_SERVICENAME ) ;
       if ( SDB_OK != rc )
       {
@@ -269,7 +269,7 @@ namespace engine
       {
          CHAR host[ OSS_MAX_HOSTNAME + 1 ] = { 0 } ;
          CHAR service[ OSS_MAX_SERVICENAME + 1] = { 0 } ;
-         rc = _route.route( id, host, OSS_MAX_HOSTNAME,
+         rc = _pRoute->route( id, host, OSS_MAX_HOSTNAME,
                             service, OSS_MAX_SERVICENAME ) ;
          if ( SDB_OK != rc )
          {
@@ -312,4 +312,3 @@ namespace engine
    }
 
 }
-

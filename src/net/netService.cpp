@@ -39,90 +39,106 @@
 #include "netService.hpp"
 #include "pdTrace.hpp"
 #include "netTrace.hpp"
-
+#include "netMsgHandler.hpp"
 
 namespace engine
 {
 
-   _netServiceItem::_netServiceItem( _netMsgHandler * pHandler, MsgRouter * pRouter, MsgParser * pParser )
+   _netServiceItem::_netServiceItem( _netMsgHandler* handler, MsgRouter& router, MsgParser* parser, NET_START_THREAD_FUNC pFunc )
    :
-   _router(pRouter),
-   _parser(pParser)
+   _router(router)
+//   _parser(parser)
    {
-      SDB_ASSERT(pRouter, "router cannot be NULL") ;
-      SDB_ASSERT(pParser, "Parser cannot be NULL") ;
-      if ( pHandler )
+      if ( handler )
       {
-	 _handler = pHandler ;
+	 _pHandler = handler ;
+         hdAllocated = FALSE ;
       }
       else
       {
-	 _handler = new _netCommHandler() ;
+	 _pHandler = SDB_OSS_NEW _netCommHandler() ;
+	 hdAllocated = TRUE ;
       }
 
-      _routeAgent = new _netRouteAgent( _handler ) ;
+      _pRouteAgent = SDB_OSS_NEW _netRouteAgent( _pHandler, _router.getRoute(), parser ) ;
 
-      _routeAgent.run() ;
+//      _pThread = new boost::thread (boost::bind( &_netRouteAgent::run , _pRouteAgent)) ;
+      _pRouteAgent->startThread(&_pThread, pFunc) ;
+
    }
 
    _netServiceItem::~_netServiceItem()
    {
-      _handler = NULL ;
-      _router = NULL ;
-      _parser = NULL ;
-      _routeAgent.stop() ;
-      delete _routeAgent ;
-      _routeAgent = NULL ;
+      if ( hdAllocated )
+      {
+	 delete _pHandler ;
+      }
+      _pHandler = NULL  ;
+      _pRouteAgent->stop() ;
+      _pThread->join() ;
+      delete _pRouteAgent ;
+      _pRouteAgent = NULL ;
    }
 
    INT32 _netServiceItem::listen(const _MsgRouteID &id)
    {
-      _routeAgent.listen( id ) ;
+      INT32 rc = _pRouteAgent->listen( id ) ;
+      return rc ;
    }
 
-   // TODO
    INT32 _netServiceItem::send(const MsgStream &msg)
    {
-      // SUDO
-      // get route id
-      // syncConnect
-      // call frame.syncconnect and get a net handle
-      // get serialized data and length
-      // send data through syncsendraw
+      INT32 rc = SDB_OK ;
+      _MsgRouteID id = msg.getRouteID() ;
+      char* pBuffer  = msg.serialize() ;
+      INT32 bufLen = msg.getLen() ;
+      rc = _pRouteAgent->sendBuf(id, pBuffer, bufLen) ;
+      if (pBuffer)
+      {
+	 SDB_OSS_FREE(pBuffer) ;
+      }
+      return rc ;
 
    }
 
-   // TODO
-   INT32 _netServiceItem::close(const _MsgRouteID &id)
+   void _netServiceItem::close(const _MsgRouteID &id)
    {
-      // _routeAgent.close(id) ; should be enough here, still thinking if we should have a interface
-      // in this manner, and probably make me think to link routeID with NET_handle
+      _pRouteAgent->close(id) ;
    }
 
-   INT32 _netServiceItem::closeAll()
+/*   INT32 _netServiceItem::closeAll()
    {
-         INT32 rc = SDB_OK ;
-         map<_MsgRouteID, _netRouteNode>::iterator it = _router->_routerMap.begin() ;
+      INT32 rc = SDB_OK ;
+      set<_MsgRouterID> idList ;
 
-         while(it != _routerPtr->_routerMap.end())
-         {
-            if ( rc = close(it->first) != SDB_OK )
-            {
-               break ;
-            }
+      _router.getIDList( idList ) ;
+      set<_MsgRouterID>::const_iterator itr = idList.begin() ;
+      while ( itr != idList.end() )
+      {
+	 rc = close( *itr ) ;
+	 if ( rc )
+	 {
+	    break ;
+	 }
+	 itr++ ;
+      } 
 
-            it++ ;
-         }
+      return rc ;
+   } */
 
-         return rc ;
+   void _netServiceItem::closeAll()
+   {
+      _pRouteAgent->disconnectAll() ;
    }
 
-   netServiceItem * _netSvcManager::createSvcItem( _netMsgHandler * pHandler, MsgRouter * pRouter, MsgParser * pParser) ;
+   netServiceItem * _netSvcManager::createSvcItem( _netMsgHandler * pHandler, MsgRouter& router, MsgParser * parser, NET_START_THREAD_FUNC pFunc) 
    {
-      netServiceItem * pItem = new netServiceItem( _netMsgHandler * pHandler, MsgRouter * pRouter, MsgParser * pParser ) ;
+      netServiceItem * pItem = SDB_OSS_NEW netServiceItem( pHandler, router, parser, pFunc ) ;
       if ( pItem )
       {
+	  _mtx.get() ;
           itemList.push_back(pItem) ;
+	  _mtx.release() ;
       }
       return pItem ;
    }
@@ -130,15 +146,17 @@ namespace engine
    void _netSvcManager::freeSvcItem( netServiceItem ** ppItem)
    {
       SDB_ASSERT( *ppItem, " NULL net service item") ;
+      _mtx.get() ;
       for ( int i = 0; i< itemList.size(); i++)
       {
           if (*ppItem == itemList[i])
           {
-             itemList.erase(i) ;
+             itemList.erase(itemList.begin() + i) ;
              break ;
           }
           SDB_ASSERT( i != (itemList.size() - 1) , " item not in the active list " ) ;
       }
+      _mtx.release() ;
       delete *ppItem ;
       *ppItem = NULL ;
    }
