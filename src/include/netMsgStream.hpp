@@ -59,6 +59,7 @@ namespace engine
          virtual UINT32 getReceiver() const = 0 ;
          virtual UINT32 getLen() const = 0 ;
          virtual char* serialize() const = 0 ;
+         virtual char* getData() const = 0 ;
    } ;
    typedef _netMsgStream MsgStream ;
 
@@ -72,11 +73,11 @@ namespace engine
 	 // copy the actual object using a point of base type
 	 virtual _netMsgParser* clone() = 0 ;
 
-	 // get length of a standard message
+	 // get maximum length of the message
 	 virtual UINT32 getLen() = 0 ;
 
-	 // parse the received msg and return received size
-         virtual INT32 push(const char* pBuf) = 0 ;
+	 // parse the received msg and return a boolean to indicate whether the msg ends
+         virtual BOOLEAN push(const char* pBuf, const std::size_t& dataRecvd) = 0 ;
 
          virtual _netMsgStream* get(const char* pBuf) = 0 ;
    } ;

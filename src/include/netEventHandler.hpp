@@ -158,6 +158,7 @@ namespace engine
 
       private:
          void  _readCallback( const boost::system::error_code &error ) ;
+         void _streamReadCallback( const boost::system::error_code &error, size_t bytes_transferred) ;
          INT32 _allocateBuf( UINT32 len ) ;
 
       private:
@@ -166,7 +167,6 @@ namespace engine
          _MsgHeader                       _header ;
          CHAR                             *_buf ;
          UINT32                           _bufLen ;
-	 UINT32				  _lenRecved ;
          NET_EVENT_HANDLER_STATE          _state ;
          _MsgRouteID                      _id ;
          netEvSuitPtr                     _evSuitPtr ;

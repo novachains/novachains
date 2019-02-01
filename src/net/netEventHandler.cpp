@@ -61,7 +61,6 @@ namespace engine
    : _sock( evSuitPtr->getIOService() ),
      _buf(NULL),
      _bufLen(0),
-     _lenRecved(0),
      _state(NET_EVENT_HANDLER_STATE_HEADER),
      _handle( handle )
    {
@@ -89,7 +88,6 @@ namespace engine
    : _sock( evSuitPtr->getIOService() ),
      _buf(NULL),
      _bufLen(bufLen),
-     _lenRecved(0),
      _state(NET_EVENT_HANDLER_STATE_STREAM),
      _handle( handle )
    {
@@ -463,18 +461,16 @@ namespace engine
 
 	 if ( _buf == NULL)
 	 {
-//	    UINT32 len = _evSuitPtr->getFrame()->_parser->getLen() ;
 	    if ( SDB_OK != _allocateBuf( _bufLen ) )
             {
                goto error ;
             }
 	 }
-         async_read( _sock, buffer(
-                     (CHAR *)((ossValuePtr)_buf + _lenRecved),
-		     _bufLen - _lenRecved ),
-		     boost::bind(&_netEventHandler::_readCallback,
-				 shared_from_this(),
-				 boost::asio::placeholders::error )) ;
+         _sock.async_read_some( buffer(_buf, _bufLen),
+		          boost::bind(&_netEventHandler::_streamReadCallback,
+				      shared_from_this(),
+				      boost::asio::placeholders::error,
+				      boost::asio::placeholders::bytes_transferred)) ;
       }
       else
       {
@@ -718,30 +714,6 @@ namespace engine
          _state = NET_EVENT_HANDLER_STATE_BODY ;
          asyncRead() ;
       }
-      else if ( NET_EVENT_HANDLER_STATE_STREAM == _state )
-      {
-	 UINT32 msgRecvd = _evSuitPtr->getFrame()->_parser->push( _buf + _lenRecved) ;
-         _lenRecved += msgRecvd ;
-         if ( _lenRecved == _bufLen )
-         {
-	    // The msg handler has to free the MsgStream
-            MsgStream *pMsg = _evSuitPtr->getFrame()->_parser->get( _buf ) ;
-	    _evSuitPtr->getFrame()->handleStream( shared_from_this(), pMsg) ;
-            ossMemset( _buf, 0, _bufLen ) ;
-	    _lenRecved = 0 ;
-            asyncRead() ;
-	 }
-	 else if ( _lenRecved < _bufLen )
-	 {
-	    asyncRead() ;
-	 }
-	 else
-	 {
-	    PD_LOG( PDERROR, "Connection[Handle:%d, Node:%s] recieved invalid msg from %s:%d",
-		     _handle, routeID2String( _id ).c_str(), remoteAddr().c_str(), remotePort() ) ;
-	    goto error_close ;
-         }
-      }
       else
       {
          _srDataLen += _header.messageLength ;
@@ -762,6 +734,75 @@ namespace engine
       _evSuitPtr->getFrame()->_erase( handle() ) ;
       goto done ;
    }
+
+      void _netEventHandler::_streamReadCallback( const boost::system::error_code &error, size_t bytes_transferred)
+   {
+
+      BOOLEAN msgEnd = FALSE ;
+
+      if ( error )
+      {
+         if ( error.value() == boost::system::errc::timed_out ||
+              error.value() == boost::system::errc::resource_unavailable_try_again )
+         {
+            PD_LOG( PDWARNING, "Connection[Handle:%d, Node:%s] recieve "
+                    "timeout: %s,%d", _handle, routeID2String( _id ).c_str(),
+                    error.message().c_str(), error.value() ) ;
+            asyncRead() ;
+            goto done ;
+         }
+         else if ( error.value() == boost::system::errc::operation_canceled ||
+                   error.value() == boost::system::errc::no_such_file_or_directory )
+         {
+            PD_LOG ( PDINFO, "Connection[Handle:%d, Node:%s] has been "
+                     "closed: %s,%d", _handle, routeID2String( _id ).c_str(),
+                     error.message().c_str(), error.value() ) ;
+         }
+         else if ( bytes_transferred == 0)
+         {
+	    PD_LOG ( PDINFO, "Connection[Handle:%d, Node:%s] reveived 0 length message", _handle, routeID2String( _id ).c_str()) ;
+         }
+         else
+         {
+            PD_LOG ( PDERROR, "Connection[Handle:%d, Node:%s] occur "
+                     "error: %s,%d", _handle, routeID2String( _id ).c_str(),
+                     error.message().c_str(), error.value() ) ;
+         }
+
+         goto error_close ;
+      }
+
+      _lastRecvTick = ossGetCurrentMilliseconds() ;
+      _lastBeatTick = _lastRecvTick ;
+
+      msgEnd = _evSuitPtr->getFrame()->_parser->push( _buf, bytes_transferred) ;
+
+      if ( msgEnd )
+      {
+         // The msg handler has to free the MsgStream
+         MsgStream *pMsg = _evSuitPtr->getFrame()->_parser->get( _buf ) ;
+         _evSuitPtr->getFrame()->handleStream( shared_from_this(), pMsg) ;
+      }
+
+      ossMemset( _buf, 0, _bufLen ) ;
+      asyncRead() ;
+
+   done:
+      return ;
+   error_close:
+      if ( _isConnected )
+      {
+         close() ;
+      }
+      _evSuitPtr->getFrame()->handleClose( shared_from_this(), _id ) ;
+      _evSuitPtr->getFrame()->_erase( handle() ) ;
+      goto done ;
+
+   }
+
+
+
+
 
    void _netEventHandler::close()
    {
