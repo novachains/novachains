@@ -41,12 +41,8 @@
 namespace engine
 {
 
-   /// auto register cb
+   // auto register cb
    PMD_IMPLEMENT_CB_AUTO_REGISTER( _netCB ) ;
-
-   /// message map, use ON_MSG or ON_EVENT to map message and function
-//   BEGIN_OBJ_MSG_MAP( _daoCB, _pmdCBBase )
-//   END_OBJ_MSG_MAP()
 
    /*
       _netCB implement
@@ -91,7 +87,7 @@ namespace engine
    INT32 _netCB::fini()
    {
       cout << "fini net" << endl ;
-      delete _netManager ;
+      SDB_OSS_DEL _netManager ;
       return SDB_OK ;
    }
 

@@ -1180,6 +1180,9 @@ namespace engine
       NET_EH eh ;
 
       rc = _getHandle( id, eh ) ;
+      //TODO
+      // add a probe here logging the handle id of eh
+
       if ( rc )
       {
          goto error ;
@@ -1399,6 +1402,18 @@ namespace engine
    void _netFrame::handleStream( NET_EH eh, MsgStream *pMsg)
    {
       INT32 rc = SDB_OK ;
+      if ( MSG_INVALID_ROUTEID == eh->id().value )
+      {
+         if ( MSG_INVALID_ROUTEID != pMsg->getSenderID().value )
+         {
+            eh->id(pMsg->getSenderID()) ;
+            //TODO
+            // probably log the route id of eh
+
+            _addRoute( eh ) ;
+         }
+      }
+
       rc = _handler->handleStream( eh->id(), pMsg) ;
       if ( SDB_NET_BROKEN_MSG == rc )
       {

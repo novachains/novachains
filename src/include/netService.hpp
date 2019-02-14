@@ -82,6 +82,7 @@ namespace engine
    {
 
       public:
+         ~_netSvcManager() ;
 	 netServiceItem* createSvcItem( _netMsgHandler* pHandler, MsgRouter& router, MsgParser*  parser, NET_START_THREAD_FUNC pFunc = NULL) ;
 
 	 void freeSvcItem( netServiceItem** ppItem) ;

@@ -54,7 +54,7 @@ namespace engine
 
       public:
          virtual UINT32 getSeq() const = 0 ;
-         virtual UINT32 getSenderID() const = 0 ;
+         virtual _MsgRouteID getSenderID() const = 0 ;
          virtual _MsgRouteID getRouteID() const = 0 ;
          virtual UINT32 getReceiver() const = 0 ;
          virtual UINT32 getLen() const = 0 ;

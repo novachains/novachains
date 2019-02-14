@@ -167,6 +167,7 @@ namespace engine
          _MsgHeader                       _header ;
          CHAR                             *_buf ;
          UINT32                           _bufLen ;
+         UINT32                           _dataRecvd ;
          NET_EVENT_HANDLER_STATE          _state ;
          _MsgRouteID                      _id ;
          netEvSuitPtr                     _evSuitPtr ;

@@ -50,6 +50,9 @@
 #include <mstcpip.h>
 #endif
 
+#include <iostream>
+
+
 using namespace boost::asio::ip ;
 
 namespace engine
@@ -61,6 +64,7 @@ namespace engine
    : _sock( evSuitPtr->getIOService() ),
      _buf(NULL),
      _bufLen(0),
+     _dataRecvd(0),
      _state(NET_EVENT_HANDLER_STATE_HEADER),
      _handle( handle )
    {
@@ -88,6 +92,7 @@ namespace engine
    : _sock( evSuitPtr->getIOService() ),
      _buf(NULL),
      _bufLen(bufLen),
+     _dataRecvd(0),
      _state(NET_EVENT_HANDLER_STATE_STREAM),
      _handle( handle )
    {
@@ -466,7 +471,10 @@ namespace engine
                goto error ;
             }
 	 }
-         _sock.async_read_some( buffer(_buf, _bufLen),
+
+         // async read data, it will call the callback function immediately after we receive any data
+         // instead of waiting the entire message
+         _sock.async_read_some( buffer(_buf + _dataRecvd, _bufLen - _dataRecvd),
 		          boost::bind(&_netEventHandler::_streamReadCallback,
 				      shared_from_this(),
 				      boost::asio::placeholders::error,
@@ -566,7 +574,7 @@ namespace engine
    {
       INT32 rc = SDB_OK ;
       PD_TRACE_ENTRY ( SDB__NETEVNHND__ALLOBUF );
-      if ( _bufLen < len )
+      if ( ( _bufLen < len ) || (NET_EVENT_HANDLER_STATE_STREAM == _state) )
       {
          if ( NULL != _buf )
          {
@@ -735,7 +743,8 @@ namespace engine
       goto done ;
    }
 
-      void _netEventHandler::_streamReadCallback( const boost::system::error_code &error, size_t bytes_transferred)
+   // stream read call back
+   void _netEventHandler::_streamReadCallback( const boost::system::error_code &error, size_t bytes_transferred)
    {
 
       BOOLEAN msgEnd = FALSE ;
@@ -775,16 +784,24 @@ namespace engine
       _lastRecvTick = ossGetCurrentMilliseconds() ;
       _lastBeatTick = _lastRecvTick ;
 
-      msgEnd = _evSuitPtr->getFrame()->_parser->push( _buf, bytes_transferred) ;
+      _dataRecvd += bytes_transferred ;
+      // need remove this line as it is the special case in testing scenario
+//      _buf[--_dataRecvd] = 0 ;
+      SDB_ASSERT( _dataRecvd < _bufLen , "received msg of unexpected length") ;
+      msgEnd = _evSuitPtr->getFrame()->_parser->push( _buf, _dataRecvd) ;
+
+      // TODO
+      // add a probe here logging the reveived message length for this round and the total length
 
       if ( msgEnd )
       {
-         // The msg handler has to free the MsgStream
+         // The strem is created in parser::get and the msg handler has to free the MsgStream
          MsgStream *pMsg = _evSuitPtr->getFrame()->_parser->get( _buf ) ;
          _evSuitPtr->getFrame()->handleStream( shared_from_this(), pMsg) ;
+         ossMemset(_buf, 0, _bufLen) ;
+         _dataRecvd = 0 ;
       }
 
-      ossMemset( _buf, 0, _bufLen ) ;
       asyncRead() ;
 
    done:
@@ -799,9 +816,6 @@ namespace engine
       goto done ;
 
    }
-
-
-
 
 
    void _netEventHandler::close()

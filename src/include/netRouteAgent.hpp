@@ -73,7 +73,6 @@ namespace engine
          OSS_INLINE void setLocalID( const _MsgRouteID &id )
          {
             _frame.setLocal( id ) ;
-            _pRoute->setLocal( id ) ;
             return ;
          }
 

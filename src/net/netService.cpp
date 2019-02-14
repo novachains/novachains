@@ -61,8 +61,7 @@ namespace engine
       }
 
       _pRouteAgent = SDB_OSS_NEW _netRouteAgent( _pHandler, _router.getRoute(), parser ) ;
-
-//      _pThread = new boost::thread (boost::bind( &_netRouteAgent::run , _pRouteAgent)) ;
+      _pRouteAgent->setLocalID(_router.getRoute()->local()) ;
       _pRouteAgent->startThread(&_pThread, pFunc) ;
 
    }
@@ -71,12 +70,12 @@ namespace engine
    {
       if ( hdAllocated )
       {
-	 delete _pHandler ;
+	 SDB_OSS_DEL _pHandler ;
       }
       _pHandler = NULL  ;
       _pRouteAgent->stop() ;
       _pThread->join() ;
-      delete _pRouteAgent ;
+      SDB_OSS_DEL _pRouteAgent ;
       _pRouteAgent = NULL ;
    }
 
@@ -106,30 +105,26 @@ namespace engine
       _pRouteAgent->close(id) ;
    }
 
-/*   INT32 _netServiceItem::closeAll()
-   {
-      INT32 rc = SDB_OK ;
-      set<_MsgRouterID> idList ;
-
-      _router.getIDList( idList ) ;
-      set<_MsgRouterID>::const_iterator itr = idList.begin() ;
-      while ( itr != idList.end() )
-      {
-	 rc = close( *itr ) ;
-	 if ( rc )
-	 {
-	    break ;
-	 }
-	 itr++ ;
-      } 
-
-      return rc ;
-   } */
-
    void _netServiceItem::closeAll()
    {
       _pRouteAgent->disconnectAll() ;
    }
+
+   _netSvcManager::~_netSvcManager()
+   {
+      if ( !itemList.empty() )
+      {
+         _mtx.get() ;
+         for ( int i = 0; i< itemList.size(); i++)
+         {
+            SDB_ASSERT( itemList[i] != NULL , "A stale item is found in the item list" ) ;
+            SDB_OSS_DEL itemList[i] ;
+            itemList.erase(itemList.begin() + i) ;
+         }
+         _mtx.release() ;
+      }
+   }
+
 
    netServiceItem * _netSvcManager::createSvcItem( _netMsgHandler * pHandler, MsgRouter& router, MsgParser * parser, NET_START_THREAD_FUNC pFunc) 
    {
@@ -157,7 +152,7 @@ namespace engine
           SDB_ASSERT( i != (itemList.size() - 1) , " item not in the active list " ) ;
       }
       _mtx.release() ;
-      delete *ppItem ;
+      SDB_OSS_DEL *ppItem ;
       *ppItem = NULL ;
    }
 
