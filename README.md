@@ -48,6 +48,7 @@ Building Prerequisites:
 	sudo apt-get install libmozjs185-1.0
 
 	#install openssl
+	# Mac user can pass this step
 	sudo apt-get install libssl-dev
 
 	#install nspr
