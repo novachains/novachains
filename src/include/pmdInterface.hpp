@@ -60,6 +60,8 @@ namespace engine
 
       PMD_CB_DAO,                /// Data Access Layer
 
+      PMD_CB_NET,		 /// Net Service Layer
+
       /// End user control block define }}
       PMD_CB_MAX
    } ;
@@ -71,6 +73,9 @@ namespace engine
    {
       PMD_IF_MIN                 = 0,
       /// {{ Begin user interface define
+
+      // GET NET SERVICE ITEM INTERFACE
+      PMD_IF_GET_NETMGR,
 
       // End user interface define }}
       PMD_IF_MAX

@@ -50,6 +50,9 @@
 #include <mstcpip.h>
 #endif
 
+#include <iostream>
+
+
 using namespace boost::asio::ip ;
 
 namespace engine
@@ -61,6 +64,7 @@ namespace engine
    : _sock( evSuitPtr->getIOService() ),
      _buf(NULL),
      _bufLen(0),
+     _dataRecvd(0),
      _state(NET_EVENT_HANDLER_STATE_HEADER),
      _handle( handle )
    {
@@ -81,6 +85,36 @@ namespace engine
       /// attach
       _evSuitPtr->addHandle( _handle ) ;
    }
+
+   _netEventHandler::_netEventHandler( netEvSuitPtr evSuitPtr,
+                                       const NET_HANDLE &handle,
+				       const UINT32 &bufLen )
+   : _sock( evSuitPtr->getIOService() ),
+     _buf(NULL),
+     _bufLen(bufLen),
+     _dataRecvd(0),
+     _state(NET_EVENT_HANDLER_STATE_STREAM),
+     _handle( handle )
+   {
+      _evSuitPtr     = evSuitPtr ;
+      _id.value      = MSG_INVALID_ROUTEID ;
+      _isConnected   = FALSE ;
+      _isNew         = TRUE ;
+      _hasRecvMsg    = FALSE ;
+      _lastSendTick  = ossGetCurrentMilliseconds() ;
+      _lastRecvTick  = ossGetCurrentMilliseconds() ;
+      _lastBeatTick  = ossGetCurrentMilliseconds() ;
+      _msgid         = 0 ;
+
+      _srDataLen     = 0 ;
+      _mbps          = 0 ;
+      _lastStatTick  = _lastSendTick ;
+
+      /// attach
+      _evSuitPtr->addHandle( _handle ) ;
+   }
+
+
 
    _netEventHandler::~_netEventHandler()
    {
@@ -426,6 +460,31 @@ namespace engine
                                     boost::asio::placeholders::error )) ;
          }
       }
+      else if ( NET_EVENT_HANDLER_STATE_STREAM == _state )
+      {
+	 if ( !_isConnected )
+         {
+            PD_LOG( PDWARNING, "Connection[Handle:%d, Node:%s] is "
+                    "already closed", _handle, routeID2String( _id ).c_str() ) ;
+            goto error ;
+         }
+
+	 if ( _buf == NULL)
+	 {
+	    if ( SDB_OK != _allocateBuf( _bufLen ) )
+            {
+               goto error ;
+            }
+	 }
+
+         // async read data, it will call the callback function immediately after we receive any data
+         // instead of waiting the entire message
+         _sock.async_read_some( buffer(_buf + _dataRecvd, _bufLen - _dataRecvd),
+		          boost::bind(&_netEventHandler::_streamReadCallback,
+				      shared_from_this(),
+				      boost::asio::placeholders::error,
+				      boost::asio::placeholders::bytes_transferred)) ;
+      }
       else
       {
          UINT32 len = _header.messageLength ;
@@ -520,7 +579,7 @@ namespace engine
    {
       INT32 rc = SDB_OK ;
       PD_TRACE_ENTRY ( SDB__NETEVNHND__ALLOBUF );
-      if ( _bufLen < len )
+      if ( ( _bufLen < len ) || (NET_EVENT_HANDLER_STATE_STREAM == _state) )
       {
          if ( NULL != _buf )
          {
@@ -688,6 +747,81 @@ namespace engine
       _evSuitPtr->getFrame()->_erase( handle() ) ;
       goto done ;
    }
+
+   // stream read call back
+   void _netEventHandler::_streamReadCallback( const boost::system::error_code &error, size_t bytes_transferred)
+   {
+
+      BOOLEAN msgEnd = FALSE ;
+
+      if ( error )
+      {
+         if ( error.value() == boost::system::errc::timed_out ||
+              error.value() == boost::system::errc::resource_unavailable_try_again )
+         {
+            PD_LOG( PDWARNING, "Connection[Handle:%d, Node:%s] recieve "
+                    "timeout: %s,%d", _handle, routeID2String( _id ).c_str(),
+                    error.message().c_str(), error.value() ) ;
+            asyncRead() ;
+            goto done ;
+         }
+         else if ( error.value() == boost::system::errc::operation_canceled ||
+                   error.value() == boost::system::errc::no_such_file_or_directory )
+         {
+            PD_LOG ( PDINFO, "Connection[Handle:%d, Node:%s] has been "
+                     "closed: %s,%d", _handle, routeID2String( _id ).c_str(),
+                     error.message().c_str(), error.value() ) ;
+         }
+         else if ( bytes_transferred == 0)
+         {
+	    PD_LOG ( PDINFO, "Connection[Handle:%d, Node:%s] reveived 0 length message", _handle, routeID2String( _id ).c_str()) ;
+         }
+         else
+         {
+            PD_LOG ( PDERROR, "Connection[Handle:%d, Node:%s] occur "
+                     "error: %s,%d", _handle, routeID2String( _id ).c_str(),
+                     error.message().c_str(), error.value() ) ;
+         }
+
+         goto error_close ;
+      }
+
+      _lastRecvTick = ossGetCurrentMilliseconds() ;
+      _lastBeatTick = _lastRecvTick ;
+
+      _dataRecvd += bytes_transferred ;
+      // need remove this line as it is the special case in testing scenario
+//      _buf[--_dataRecvd] = 0 ;
+      SDB_ASSERT( _dataRecvd < _bufLen , "received msg of unexpected length") ;
+      msgEnd = _evSuitPtr->getFrame()->_parser->push( _buf, _dataRecvd) ;
+
+      // TODO
+      // add a probe here logging the reveived message length for this round and the total length
+
+      if ( msgEnd )
+      {
+         // The strem is created in parser::get and the msg handler has to free the MsgStream
+         MsgStream *pMsg = _evSuitPtr->getFrame()->_parser->get( _buf ) ;
+         _evSuitPtr->getFrame()->handleStream( shared_from_this(), pMsg) ;
+         ossMemset(_buf, 0, _bufLen) ;
+         _dataRecvd = 0 ;
+      }
+
+      asyncRead() ;
+
+   done:
+      return ;
+   error_close:
+      if ( _isConnected )
+      {
+         close() ;
+      }
+      _evSuitPtr->getFrame()->handleClose( shared_from_this(), _id ) ;
+      _evSuitPtr->getFrame()->_erase( handle() ) ;
+      goto done ;
+
+   }
+
 
    void _netEventHandler::close()
    {

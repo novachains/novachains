@@ -44,6 +44,7 @@
 #include "ossLatch.hpp"
 #include "netDef.hpp"
 #include <map>
+#include <set>
 
 using namespace std ;
 
@@ -51,7 +52,10 @@ namespace engine
 {
    class _netRoute : public SDBObject
    {
+
+      friend class  _netMsgRouter ;
       public:
+         _netRoute(){}
          ~_netRoute() ;
          INT32 route( const _MsgRouteID &id,
                       CHAR *host, UINT32 hostLen,
@@ -65,6 +69,7 @@ namespace engine
                       MSG_ROUTE_SERVICE_TYPE type,
                       _MsgRouteID &id ) ;
 
+       private:
          /// return err when update an existing node.
          INT32 update( const _MsgRouteID &id,
                        const CHAR *host,
@@ -80,6 +85,7 @@ namespace engine
 
          void  clear() ;
 
+      public:
          OSS_INLINE void setLocal( const _MsgRouteID &id )
          {
             _local = id ;
@@ -95,7 +101,33 @@ namespace engine
          _MsgRouteID _local ;
          _ossSpinSLatch _mtx ;
    };
+
+   class _netMsgRouter : public SDBObject
+   {
+      public:
+         _netMsgRouter(const _MsgRouteID &id) ; 
+
+      public:
+         INT32 createRouterItem( const _MsgRouteID &id, const CHAR *host, const CHAR *service) ;
+
+         INT32 deleteRouterItem( const _MsgRouteID &id ) ;
+
+         INT32 updateRouterItem ( const _MsgRouteID &id, const CHAR *host, const CHAR *service) ;
+
+//         void getIDList( set<_MsgRouteID> &idList  ) ;
+
+	 OSS_INLINE _netRoute* getRoute()
+	 {
+	    return &_routerMap ;
+	 }
+
+      private:
+         _netRoute _routerMap ;
+   } ;
+   typedef _netMsgRouter MsgRouter ;
+
 }
+
 
 #endif
 

@@ -125,7 +125,7 @@ namespace engine
    /*
       _netFrame implement
    */
-   _netFrame::_netFrame( _netMsgHandler *handler, _netRoute *pRoute )
+   _netFrame::_netFrame( _netMsgHandler *handler, _netRoute *pRoute, _netMsgParser *parser )
    :_pRoute( pRoute ),
     _mainSuitPtr( SDB_OSS_NEW netEventSuit( this ) ),
     _handler( handler ),
@@ -143,9 +143,16 @@ namespace engine
       _beatLastTick = ossGetCurrentMilliseconds() ;
       _checkBeat = FALSE ;
 
+      if (parser)
+      {
+	 _parser = parser->clone() ;
+      }
+
       _maxSockPerNode = 1 ;
       _maxSockPerThread = 0 ;
       _maxThreadNum = 0 ;
+
+
    }
 
    // PD_TRACE_DECLARE_FUNCTION ( SDB__NETFRAME_DECONS, "_netFrame::~_netFrame" )
@@ -567,9 +574,21 @@ namespace engine
       SDB_ASSERT( NULL != serviceName, "serviceName should not be NULL" ) ;
 
       INT32 rc = SDB_OK ;
+      _netEventHandler *ev = NULL ;
       PD_TRACE_ENTRY ( SDB__NETFRAME_SYNNCCONN );
-      _netEventHandler *ev = SDB_OSS_NEW _netEventHandler( _getEvSuit( TRUE ),
-                                                           _handle.inc() ) ;
+      if (!_parser)
+      {
+         ev = SDB_OSS_NEW _netEventHandler( _getEvSuit( TRUE ),
+                                            _handle.inc() ) ;
+      }
+      else
+      {
+         UINT32 len = _parser->getLen() ;
+         ev = SDB_OSS_NEW _netEventHandler( _getEvSuit( TRUE ),
+                                            _handle.inc(),
+			       		    len ) ;
+      }
+
       if ( NULL == ev )
       {
          PD_LOG ( PDERROR, "Failed to malloc mem" ) ;
@@ -716,8 +735,18 @@ namespace engine
          {
             _netEventHandler *pEH = NULL ;
             /// create a new socket
-            pEH = SDB_OSS_NEW _netEventHandler( _getEvSuit( FALSE ),
-                                                _handle.inc() ) ;
+            if (!_parser)
+            {
+               pEH = SDB_OSS_NEW _netEventHandler( _getEvSuit( TRUE ),
+                                                  _handle.inc() ) ;
+            }
+            else
+            {
+               UINT32 len = _parser->getLen() ;
+               pEH = SDB_OSS_NEW _netEventHandler( _getEvSuit( TRUE ),
+                                                  _handle.inc(),
+                                                  len ) ;
+	    }
             if ( !pEH )
             {
                rc = SDB_OOM ;
@@ -1142,6 +1171,51 @@ namespace engine
       goto done ;
    }
 
+   INT32 _netFrame::syncSendBuf( const _MsgRouteID& id,
+				 char* pBuf,
+				 const INT32& bufLen)
+   {
+      SDB_ASSERT( NULL != pBuf, "pBuff should not be NULL") ;
+      INT32 rc = SDB_OK ;
+      NET_EH eh ;
+
+      rc = _getHandle( id, eh ) ;
+      //TODO
+      // add a probe here logging the handle id of eh
+
+      if ( rc )
+      {
+         goto error ;
+      }
+      else if ( !eh->isConnected() )
+      {
+         rc = syncConnect( eh ) ;
+         if ( rc )
+         {
+            goto error ;
+         }
+      }
+
+      eh->mtx().get() ;
+      rc = eh->syncSend(pBuf, bufLen) ;
+      eh->mtx().release() ;
+
+      if ( SDB_OK != rc )
+      {
+         eh->close() ;
+         goto error ;
+      }
+
+      _netOut.add( bufLen ) ;
+
+   done:
+      return rc ;
+   error:
+      goto done ;
+   }
+
+
+
    // PD_TRACE_DECLARE_FUNCTION ( SDB__NETFRAME_CLOSE, "_netFrame::close" )
    void _netFrame::close( const _MsgRouteID &id )
    {
@@ -1325,6 +1399,29 @@ namespace engine
       return ;
    }
 
+   void _netFrame::handleStream( NET_EH eh, MsgStream *pMsg)
+   {
+      INT32 rc = SDB_OK ;
+      if ( MSG_INVALID_ROUTEID == eh->id().value )
+      {
+         if ( MSG_INVALID_ROUTEID != pMsg->getSenderID().value )
+         {
+            eh->id(pMsg->getSenderID()) ;
+            //TODO
+            // probably log the route id of eh
+
+            _addRoute( eh ) ;
+         }
+      }
+
+      rc = _handler->handleStream( eh->id(), pMsg) ;
+      if ( SDB_NET_BROKEN_MSG == rc )
+      {
+         eh->close() ;
+      }
+   }
+
+
    void _netFrame::handleClose( NET_EH eh , _MsgRouteID id)
    {
       _handler->handleClose( eh->handle(), id ) ;
@@ -1447,7 +1544,18 @@ namespace engine
       NET_EH eh ;
       PD_TRACE_ENTRY ( SDB__NETFRAME__ASYNCAPT ) ;
 
-      pEH = SDB_OSS_NEW _netEventHandler( _getEvSuit( TRUE ), _handle.inc() ) ;
+      if (!_parser)
+      {
+         pEH = SDB_OSS_NEW _netEventHandler( _getEvSuit( TRUE ),
+                                            _handle.inc() ) ;
+      }
+      else
+      {
+         UINT32 len = _parser->getLen() ;
+         pEH = SDB_OSS_NEW _netEventHandler( _getEvSuit( TRUE ),
+                                            _handle.inc(),
+                                            len ) ;
+      }
       if ( !pEH )
       {
          rc = SDB_OOM ;

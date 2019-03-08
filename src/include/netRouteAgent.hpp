@@ -43,6 +43,7 @@
 #include "oss.hpp"
 #include "netRoute.hpp"
 #include "netFrame.hpp"
+#include "netMsgStream.hpp"
 
 namespace engine
 {
@@ -52,9 +53,9 @@ namespace engine
    class _netRouteAgent : public SDBObject
    {
       public:
-         _netRouteAgent( _netMsgHandler *handler ) ;
+         _netRouteAgent( _netMsgHandler *handler, _netRoute* route, MsgParser* parser ) ;
 
-         _netRoute* getRoute() { return &_route ; }
+//         _netRoute* getRoute() { return &_route ; }
          _netFrame* getFrame() { return &_frame ; }
 
       public:
@@ -72,13 +73,12 @@ namespace engine
          OSS_INLINE void setLocalID( const _MsgRouteID &id )
          {
             _frame.setLocal( id ) ;
-            _route.setLocal( id ) ;
             return ;
          }
 
          OSS_INLINE MsgRouteID localID()
          {
-            return _route.local() ;
+            return _pRoute->local() ;
          }
 
          OSS_INLINE INT32 addTimer( UINT32 millsec,
@@ -121,8 +121,18 @@ namespace engine
          OSS_INLINE INT32 route( const _MsgRouteID &id,
                                  _netRouteNode &node )
          {
-            return _route.route( id, node ) ;
+            return _pRoute->route( id, node ) ;
          }
+
+	 OSS_INLINE INT32 sendBuf( const _MsgRouteID& id, char* pBuf, const INT32& bufLen)
+	 {
+	    return _frame.syncSendBuf( id, pBuf, bufLen ) ;
+	 }
+
+	 OSS_INLINE void startThread(boost::thread** ppThread, NET_START_THREAD_FUNC pFunc = NULL)
+	 {
+	    *ppThread = new boost::thread(boost::bind(&_netRouteAgent::run , this, pFunc)) ;
+         } 
 
       public:
          INT32 listen( const _MsgRouteID &id ) ;
@@ -158,7 +168,7 @@ namespace engine
                           MsgHeader *header,
                           const netIOVec &iov ) ;
 
-         INT32 updateRoute( const _MsgRouteID &id,
+/*         INT32 updateRoute( const _MsgRouteID &id,
                             const CHAR *host,
                             const CHAR *service ) ;
 
@@ -168,7 +178,7 @@ namespace engine
          INT32 updateRoute( const _MsgRouteID &oldID,
                             const _MsgRouteID &newID ) ;
 
-         void  delRoute( const _MsgRouteID &id ) ;
+         void  delRoute( const _MsgRouteID &id ) ; */
 
          INT64 netIn() ;
 
@@ -176,7 +186,7 @@ namespace engine
 
       private:
          _netFrame _frame ;
-         _netRoute _route ;
+         _netRoute* _pRoute ;
    } ;
 
    typedef class _netRouteAgent netRouteAgent ;
