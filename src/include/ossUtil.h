@@ -41,7 +41,7 @@
 #include "core.h"
 #include <time.h>
 #include <sys/types.h>
-#if defined (_LINUX) || defined ( _AIX )
+#if defined (_LINUX) || defined ( _AIX ) || defined ( _MACOS )
 #include <sys/time.h>
 #include <strings.h>
 #include <pthread.h>
@@ -69,7 +69,7 @@ INT32 ossStrToInt ( const CHAR *pBuffer, INT32 *number ) ;
 #define ossStrncmp(x,y,z) strncmp(x,y,z)
 #define ossStrcmp(x,y) strcmp(x,y)
 #define ossStrcpy(x,y) strcpy(x,y)
-#if defined (_LINUX) || defined ( _AIX )
+#if defined (_LINUX) || defined ( _AIX ) || defined ( _MACOS )
 #define ossStrncpy(x,y,z) strncpy(x,y,z)
 #define ossStrncat(x,y,z) strncat(x,y,z)
 #define ossStrtok(x,y,z) strtok_r(x,y,z)
@@ -115,7 +115,7 @@ INT32 ossResetTty() ;
 
 #if defined (_WINDOWS)
 #define ossAtoll(x) _atoi64(x)
-#elif defined (_LINUX) || defined ( _AIX )
+#elif defined (_LINUX) || defined ( _AIX ) || defined (_MACOS)
 #define ossAtoll(x) atoll(x)
 #endif
 #if defined (_NOSCREENOUT)
@@ -145,14 +145,14 @@ INT32 ossWC2ANSI ( LPCWSTR lpcszWCString,
 INT32 ossANSI2WC ( LPCSTR lpcszString,
                    LPWSTR *lppszWCString,
                    DWORD  *lpdwWCString ) ;
-#elif defined (_LINUX) || defined ( _AIX )
+#elif defined (_LINUX) || defined ( _AIX ) || defined ( _MACOS )
 void ossCloseAllOpenFileHandles ( BOOLEAN closeSTD ) ;
 void ossCloseStdFds() ;
 #endif
 #define OSS_BIT_SET(x,y)     ((x) |= (y))
 #define OSS_BIT_CLEAR(x,y)   ((x) &= ~(y))
 #define OSS_BIT_TEST(x,y)    ((x) & (y))
-#if defined (_LINUX) || defined ( _AIX )
+#if defined (_LINUX) || defined ( _AIX ) || defined ( _MACOS )
 #define ossKill(x,y) kill((x),(y))
 #define ossPThreadKill(x,y) pthread_kill((x),(y))
 #define ossPThreadSelf() pthread_self()

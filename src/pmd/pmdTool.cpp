@@ -91,7 +91,7 @@ namespace engine
       return pmdGetSysInfo()->_globalID.inc() ;
    }
 
-#if defined (_LINUX)
+#if defined (_LINUX) || defined (_MACOS)
 
    // PD_TRACE_DECLARE_FUNCTION ( SDB_PMDSIGHND, "pmdSignalHandler" )
    void pmdSignalHandler ( INT32 sigNum )

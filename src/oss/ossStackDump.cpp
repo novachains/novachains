@@ -45,8 +45,10 @@
 #include "pdTrace.hpp"
 #include "ossTrace.hpp"
 
+#if defined (_LINUX) || defined (_MACOS)
 #if defined (_LINUX)
 #include <sys/prctl.h>
+#endif
 #include <dlfcn.h>
 #include <execinfo.h>
 #include <stdint.h>
@@ -81,8 +83,10 @@ void ossRestoreSystemSignal( const INT32 sigNum,
       setrlimit( RLIMIT_CORE, &rlim ) ;
    }
 
+#if defined (_LINUX)
    // Set the core dump file here.
    prctl(PR_SET_DUMPABLE, 1, 0, 0, 0 ) ;
+#endif
 
    // need to change to current working/dump directory
    if ( NULL != dumpDir )
@@ -620,6 +624,16 @@ void ossDumpStackTrace( OSS_HANDPARMS, ossPrimitiveFileOp * trapFile )
       }
    }
    PD_TRACE_EXIT ( SDB_OSSDUMPST );
+}
+
+#elif defined (_MACOS)
+void ossDumpRegistersInfo( ossSignalContext pContext,
+                           ossPrimitiveFileOp * trapFile )
+{
+}
+
+void ossDumpStackTrace( OSS_HANDPARMS, ossPrimitiveFileOp * trapFile )
+{
 }
 
 #elif defined (_LIN32)

@@ -43,11 +43,11 @@
 #include "ossUtil.hpp"
 #include "pd.hpp"
 #include "ossMem.hpp"
-#if defined (_LINUX)
+#if defined (_LINUX) || defined (_MACOS)
    #include <sys/wait.h>
    #include <sys/ipc.h>
    #include <sys/msg.h>
-   #include <sys/prctl.h>
+//   #include <sys/prctl.h>
    #include <dirent.h>
 #elif defined (_WINDOWS)
    #include <ShlObj.h>
@@ -58,7 +58,7 @@
 #include "ossTrace.hpp"
 #include <iostream>
 
-#if defined (_LINUX)
+#if defined (_LINUX) || defined (_MACOS)
 // PD_TRACE_DECLARE_FUNCTION ( SDB_OSSISPROCRUNNING, "ossIsProcessRunning" )
 BOOLEAN ossIsProcessRunning ( OSSPID pid )
 {
@@ -1836,7 +1836,7 @@ INT32 ossGetEWD ( CHAR *pBuffer, INT32 maxlen )
 {
    INT32 rc = SDB_OK ;
    PD_TRACE_ENTRY ( SDB_OSSGETEWD );
-#if defined (_LINUX)
+#if defined (_LINUX) || defined (_MACOS)
    CHAR *tSep = NULL ;
    CHAR sep = '/' ;
    INT32 len = readlink(PROC_SELF_EXE, pBuffer, maxlen ) ;
@@ -1898,7 +1898,7 @@ error:
 INT32 ossTerminateProcess( const OSSPID &pid, BOOLEAN force )
 {
    INT32 rc = SDB_OK ;
-#if defined (_LINUX)
+#if defined (_LINUX) || defined (_MACOS)
    if ( -1 == ::kill(pid, force ? SIGKILL : SIGTERM ))
    {
       rc = SDB_SYS ;

@@ -36,7 +36,7 @@
 #include "core.hpp"
 #include "pdTrace.hpp"
 #include "ossTrace.hpp"
-#if defined (_LINUX) || defined (_AIX)
+#if defined (_LINUX) || defined (_AIX) || defined (_MACOS)
    #include <fcntl.h>
    #include <unistd.h>
    #include <sys/stat.h>
@@ -207,7 +207,7 @@ int ossPrimitiveFileOp::Read
 {
    INT32     retval    = 0 ;
    PD_TRACE_ENTRY ( SDB_OSSPFOP_READ );
-#if defined (_LINUX) || defined (_AIX)
+#if defined (_LINUX) || defined (_AIX) || defined (_MACOS)
    ssize_t bytesRead = 0 ;
 #elif defined (_WINDOWS)
    SINT64  bytesRead = 0 ;

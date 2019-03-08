@@ -41,7 +41,7 @@
 #include "core.hpp"
 #include "oss.hpp"
 #include "ossUtil.hpp"
-#if defined (_LINUX) || defined (_AIX)
+#if defined (_LINUX) || defined (_AIX) || defined (_MACOS)
 #include <sys/types.h>
 #include <sys/socket.h>
 #include <netinet/in.h>

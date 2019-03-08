@@ -213,7 +213,7 @@ namespace engine
    #define PMD_CURRENT_PATH            "."
 
    #define ENGINE_NPIPE_PREFIX         "novad_engine_"
-#if defined (_LINUX)
+#if defined (_LINUX) || defined (_MACOS)
    #define PROC_PATH                   "/proc"
    #define PROC_CMDLINE_PATH_FORMAT    PROC_PATH"/%s/cmdline"
    #define ENGINE_NPIPE_PREFIX_BW      "novad_engine_bw_"

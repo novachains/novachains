@@ -129,8 +129,13 @@ static INT32 _ossEnumFiles( const string &dirPath,
       }
       else
       {
+#if defined (_MACOS)
+         PD_LOG( PDERROR, "Enum directory[%s] failed, errno: %d",
+                 dirPath.c_str(), e.code().value() ) ;
+#else
          PD_LOG( PDERROR, "Enum directory[%s] failed, errno: %d",
                  dirPath.c_str(), e.code() ) ;
+#endif
          rc = SDB_IO ;
       }
       goto error ;

@@ -44,7 +44,7 @@
 #include "ossIO.hpp"
 #include "pdTrace.hpp"
 #include "ossTrace.hpp"
-#if defined (_LINUX)
+#if defined (_LINUX) || defined (_MACOS)
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <fcntl.h>
@@ -979,7 +979,7 @@ INT32 ossCleanNamedPipeByName ( const CHAR * pipeName,
    return SDB_OK ;
 }
 
-#elif defined (_LINUX)
+#elif defined (_LINUX) || defined (_MACOS)
 // PD_TRACE_DECLARE_FUNCTION ( SDB_OSSCRTNP, "ossCreateNamedPipe" )
 INT32 ossCreateNamedPipe ( const CHAR *name,
                            UINT32 inboundBufferSize,

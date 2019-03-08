@@ -25,6 +25,14 @@ namespace fs = boost::filesystem ;
 
 #endif
 
+#if defined (__APPLE__)
+   #include <unistd.h>
+   #define  _utilGetCWD getcwd
+
+   #define PROC_SELF_EXE                  "/proc/self/exe"
+
+#endif
+
 #if defined (_WIN32)
 int gettimeofday(struct timeval *tv, struct timezone *tz)
 {
@@ -417,6 +425,8 @@ char* utilGetRealPath( const char  *pPath,
       ret =
 #if defined (__linux__)
          realpath ( pathBuffer, tempBuffer ) ;
+#elif defined (__APPLE__)
+	 realpath ( pathBuffer, tempBuffer ) ;
 #elif defined (_WIN32)
          _fullpath ( tempBuffer, pathBuffer, sizeof(tempBuffer) ) ;
 #endif

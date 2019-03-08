@@ -161,7 +161,7 @@ namespace engine
 
          pmdEDUCB*         getMainEDU() ;
 
-#if defined (_LINUX)
+#if defined (_LINUX) || defined (_MACOS)
          void              killByThreadID( INT32 signo ) ;
          void              getEDUThreadID ( set<pthread_t> &tidList ) ;
 #endif //_LINUX

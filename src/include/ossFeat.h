@@ -71,10 +71,14 @@
    #define _LINUX
 #endif
 
+#if defined(__APPLE__)
+   #define _MACOS
+#endif
+
 // architecture
 #if defined ( _WINDOWS32 ) || defined ( _LIN32 )
    #define OSS_ARCH_32
-#elif defined ( _WINDOWS64 ) || defined ( _LIN64 ) || defined ( _PPCLIN64 ) || defined ( _AIX )
+#elif defined ( _WINDOWS64 ) || defined ( _LIN64 ) || defined ( _PPCLIN64 ) || defined ( _AIX ) || defined ( _MACOS )
    #define OSS_ARCH_64
 #endif
 
@@ -86,6 +90,7 @@
 #define OSS_OSTYPE_AIX                 5
 #define OSS_OSTYPE_PPCLIN64LE          6
 #define OSS_OSTYPE_JVM                 7
+#define OSS_OSTYPE_MACOS               8
 
 #if defined (_WINDOWS32)
 #define OSS_OSTYPE                     OSS_OSTYPE_WIN32
@@ -99,6 +104,8 @@
 #define OSS_OSTYPE                     OSS_OSTYPE_PPCLIN64
 #elif defined (_AIX)
 #define OSS_OSTYPE                     OSS_OSTYPE_AIX
+#elif defined (_MACOS)
+#define OSS_OSTYPE                     OSS_OSTYPE_MACOS
 #endif
 
 
@@ -127,7 +134,7 @@
    #define FD_SETSIZE      __FD_SETSIZE
    // sys/types.h must be included AFTER __FD_SETSIZE declaration
    #include <sys/types.h>
-#elif defined _AIX
+#elif defined _AIX || defined _MACOS
    #define __FUNC__ __func__
    #define SDB_EXPORT
    #define OSS_FD_SETSIZE  FD_SETSIZE

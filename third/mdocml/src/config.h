@@ -37,8 +37,13 @@
 #define HAVE_SANDBOX_INIT 0
 #define HAVE_STRCASESTR 1
 #define HAVE_STRINGLIST 0
+#if defined (__APPLE__)
+#define HAVE_STRLCAT 1
+#define HAVE_STRLCPY 1
+#else
 #define HAVE_STRLCAT 0
 #define HAVE_STRLCPY 0
+#endif
 //#define HAVE_STRPTIME 1
 #define HAVE_STRPTIME 0
 #define HAVE_STRSEP 1

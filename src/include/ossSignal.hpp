@@ -41,7 +41,7 @@
 
 #include <setjmp.h>
 
-#if defined (_LINUX)
+#if defined (_LINUX) || defined (_MACOS)
    #include <signal.h>
    #include <errno.h>
    #include <sys/ucontext.h>
@@ -77,7 +77,7 @@
  *     ossSetJump
  *     ossLongJump
  */
-#if defined (_LINUX)
+#if defined (_LINUX) || defined (_MACOS)
    #define ossLongJump(jmpBuf, arg) siglongjmp( jmpBuf, arg )
    #define ossSetJump( jb, arg) sigsetjmp ( jb, arg )
 #elif defined (_WINDOWS)

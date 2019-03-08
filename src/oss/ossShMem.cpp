@@ -43,7 +43,7 @@
 CHAR *ossSHMAlloc( ossSHMKey shmKey, UINT32 bufSize, INT32 shmFlag, ossSHMMid &shmMid )
 {
    CHAR *pBuf = NULL;
-#if defined (_LINUX)
+#if defined (_LINUX) || defined (_MACOS)
    shmMid = shmget( shmKey,bufSize, shmFlag | 0666 );
    if ( shmMid < 0 )
    {
@@ -121,7 +121,7 @@ error:
 CHAR *ossSHMAttach( ossSHMKey shmKey, UINT32 bufSize, ossSHMMid &shmMid )
 {
    CHAR *pBuf = NULL;
-#if defined (_LINUX)
+#if defined (_LINUX) || defined (_MACOS)
    shmMid = shmget( shmKey,bufSize, 0 | 0666 );
    if ( shmMid < 0 )
    {

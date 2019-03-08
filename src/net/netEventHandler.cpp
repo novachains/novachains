@@ -193,7 +193,7 @@ namespace engine
       {
          _sock.set_option( tcp::no_delay(TRUE) ) ;
 
-#if defined (_LINUX)
+#if defined (_LINUX) || defined (_MACOS)
          struct timeval sendtimeout ;
          sendtimeout.tv_sec = NET_SOCKET_SNDTIMEO ;
          sendtimeout.tv_usec = 0 ;
@@ -206,6 +206,7 @@ namespace engine
             PD_LOG( PDERROR, "Connection[Handle:%d] failed to set keepalive,"
                     "err:%d", _handle, res ) ;
          }
+#if defined (_LINUX)
          res = setsockopt( nativeSock, SOL_TCP, TCP_KEEPIDLE,
                      ( void *)&keepIdle, sizeof(keepIdle) ) ;
          if ( SDB_OK != res )
@@ -227,6 +228,10 @@ namespace engine
             PD_LOG( PDERROR, "Connection[Handle:%d] failed to set keepcnt,"
                     "err:%d", _handle, res ) ;
          }
+#elif defined (_MACOS)
+	 res = setsockopt( nativeSock, IPPROTO_TCP, TCP_KEEPALIVE,
+		     ( void *)&keepInterval, sizeof(keepInterval) ) ;
+#endif
          res = setsockopt( nativeSock, SOL_SOCKET, SO_SNDTIMEO,
                            ( CHAR * )&sendtimeout, sizeof(struct timeval) ) ;
          if ( SDB_OK != res )

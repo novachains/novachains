@@ -46,7 +46,7 @@
 #include "ossUtil.h"
 #include "ossMem.h"
 #include "oss.h"
-#if defined (_LINUX) || defined ( _AIX )
+#if defined (_LINUX) || defined ( _AIX ) || defined ( _MACOS )
 #include <locale.h>
 #endif
 
@@ -259,7 +259,7 @@ done :
 error :
    goto done ;
 }
-#elif defined (_LINUX)
+#elif defined (_LINUX) || defined (_MACOS)
 void ossCloseAllOpenFileHandles ( BOOLEAN closeSTD )
 {
    INT32 i = 3 ;
@@ -382,7 +382,7 @@ size_t ossVsnprintf
 
 #if defined (_WINDOWS)
    n = _vsnprintf_s( buf, size, _TRUNCATE, fmt, ap ) ;
-#elif defined (_LINUX) || defined ( _AIX )
+#elif defined (_LINUX) || defined ( _AIX ) || defined ( _MACOS )
    n = vsnprintf( buf, size, fmt, ap ) ;
 #endif
 

@@ -170,7 +170,7 @@ namespace engine
 
          _pmdEDUMgr*       getEDUMgr() { return _eduMgr ; }
 
-      #if defined ( _LINUX )
+      #if defined ( _LINUX ) || defined ( _MACOS )
          pthread_t         getThreadID () const { return _threadID ; }
          OSSTID            getThreadHandle() const { return _threadHdl ; }
       #elif defined ( _WINDOWS )
@@ -209,7 +209,7 @@ namespace engine
          void        setType( INT32 type ) ;
          void        setTID ( UINT32 tid ) { _tid = tid ; }
 
-      #if defined ( _LINUX )
+      #if defined ( _LINUX ) || defined ( _MACOS )
          void        setThreadID ( pthread_t id ) { _threadID = id ; }
          void        setThreadHdl( OSSTID hdl ) { _threadHdl = hdl ; }
       #elif defined ( _WINDOWS )
@@ -234,7 +234,7 @@ namespace engine
          CHAR                    *_pErrorBuff ;
       #if defined ( _WINDOWS )
          HANDLE                  _threadHdl ;
-      #elif defined ( _LINUX )
+      #elif defined ( _LINUX ) || defined ( _MACOS )
          OSSTID                  _threadHdl ;
          pthread_t               _threadID ;
       #endif // _WINDOWS

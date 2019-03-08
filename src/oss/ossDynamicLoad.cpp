@@ -43,7 +43,7 @@
 #include "ossTrace.hpp"
 #include "ossIO.hpp"
 #include "ossUtil.hpp"
-#if defined (_LINUX)
+#if defined (_LINUX) || defined (_MACOS)
 #include <dlfcn.h>
 #endif
 
@@ -96,7 +96,7 @@ INT32 _ossModuleHandle::init ()
    {
       INT32 pathLen = 0 ;
       rc = ossAccess ( _libPath,
-#if defined (_LINUX)
+#if defined (_LINUX) || defined (_MACOS)
                        F_OK
 #elif defined (_WINDOWS)
                        0
@@ -131,7 +131,7 @@ INT32 _ossModuleHandle::init ()
       goto error ;
    }
    ossStrncat ( strPath, _moduleName, OSS_MAX_PATHSIZE ) ;
-#if defined (_LINUX)
+#if defined (_LINUX) || defined (_MACOS)
    // try to open and load
    handle = dlopen ( strPath, _flags | RTLD_NOW ) ;
    if ( !handle )
