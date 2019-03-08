@@ -243,7 +243,7 @@ error:
 int utilGetEWD( char *pBuffer, int maxlen )
 {
    int rc = 0 ;
-#if defined (__linux__)
+#if defined (__linux__) || (__APPLE__)
    char *tSep = NULL ;
    char sep = '/' ;
    int len = readlink(PROC_SELF_EXE, pBuffer, maxlen ) ;
