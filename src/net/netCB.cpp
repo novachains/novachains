@@ -37,6 +37,7 @@
 
 #include "netCB.hpp"
 #include <iostream>
+#include "echo.hpp"
 
 namespace engine
 {
@@ -75,6 +76,7 @@ namespace engine
    INT32 _netCB::active()
    {
       cout << "active net...does not need to start a new EDU" << endl ;
+      handleDel(this) ;
       return SDB_OK ;
    }
 
