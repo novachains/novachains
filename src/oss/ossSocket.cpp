@@ -759,7 +759,7 @@ INT32 _ossSocket::connect ( INT32 timeout )
    SDB_ASSERT ( !_peerAddress.sin_addr.s_addr,
                 "Cannot connect without close/init" ) ;
 
-#if defined (_LINUX) || defined (_AIX)
+#if defined (_LINUX) || defined (_AIX) || defined (_MACOS)
 
    INT32 flags = fcntl( native(), F_GETFL, 0) ;
    if ( fcntl( native(), F_SETFL, flags | O_NONBLOCK ) <0 )

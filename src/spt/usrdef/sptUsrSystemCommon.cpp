@@ -3126,7 +3126,7 @@ namespace engine
       goto done ;
    }
 
-#if defined( _LINUX )
+#if defined( _LINUX ) || defined ( _MACOS )
    INT32 _sptUsrSystemCommon::_extractProcessInfo( const CHAR *buf,
                                                    const BOOLEAN &showDetail,
                                                    BSONObjBuilder &builder )
