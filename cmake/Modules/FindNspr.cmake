@@ -19,6 +19,11 @@
 # Nspr_LIBRARY_DIRS        The location of Nspr library
 # Nspr_LIBRARIES           The libraries
 
+IF ( NSPR_ROOT )
+   LIST( APPEND NSPR_FIND_INCLUDE_PATH "${NSPR_ROOT}target/dist/include/nspr" )
+   LIST( APPEND NSPR_FIND_LIB_PATH "${NSPR_ROOT}target/dist/lib" )
+ENDIF()
+
 IF ( NOT NSPR_FIND_INCLUDE_PATH )
    LIST( APPEND NSPR_FIND_INCLUDE_PATH "/usr/include/nspr" "/usr/include/*" "/usr/local/include/*" )
 ENDIF()
@@ -31,7 +36,9 @@ IF ( NOT NSPR_USE_DLL )
    SET( NSPR_USE_DLL FALSE )
 ENDIF()
 
-SET ( Nspr_LIB_PREFIX "lib" )
+IF ( NOT CMAKE_SYSTEM_NAME MATCHES "Windows" )
+   SET ( Nspr_LIB_PREFIX "lib" )
+ENDIF()
 SET ( Nspr_LIBRARY_NAME "${Nspr_LIB_PREFIX}nspr" )
 
 MESSAGE( STATUS "" )
@@ -41,9 +48,17 @@ MESSAGE( STATUS "" )
 FIND_PATH( Nspr_INCLUDE_DIRS nspr.h PATHS ${NSPR_FIND_INCLUDE_PATH} )
 
 IF ( NSPR_USE_DLL )
-   LIST( APPEND Nspr_LIBRARY_NAMES "${Nspr_LIBRARY_NAME}.so" )
+   IF ( CMAKE_SYSTEM_NAME MATCHES "Windows" )
+      LIST( APPEND Nspr_LIBRARY_NAMES "${Nspr_LIBRARY_NAME}4.dll" )
+   ELSE()
+      LIST( APPEND Nspr_LIBRARY_NAMES "${Nspr_LIBRARY_NAME}.so" )
+   ENDIF()
 ELSE()
-   LIST( APPEND Nspr_LIBRARY_NAMES "${Nspr_LIBRARY_NAME}4.a" )
+   IF ( CMAKE_SYSTEM_NAME MATCHES "Windows" )
+      LIST( APPEND Nspr_LIBRARY_NAMES "${Nspr_LIBRARY_NAME}4.lib" )
+   ELSE()
+      LIST( APPEND Nspr_LIBRARY_NAMES "${Nspr_LIBRARY_NAME}4.a" )
+   ENDIF()
 ENDIF()
 
 # find libraries

@@ -58,6 +58,7 @@ namespace engine
                                    const _MsgHeader *header,
                                    const CHAR *msg )
 	{
+	   return 0 ;
 	}
 
 	virtual INT32   handleStream( const _MsgRouteID &id,
@@ -89,6 +90,7 @@ namespace engine
         virtual INT32   handleStream( const _MsgRouteID &id,
                                       MsgStream *pMsg )
         {
+	   return 0 ;
         }
 
    } ; 

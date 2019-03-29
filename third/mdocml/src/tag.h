@@ -19,6 +19,7 @@
    #include <ws2tcpip.h>
    #include <Windows.h>
    #include <WinBase.h>
+   #define pid_t DWORD
 #endif
 
 

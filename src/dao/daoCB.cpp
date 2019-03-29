@@ -40,10 +40,10 @@
 
 namespace engine
 {
-
+#if !defined _MSC_VER
    /// auto register cb
    PMD_IMPLEMENT_CB_AUTO_REGISTER( _daoCB ) ;
-
+#endif
    /// message map, use ON_MSG or ON_EVENT to map message and function
    BEGIN_OBJ_MSG_MAP( _daoCB, _pmdCBBase )
    END_OBJ_MSG_MAP()

@@ -22,6 +22,12 @@
 # Mozjs_VERSION            The module version
 # Mozjs_JS_THREADSAFE      Whether JS_THREADSAFE has defined or not
 
+IF ( MOZJS_ROOT )
+   LIST( APPEND MOZJS_FIND_INCLUDE_PATH "${MOZJS_ROOT}/include" )
+   LIST( APPEND MOZJS_FIND_LIB_PATH "${MOZJS_ROOT}/lib" )
+   MESSAGE( STATUS "Mozjs Root, include path and lib path are: ${MOZJS_ROOT}, ${MOZJS_FIND_INCLUDE_PATH}, ${MOZJS_FIND_LIB_PATH}" )
+ENDIF()
+
 IF ( NOT MOZJS_FIND_INCLUDE_PATH )
    LIST( APPEND MOZJS_FIND_INCLUDE_PATH "/usr/include/js" "/usr/include/*" "/usr/local/include/*" )
 ENDIF()
@@ -38,7 +44,9 @@ IF ( NOT MOZJS_VERION_EXACT )
    SET ( MOZJS_VERION_EXACT FALSE )
 ENDIF()
 
-SET ( Mozjs_LIB_PREFIX "lib" )
+IF ( NOT CMAKE_SYSTEM_NAME MATCHES "Windows" )
+   SET ( Mozjs_LIB_PREFIX "lib" )
+ENDIF()
 SET ( Mozjs_LIBRARY_NAME "${Mozjs_LIB_PREFIX}mozjs" )
 SET ( Mozjs_VERSION "" )
 SET( Mozjs_JS_THREADSAFE FALSE )
@@ -48,9 +56,12 @@ MESSAGE( STATUS "" )
 
 # find headers
 FIND_PATH( Mozjs_INCLUDE_DIRS jsapi.h PATHS ${MOZJS_FIND_INCLUDE_PATH} )
+MESSAGE( STATUS "Mozjs include dir is: ${Mozjs_INCLUDE_DIRS}" )
 
 # find version file directory
 FIND_PATH( Mozjs_VERFILE_DIRS jsversion.h PATHS ${MOZJS_FIND_INCLUDE_PATH} )
+MESSAGE( STATUS "Mozjs version file dir is: ${Mozjs_VERFILE_DIRS}" )
+
 # has found
 IF ( Mozjs_VERFILE_DIRS )
    FILE( READ "${Mozjs_VERFILE_DIRS}/jsversion.h" MOZJS_VER_CONTEXT )
@@ -81,7 +92,11 @@ ENDIF()
 IF ( MOZJS_USE_DLL )
    LIST( APPEND Mozjs_LIBRARY_NAMES "${Mozjs_LIBRARY_NAME}.so" )
 ELSE()
-   LIST( APPEND Mozjs_LIBRARY_NAMES "${Mozjs_LIBRARY_NAME}.a" "${Mozjs_LIBRARY_NAME}-1.0.a" )
+   IF ( CMAKE_SYSTEM_NAME MATCHES "Windows" )
+      LIST( APPEND Mozjs_LIBRARY_NAMES "${Mozjs_LIBRARY_NAME}.lib" "${Mozjs_LIBRARY_NAME}-1.0.lib" )
+   ELSE()
+      LIST( APPEND Mozjs_LIBRARY_NAMES "${Mozjs_LIBRARY_NAME}.a" "${Mozjs_LIBRARY_NAME}-1.0.a" )
+   ENDIF()
 ENDIF()
 
 # find libraries

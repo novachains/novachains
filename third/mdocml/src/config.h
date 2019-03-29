@@ -18,6 +18,7 @@
 #define MANPATH_DEFAULT "/usr/share/man:/usr/X11R6/man:/usr/local/man"
 #define HAVE_DIRENT_NAMLEN 0
 #if defined ( _WIN32 )
+#include <stddef.h>
 #define HAVE_ERR 0
 #else
 #define HAVE_ERR 0

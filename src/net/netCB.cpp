@@ -40,10 +40,10 @@
 
 namespace engine
 {
-
+#if !defined _MSC_VER
    // auto register cb
    PMD_IMPLEMENT_CB_AUTO_REGISTER( _netCB ) ;
-
+#endif
    /*
       _netCB implement
    */

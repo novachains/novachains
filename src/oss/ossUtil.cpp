@@ -56,6 +56,7 @@
 #endif
 #elif defined (_WINDOWS)
 #include "Psapi.h"
+#pragma comment( lib, "psapi.lib" )
 #endif
 #include <sstream>
 

@@ -962,6 +962,7 @@ void ossDumpStackTrace( OSS_HANDPARMS, ossPrimitiveFileOp * trapFile )
 #include "ossLatch.hpp"
 #include <windows.h>
 #include <dbgHelp.h>
+#pragma comment( lib, "Dbghelp.lib" )
 
 #if defined( _M_IA64 )
    #define OSS_THIS_IMAGE_MACHINE_TYPE IMAGE_FILE_MACHINE_IA64
