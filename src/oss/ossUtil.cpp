@@ -29,9 +29,10 @@
    Restrictions: N/A
 
    Change Activity:
-   defect Date        Who Description
-   ====== =========== === ==============================================
-          20/07/2018  TW  Initial Draft
+   defect Date        Who   Description
+   ====== =========== ===== ==============================================
+          20/07/2018  TW    Initial Draft
+           1/07/2019  Jiaqi Adding ossNextPowerOf2 
 
    Last Changed =
 
@@ -88,6 +89,23 @@ BOOLEAN ossIsPowerOf2( UINT32 num, UINT32 * pSquare )
       }
    }
    return bPowered ;
+}
+
+UINT64 ossNextPowerOf2( UINT32 num, UINT32 *pSquare )
+{
+   UINT32 square = 0 ;
+   UINT64 result = 1 ;
+
+   while ( num > result )
+   {
+      square++ ;
+      result <<= 1 ;
+   }
+   if ( pSquare )
+   {
+      *pSquare = square ;
+   }
+   return result ;
 }
 
 //  Wrapper of gmtime, converts a time value to a broken-down time structure.

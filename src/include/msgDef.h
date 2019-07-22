@@ -31,17 +31,13 @@
    Change Activity:
    defect Date        Who Description
    ====== =========== === ==============================================
-          20/07/2018  XJH Initial Draft
+          09/14/2018  TW  Initial Draft
 
    Last Changed =
 
 *******************************************************************************/
 #ifndef MSGDEF_H__
 #define MSGDEF_H__
-
-#define OP_ERRNOFIELD                        "errno"
-#define OP_ERRDESP_FIELD                     "description"
-#define OP_ERR_DETAIL                        "detail"
 
 #define SYS_PREFIX                           "SYS"
 
@@ -108,6 +104,7 @@
 #define VALUE_NAME_SESSIONS_CURRENT          "sessions current"
 #define VALUE_NAME_HEALTH                    "health"
 #define VALUE_NAME_SVCTASKS                  "svctasks"
+#define VALIE_NAME_COLLECTIONS               "collections"
 #define VALUE_NAME_ALL                       "all"
 #define FIELD_NAME_ISMAINCL                  "IsMainCL"
 #define FIELD_NAME_MAINCLNAME                "MainCLName"
@@ -119,6 +116,26 @@
 #define FIELD_NAME_SHARDTYPE_RANGE           "range"
 #define FIELD_NAME_SHARDTYPE_HASH            "hash"
 #define FIELD_NAME_PARTITION                 "Partition"
+#define FIELD_NAME_AUTOINCREMENT             "AutoIncrement"
+#define FIELD_NAME_AUTOINC_FIELD             "Field"
+#define FIELD_NAME_AUTOINC_SEQ               "SequenceName"
+#define FIELD_NAME_AUTOINC_SEQ_ID            "SequenceID"
+#define FIELD_NAME_GENERATED                 "Generated"
+#define VALUE_NAME_ALWAYS                    "always"
+#define VALUE_NAME_STRICT                    "strict"
+#define VALUE_NAME_DEFAULT                   "default"
+#define FIELD_NAME_CURRENT_VALUE             "CurrentValue"
+#define FIELD_NAME_INCREMENT                 "Increment"
+#define FIELD_NAME_START_VALUE               "StartValue"
+#define FIELD_NAME_MIN_VALUE                 "MinValue"
+#define FIELD_NAME_MAX_VALUE                 "MaxValue"
+#define FIELD_NAME_CACHE_SIZE                "CacheSize"
+#define FIELD_NAME_ACQUIRE_SIZE              "AcquireSize"
+#define FIELD_NAME_CYCLED                    "Cycled"
+#define FIELD_NAME_INTERNAL                  "Internal"
+#define FIELD_NAME_INITIAL                   "Initial"
+#define FIELD_NAME_NEXT_VALUE                "NextValue"
+#define FIELD_NAME_EXPECT_VALUE              "ExpectValue"
 #define FIELD_NAME_MAJOR                     "Major"
 #define FIELD_NAME_MINOR                     "Minor"
 #define FIELD_NAME_FIX                       "Fix"
@@ -143,6 +160,8 @@
 #define FIELD_NAME_TOTALSELECT               "TotalSelect"
 #define FIELD_NAME_TOTALREAD                 "TotalRead"
 #define FIELD_NAME_TOTALWRITE                "TotalWrite"
+#define FIELD_NAME_TOTALTBSCAN               "TotalTbScan"
+#define FIELD_NAME_TOTALIXSCAN               "TotalIxScan"
 #define FIELD_NAME_TOTALREADTIME             "TotalReadTime"
 #define FIELD_NAME_TOTALWRITETIME            "TotalWriteTime"
 #define FIELD_NAME_TOTALTIME                 "Time"
@@ -210,7 +229,7 @@
 #define FIELD_NAME_DICT_VERSION              "DictionaryVersion"
 #define FIELD_NAME_DICT_CREATE_TIME          "DictionaryCreateTime"
 #define FIELD_NAME_TYPE                      "Type"
-#define FIELD_NAME_EXTERNAL_DATA_NAME        "ExternalDataName"
+#define FIELD_NAME_EXT_DATA_NAME             "ExtDataName"
 #define FIELD_NAME_TOTAL_RECORDS             "TotalRecords"
 #define FIELD_NAME_TOTAL_LOBS                "TotalLobs"
 #define FIELD_NAME_TOTAL_DATA_PAGES          "TotalDataPages"
@@ -224,6 +243,7 @@
 #define FIELD_NAME_PROCESS_EVENT_COUNT       "ProcessEventCount"
 #define FIELD_NAME_RELATED_ID                "RelatedID"
 #define FIELD_NAME_ID                        "ID"
+#define FIELD_NAME_UNIQUEID                  "UniqueID"
 #define FIELD_NAME_LOGICAL_ID                "LogicalID"
 #define FIELD_NAME_SEQUENCE                  "Sequence"
 #define FIELD_NAME_INDEXES                   "Indexes"
@@ -233,7 +253,6 @@
 #define FIELD_NAME_SIZE                      "Size"
 #define FIELD_NAME_MAX                       "Max"
 #define FIELD_NAME_TRACE                     "trace"
-#define FIELD_NAME_BREAKPOINTS               "BreakPoint"
 #define FIELD_NAME_TO                        "To"
 #define FIELD_NAME_OLDNAME                   "OldName"
 #define FIELD_NAME_NEWNAME                   "NewName"
@@ -265,7 +284,10 @@
 #define FIELD_NAME_SKIP                      "Skip"
 #define FIELD_NAME_RETURN                    "Return"
 #define FIELD_NAME_COMPONENTS                "Components"
+#define FIELD_NAME_BREAKPOINTS               "BreakPoint"
 #define FIELD_NAME_THREADS                   "Threads"
+#define FIELD_NAME_FUNCTIONNAMES             "FunctionNames"
+#define FIELD_NAME_THREADTYPES               "ThreadTypes"
 #define FIELD_NAME_FILENAME                  "FileName"
 #define FIELD_NAME_TRACESTARTED              "TraceStarted"
 #define FIELD_NAME_WRAPPED                   "Wrapped"
@@ -315,13 +337,17 @@
 #define FIELD_NAME_IMAGE                     "Image"
 #define FIELD_NAME_ACTIVATED                 "Activated"
 #define FIELD_NAME_READONLY                  "Readonly"
+#define FIELD_NAME_CSUNIQUEHWM               "CSUniqueHWM"
+#define FIELD_NAME_GLOBALID                  "GlobalID"
 #define FIELD_NAME_ENABLE                    "Enable"
 #define FIELD_NAME_ACTION                    "Action"
 #define FIELD_NAME_DATA                      "Data"
 #define FIELD_NAME_DATALEN                   "DataLen"
 #define FIELD_NAME_ORG_LSNOFFSET             "OrgOffset"
 #define FIELD_NAME_TRANSACTION_ID            "TransactionID"
+#define FIELD_NAME_TRANSACTION_ID_SN         "TransactionIDSN"
 #define FIELD_NAME_TRANS_LSN_CUR             "CurrentTransLSN"
+#define FIELD_NAME_TRANS_LSN_BEGIN           "BeginTransLSN"
 #define FIELD_NAME_IS_ROLLBACK               "IsRollback"
 #define FIELD_NAME_TRANS_LOCKS_NUM           "TransactionLocksNum"
 #define FIELD_NAME_TRANS_LOCKS               "GotLocks"
@@ -329,6 +355,8 @@
 #define FIELD_NAME_SLICE                     "Slice"
 #define FIELD_NAME_REMOTE_IP                 "RemoteIP"
 #define FIELD_NAME_REMOTE_PORT               "RemotePort"
+#define FIELD_NAME_MODE                      "Mode"
+#define VALUE_NAME_LOCAL                     "local"
 
 #define FIELD_NAME_MODIFY                    "$Modify"
 #define FIELD_NAME_OP                        "OP"
@@ -374,6 +402,7 @@
 #define FIELD_NAME_PREFERED_INSTANCE         "PreferedInstance"
 #define FIELD_NAME_PREFERED_INSTANCE_V1      "PreferedInstanceV1"
 #define FIELD_NAME_PREFERED_INSTANCE_MODE    "PreferedInstanceMode"
+#define FIELD_NAME_PREFERED_STRICT           "PreferedStrict"
 #define FIELD_NAME_TIMEOUT                   "Timeout"
 #define FIELD_NAME_NODE_SELECT               "NodeSelect"
 #define FIELD_NAME_RAWDATA                   "RawData"
@@ -427,11 +456,31 @@
 #define FIELD_NAME_ALTER                     "Alter"
 #define FIELD_NAME_IGNORE_EXCEPTION          "IgnoreException"
 #define FIELD_NAME_KEEP_DATA                 "KeepData"
+#define FIELD_NAME_ENFORCED                  "enforced"
+#define FIELD_NAME_ENFORCED1                 "Enforced"
 #define FIELD_NAME_DEEP                      "Deep"
 #define FIELD_NAME_BLOCK                     "Block"
 #define FIELD_NAME_CAPPED                    "Capped"
 #define FIELD_NAME_TEXT                      "$Text"
 #define FIELD_NAME_CONFIGS                   "Configs"
+#define FIELD_NAME_SEQUENCE_NAME             "Name"
+#define FIELD_NAME_SEQUENCE_OID              "_id"
+#define FIELD_NAME_SEQUENCE_ID               "ID"
+#define FIELD_NAME_CONTONDUP                 "ContOnDup"
+#define FIELD_NAME_REPLACEONDUP              "ReplaceOnDup"
+#define FIELD_NAME_RETURN_OID                "ReturnOID"
+#define FIELD_NAME_AUDIT_MASK                "AuditMask"
+#define FIELD_NAME_AUDIT_CONFIG_MASK         "AuditConfigMask"
+#define FIELD_NAME_ROLLBACK                  "Rollback"
+#define FIELD_NAME_TRANSISOLATION            "TransIsolation"
+#define FIELD_NAME_TRANS_TIMEOUT             "TransTimeout"
+#define FIELD_NAME_TRANS_WAITLOCK            "TransLockWait"
+#define FIELD_NAME_TRANS_USE_RBS             "TransUseRBS"
+#define FIELD_NAME_TRANS_AUTOCOMMIT          "TransAutoCommit"
+#define FIELD_NAME_TRANS_AUTOROLLBACK        "TransAutoRollback"
+#define FIELD_NAME_TRANS_RCCOUNT             "TransRCCount"
+#define FIELD_NAME_LAST_GENERATE_ID          "LastGenerateID"
+#define FIELD_NAME_MEMPOOL_SIZE              "MemPoolSize"
 
 /// strategy field begin
 #define FIELD_NAME_NICE                      "Nice"
@@ -464,41 +513,190 @@
 #define IXM_FIELD_NAME_KEY                   "key"
 #define IXM_FIELD_NAME_NAME                  "name"
 #define IXM_FIELD_NAME_UNIQUE                "unique"
+#define IXM_FIELD_NAME_UNIQUE1               "Unique"
 #define IXM_FIELD_NAME_V                     "v"
 #define IXM_FIELD_NAME_ENFORCED              "enforced"
+#define IXM_FIELD_NAME_ENFORCED1             "Enforced"
 #define IXM_FIELD_NAME_DROPDUPS              "dropDups"
 #define IXM_FIELD_NAME_2DRANGE               "2drange"
 #define IXM_FIELD_NAME_INDEX_DEF             "IndexDef"
 #define IXM_FIELD_NAME_INDEX_FLAG            "IndexFlag"
 #define IXM_FIELD_NAME_SCAN_EXTLID           "ScanExtentLID"
 #define IXM_FIELD_NAME_SORT_BUFFER_SIZE      "SortBufferSize"
+#define IXM_FIELD_NAME_NOTNULL               "NotNull"
 
-#define CMD_NAME_ENFORCED                    "enforced"
 
 #define CMD_ADMIN_PREFIX                     "$"
+#define CMD_NAME_BACKUP_OFFLINE              "backup offline"
+#define CMD_NAME_CREATE_COLLECTION           "create collection"
+#define CMD_NAME_CREATE_COLLECTIONSPACE      "create collectionspace"
+#define CMD_NAME_CREATE_SEQUENCE             "create sequence"
+#define CMD_NAME_CREATE_INDEX                "create index"
+#define CMD_NAME_CANCEL_TASK                 "cancel task"
+#define CMD_NAME_DROP_COLLECTION             "drop collection"
+#define CMD_NAME_DROP_COLLECTIONSPACE        "drop collectionspace"
+#define CMD_NAME_LOAD_COLLECTIONSPACE        "load collectionspace"
+#define CMD_NAME_UNLOAD_COLLECTIONSPACE      "unload collectionspace"
+#define CMD_NAME_DROP_INDEX                  "drop index"
+#define CMD_NAME_GET_COUNT                   "get count"
+#define CMD_NAME_GET_INDEXES                 "get indexes"
+#define CMD_NAME_GET_DATABLOCKS              "get datablocks"
+#define CMD_NAME_GET_QUERYMETA               "get querymeta"
 #define CMD_NAME_GET_CONFIG                  "get config"
+#define CMD_NAME_GET_DCINFO                  "get dcinfo"
+#define CMD_NAME_LIST_COLLECTIONS            "list collections"
+#define CMD_NAME_LIST_COLLECTIONSPACES       "list collectionspaces"
+#define CMD_NAME_LIST_CONTEXTS               "list contexts"
+#define CMD_NAME_LIST_CONTEXTS_CURRENT       "list contexts current"
+#define CMD_NAME_LIST_SESSIONS               "list sessions"
+#define CMD_NAME_LIST_SESSIONS_CURRENT       "list sessions current"
+#define CMD_NAME_LIST_STORAGEUNITS           "list storageunits"
+#define CMD_NAME_LIST_GROUPS                 "list groups"
+#define CMD_NAME_LIST_DOMAINS                "list domains"
+#define CMD_NAME_LIST_CS_IN_DOMAIN           "list collectionspaces in domain"
+#define CMD_NAME_LIST_CL_IN_DOMAIN           "list collections in domain"
+#define CMD_NAME_LIST_BACKUPS                "list backups"
+#define CMD_NAME_LIST_TASKS                  "list tasks"
+#define CMD_NAME_LIST_TRANSACTIONS           "list transactions"
+#define CMD_NAME_LIST_TRANSACTIONS_CUR       "list transactions current"
+#define CMD_NAME_LIST_SVCTASKS               "list service tasks"
+#define CMD_NAME_LIST_SEQUENCES              "list sequences"
+#define CMD_NAME_RENAME_COLLECTION           "rename collection"
+#define CMD_NAME_RENAME_COLLECTIONSPACE      "rename collectionspace"
+#define CMD_NAME_REORG_OFFLINE               "reorg offline"
+#define CMD_NAME_REORG_ONLINE                "reorg online"
+#define CMD_NAME_REORG_RECOVER               "reorg recover"
 #define CMD_NAME_SHUTDOWN                    "shutdown"
+#define CMD_NAME_SNAPSHOT_CONTEXTS           "snapshot contexts"
+#define CMD_NAME_SNAPSHOT_CONTEXTS_CURRENT   "snapshot contexts current"
+#define CMD_NAME_SNAPSHOT_DATABASE           "snapshot database"
+#define CMD_NAME_SNAPSHOT_RESET              "snapshot reset"
+#define CMD_NAME_SNAPSHOT_SESSIONS           "snapshot sessions"
+#define CMD_NAME_SNAPSHOT_SESSIONS_CURRENT   "snapshot sessions current"
 #define CMD_NAME_SNAPSHOT_SYSTEM             "snapshot system"
+#define CMD_NAME_SNAPSHOT_COLLECTIONS        "snapshot collections"
+#define CMD_NAME_SNAPSHOT_COLLECTIONSPACES   "snapshot collectionspaces"
+#define CMD_NAME_SNAPSHOT_CATA               "snapshot catalog"
+#define CMD_NAME_SNAPSHOT_TRANSACTIONS       "snapshot transactions"
+#define CMD_NAME_SNAPSHOT_TRANSACTIONS_CUR   "snapshot transactions current"
+#define CMD_NAME_SNAPSHOT_ACCESSPLANS        "snapshot accessplans"
+#define CMD_NAME_SNAPSHOT_HEALTH             "snapshot health"
 #define CMD_NAME_SNAPSHOT_CONFIGS            "snapshot configs"
 #define CMD_NAME_SNAPSHOT_SVCTASKS           "snapshot service tasks"
+#define CMD_NAME_SNAPSHOT_SEQUENCES          "snapshot sequences"
+#define CMD_NAME_SNAPSHOT_QUERIES            "snapshot queries"
+#define CMD_NAME_TEST_COLLECTION             "test collection"
+#define CMD_NAME_TEST_COLLECTIONSPACE        "test collectionspace"
+#define CMD_NAME_CREATE_GROUP                "create group"
+#define CMD_NAME_REMOVE_GROUP                "remove group"
+#define CMD_NAME_CREATE_NODE                 "create node"
+#define CMD_NAME_REMOVE_NODE                 "remove node"
+#define CMD_NAME_REMOVE_BACKUP               "remove backup"
+#define CMD_NAME_UPDATE_NODE                 "update node"
+#define CMD_NAME_ACTIVE_GROUP                "active group"
+#define CMD_NAME_STARTUP_NODE                "startup node"
+#define CMD_NAME_SHUTDOWN_NODE               "shutdown node"
+#define CMD_NAME_SHUTDOWN_GROUP              "shutdown group"
 #define CMD_NAME_SET_PDLEVEL                 "set pdlevel"
+#define CMD_NAME_SPLIT                       "split"
+#define CMD_NAME_WAITTASK                    "wait task"
+#define CMD_NAME_CREATE_CATA_GROUP           "create catalog group"
 #define CMD_NAME_TRACE_START                 "trace start"
 #define CMD_NAME_TRACE_RESUME                "trace resume"
 #define CMD_NAME_TRACE_STOP                  "trace stop"
 #define CMD_NAME_TRACE_STATUS                "trace status"
+#define CMD_NAME_CREATE_DOMAIN               "create domain"
+#define CMD_NAME_DROP_DOMAIN                 "drop domain"
+#define CMD_NAME_ADD_DOMAIN_GROUP            "add domain group"
+#define CMD_NAME_REMOVE_DOMAIN_GROUP         "remove domain group"
 #define CMD_NAME_EXPORT_CONFIG               "export configuration"
+#define CMD_NAME_CRT_PROCEDURE               "create procedure"
+#define CMD_NAME_RM_PROCEDURE                "remove procedure"
+#define CMD_NAME_LIST_PROCEDURES             "list procedures"
 #define CMD_NAME_EVAL                        "eval"
+#define CMD_NAME_LINK_CL                     "link collection"
+#define CMD_NAME_UNLINK_CL                   "unlink collection"
 #define CMD_NAME_SETSESS_ATTR                "set session attribute"
 #define CMD_NAME_GETSESS_ATTR                "get session attribute"
 #define CMD_NAME_INVALIDATE_CACHE            "invalidate cache"
+#define CMD_NAME_INVALIDATE_SEQUENCE_CACHE   "invalidate sequence cache"
 #define CMD_NAME_FORCE_SESSION               "force session"
+#define CMD_NAME_LIST_LOBS                   "list lobs"
+#define CMD_NAME_ALTER_DC                    "alter dc"
+#define CMD_NAME_ALTER_USR                   "alter user"
+#define CMD_NAME_REELECT                     "reelect"
+#define CMD_NAME_FORCE_STEP_UP               "force step up"
+#define CMD_NAME_JSON_LOAD                   "json load"
+#define CMD_NAME_TRUNCATE                    "truncate"
 #define CMD_NAME_LIST_USERS                  "list users"
+#define CMD_NAME_SYNC_DB                     "sync db"
+#define CMD_NAME_POP                         "pop"
 #define CMD_NAME_RELOAD_CONFIG               "reload config"
 #define CMD_NAME_UPDATE_CONFIG               "update config"
 #define CMD_NAME_DELETE_CONFIG               "delete config"
+#define CMD_NAME_ANALYZE                     "analyze"
+
+#define CMD_NAME_SNAPSHOT_DATABASE_INTR      "SNAPSHOT_DB"
+#define CMD_NAME_SNAPSHOT_SYSTEM_INTR        "SNAPSHOT_SYSTEM"
+#define CMD_NAME_SNAPSHOT_COLLECTION_INTR    "SNAPSHOT_CL"
+#define CMD_NAME_SNAPSHOT_SPACE_INTR         "SNAPSHOT_CS"
+#define CMD_NAME_SNAPSHOT_CONTEXT_INTR       "SNAPSHOT_CONTEXT"
+#define CMD_NAME_SNAPSHOT_CONTEXTCUR_INTR    "SNAPSHOT_CONTEXT_CUR"
+#define CMD_NAME_SNAPSHOT_SESSION_INTR       "SNAPSHOT_SESSION"
+#define CMD_NAME_SNAPSHOT_SESSIONCUR_INTR    "SNAPSHOT_SESSION_CUR"
+#define CMD_NAME_SNAPSHOT_CATA_INTR          "SNAPSHOT_CATA"
+#define CMD_NAME_SNAPSHOT_TRANS_INTR         "SNAPSHOT_TRANS"
+#define CMD_NAME_SNAPSHOT_TRANSCUR_INTR      "SNAPSHOT_TRANS_CUR"
+#define CMD_NAME_SNAPSHOT_ACCESSPLANS_INTR   "SNAPSHOT_ACCESSPLANS"
+#define CMD_NAME_SNAPSHOT_HEALTH_INTR        "SNAPSHOT_HEALTH"
+#define CMD_NAME_SNAPSHOT_CONFIGS_INTR       "SNAPSHOT_CONFIGS"
+#define CMD_NAME_SNAPSHOT_SVCTASKS_INTR      "SNAPSHOT_SVCTASKS"
+#define CMD_NAME_SNAPSHOT_SEQUENCES_INTR     "SNAPSHOT_SEQUENCES"
+#define CMD_NAME_SNAPSHOT_QUERIES_INTR       "SNAPSHOT_QUERIES"
+
+#define CMD_NAME_LIST_COLLECTION_INTR        "LIST_CL"
+#define CMD_NAME_LIST_SPACE_INTR             "LIST_CS"
+#define CMD_NAME_LIST_CONTEXT_INTR           "LIST_CONTEXT"
+#define CMD_NAME_LIST_CONTEXTCUR_INTR        "LIST_CONTEXT_CUR"
+#define CMD_NAME_LIST_SESSION_INTR           "LIST_SESSION"
+#define CMD_NAME_LIST_SESSIONCUR_INTR        "LIST_SESSION_CUR"
+#define CMD_NAME_LIST_STORAGEUNIT_INTR       "LIST_SU"
+#define CMD_NAME_LIST_BACKUP_INTR            "LIST_BACKUP"
+#define CMD_NAME_LIST_TRANS_INTR             "LIST_TRANS"
+#define CMD_NAME_LIST_TRANSCUR_INTR          "LIST_TRANS_CUR"
+#define CMD_NAME_LIST_GROUP_INTR             "LIST_GROUP"
+#define CMD_NAME_LIST_USER_INTR              "LIST_USER"
+#define CMD_NAME_LIST_TASK_INTR              "LIST_TASK"
+#define CMD_NAME_LIST_DOMAIN_INTR            "LIST_DOMAIN"
+#define CMD_NAME_LIST_SVCTASKS_INTR          "LIST_SVCTASKS"
+#define CMD_NAME_LIST_SEQUENCES_INTR         "LIST_SEQUENCES"
+
+#define SYS_VIRTUAL_CS                       "SYS_VCS"
+#define SYS_VIRTUAL_CS_LEN                   sizeof( SYS_VIRTUAL_CS )
+#define SYS_CL_SESSION_INFO                  SYS_VIRTUAL_CS".SYS_SESSION_INFO"
+
+#define CMD_VALUE_NAME_CREATE                "create image"
+#define CMD_VALUE_NAME_REMOVE                "remove image"
+#define CMD_VALUE_NAME_ATTACH                "attach groups"
+#define CMD_VALUE_NAME_DETACH                "detach groups"
+#define CMD_VALUE_NAME_ENABLE                "enable image"
+#define CMD_VALUE_NAME_DISABLE               "disable image"
+#define CMD_VALUE_NAME_ACTIVATE              "activate"
+#define CMD_VALUE_NAME_DEACTIVATE            "deactivate"
+#define CMD_VALUE_NAME_ENABLE_READONLY       "enable readonly"
+#define CMD_VALUE_NAME_DISABLE_READONLY      "disable readonly"
+
+/*
+   alter user
+*/
+#define CMD_VALUE_NAME_CHANGEPASSWD          "change passwd"
+#define CMD_VALUE_NAME_SETATTR               "set attributes"
 
 #define CLS_REPLSET_MAX_NODE_SIZE            7
 #define SDB_MAX_MSG_LENGTH                   ( 512 * 1024 * 1024 )
+
+#define SDB_MAX_USERNAME_LENGTH              256
+#define SDB_MAX_PASSWORD_LENGTH              256
 
 #define INVALID_GROUPID                      0
 #define CATALOG_GROUPID                      1
@@ -528,8 +726,16 @@
 
 #define SDB_INDEX_SORT_BUFFER_DEFAULT_SIZE   64
 
+#define SDB_ROLE_DATA_STR                    "data"
+#define SDB_ROLE_COORD_STR                   "coord"
+#define SDB_ROLE_CATALOG_STR                 "catalog"
+#define SDB_ROLE_STANDALONE_STR              "standalone"
+#define SDB_ROLE_OM_STR                      "om"
+#define SDB_ROLE_OMA_STR                     "cm"
+
 #define SDB_AUTH_USER                        "User"
 #define SDB_AUTH_PASSWD                      "Passwd"
+#define SDB_AUTH_OLDPASSWD                   "OldPasswd"
 #define SDB_AUTH_SOURCE                      "Source"
 
 #define SDB_LOB_OID_LEN                      16
@@ -537,6 +743,17 @@
 #define SDB_SHARDING_PARTITION_DEFAULT    4096       // 2^12
 #define SDB_SHARDING_PARTITION_MIN        8          // 2^3
 #define SDB_SHARDING_PARTITION_MAX        1048576    // 2^20
+
+enum SDB_ROLE
+{
+   SDB_ROLE_DATA = 0,
+   SDB_ROLE_COORD,
+   SDB_ROLE_CATALOG,
+   SDB_ROLE_STANDALONE,
+   SDB_ROLE_OM,
+   SDB_ROLE_OMA,
+   SDB_ROLE_MAX
+} ;
 
 enum SDB_LOB_MODE
 {
@@ -575,9 +792,10 @@ enum SDB_LOB_MODE
 #define SDB_CATALOG_NODE      "node"
 #define SDB_CATALOG_UNKNOWN   "unknown"
 
-#define SDB_CATALOG_CL_ID_INDEX  "id index"
-#define SDB_CATALOG_CL_SHARDING  "sharding"
-#define SDB_CATALOG_CL_COMPRESS  "compression"
+#define SDB_CATALOG_CL_ID_INDEX     "id index"
+#define SDB_CATALOG_CL_SHARDING     "sharding"
+#define SDB_CATALOG_CL_COMPRESS     "compression"
+#define SDB_CATALOG_CL_AUTOINC_FLD 	"autoincrement"
 
 #define SDB_CATALOG_CS_DOMAIN    SDB_CATALOG_DOMAIN
 #define SDB_CATALOG_CS_CAPPED    "capped"
@@ -607,6 +825,16 @@ enum SDB_LOB_MODE
 #define SDB_ALTER_CL_DROP_ID_INDEX     SDB_ALTER_ACTION_DROP \
                                        SDB_ALTER_DELIMITER \
                                        SDB_CATALOG_CL_ID_INDEX
+
+/// create autoincrement field
+#define SDB_ALTER_CL_CRT_AUTOINC_FLD   SDB_ALTER_ACTION_CREATE \
+                                       SDB_ALTER_DELIMITER \
+                                       SDB_CATALOG_CL_AUTOINC_FLD
+
+/// drop autoincrement field
+#define SDB_ALTER_CL_DROP_AUTOINC_FLD  SDB_ALTER_ACTION_DROP \
+                                       SDB_ALTER_DELIMITER \
+                                       SDB_CATALOG_CL_AUTOINC_FLD
 
 /// enable sharding
 #define SDB_ALTER_CL_ENABLE_SHARDING   SDB_ALTER_ACTION_ENABLE \

@@ -46,8 +46,11 @@
 
 using namespace engine ;
 
+#if defined _MSC_VER
 PMD_IMPLEMENT_CB_AUTO_REGISTER( _daoCB ) ;
 PMD_IMPLEMENT_CB_AUTO_REGISTER( _netCB ) ;
+#endif
+
 /*
    _novaCBConfig define
 */

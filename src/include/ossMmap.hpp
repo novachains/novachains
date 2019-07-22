@@ -130,7 +130,7 @@ public:
 
    OSS_INLINE ossValuePtr getSegmentInfo( UINT32 pos,
                                           UINT32 *pLength = NULL,
-                                          UINT64 *pOffset = NULL )
+                                          UINT64 *pOffset = NULL ) const
    {
       ossValuePtr tmpPtr = 0 ;
       tmpPtr = _pSegArray[ pos ]._ptr ;

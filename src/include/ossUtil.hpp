@@ -91,6 +91,7 @@ OSS_INLINE UINT32 ossHash( const BYTE *v1, UINT32 s1,
 }
 
 BOOLEAN ossIsPowerOf2( UINT32 num, UINT32 *pSquare = NULL ) ;
+UINT64 ossNextPowerOf2( UINT32 num, UINT32 *pSquare = NULL ) ;
 
 #if defined (_WINDOWS)
 OSS_INLINE void ossSleepmillis ( UINT64 s )

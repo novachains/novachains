@@ -50,6 +50,7 @@
 #include <io.h>
 #endif
 #include "oss.h"
+#include "msg.h"
 #include <string.h>
 #include <stdlib.h>
 #include <stdio.h>
