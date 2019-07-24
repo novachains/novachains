@@ -40,7 +40,7 @@
 #if defined (_LINUX)
 #include <unistd.h>
 #include <syscall.h>
-#elif defined (_AIX)
+#elif defined (_AIX) || defined (_MACOS)
 #include <pthread.h>
 #else
 #include <tlhelp32.h>
@@ -104,6 +104,8 @@ OSSTID ossGetCurrentThreadID()
    return GetCurrentThreadId();
 #elif defined (_AIX)
    return pthread_self();
+#elif defined (_MACOS)
+   return pthread_mach_thread_np(pthread_self());
 #else
    return syscall(SYS_gettid);
 #endif

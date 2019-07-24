@@ -45,7 +45,7 @@
 #include <stdio.h>
 #include <stdarg.h>
 
-#if defined (_LINUX) || defined ( _AIX )
+#if defined (_LINUX) || defined ( _AIX ) || defined (_MACOS)
 #include <errno.h>
 #include <unistd.h>
 #endif
@@ -53,7 +53,7 @@
 #define ISEMPTYSTRING(x) (strlen(x)==0)
 #define OSS_MAX_GROUPNAME_SIZE      127
 
-#if defined (_LINUX) || defined ( _AIX )
+#if defined (_LINUX) || defined ( _AIX ) || defined (_MACOS)
 #define OSS_FILE_SEP       "/"
 #define OSS_FILE_SEP_CHAR  '/'
 #define OSS_MAX_PATHSIZE   PATH_MAX

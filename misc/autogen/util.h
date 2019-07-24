@@ -13,6 +13,13 @@ using namespace std ;
 #define UTIL_FILE_SEP       "/"
 #define UTIL_FILE_SEP_CHAR  '/'
 #define UTIL_MAX_PATHSIZE   PATH_MAX
+#elif defined (__APPLE__)
+#include <string.h>
+#include <limits.h>
+#include <sys/time.h>
+#define UTIL_FILE_SEP       "/"
+#define UTIL_FILE_SEP_CHAR  '/'
+#define UTIL_MAX_PATHSIZE   PATH_MAX
 #elif defined (_WIN32)
 #define UTIL_FILE_SEP       "\\"
 #define UTIL_FILE_SEP_CHAR  '\\'

@@ -45,7 +45,7 @@
 #include <utility>
 #include <boost/algorithm/string.hpp>
 #include <boost/lexical_cast.hpp>
-#if defined (_LINUX)
+#if defined (_LINUX) || defined (_MACOS)
 #include <net/if.h>
 #include <sys/ioctl.h>
 #include <arpa/inet.h>
@@ -3126,7 +3126,7 @@ namespace engine
       goto done ;
    }
 
-#if defined( _LINUX )
+#if defined( _LINUX ) || defined ( _MACOS )
    INT32 _sptUsrSystemCommon::_extractProcessInfo( const CHAR *buf,
                                                    const BOOLEAN &showDetail,
                                                    BSONObjBuilder &builder )

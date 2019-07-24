@@ -26,19 +26,29 @@ Building Prerequisites:
 	# 2 download spidermonkey 1.85
 	# 2.1 download source code
 	http://ftp.mozilla.org/pub/mozilla.org/js/js185-1.0.0.tar.gz
-	# 2.2.1 compile and install
+	# 2.2.1.1 compile and install
 	tar -xvf js185-1.0.0.tar.gz
 	cd js/src
 	autoconf-2.13
-	make build_OPT.OBJ
+	mkdir build_OPT.OBJ
 	cd build_OPT.OBJ
 	../configure
+	make
+	sudo make install
+	# 2.2.1.2 For users on MacOS Mojave
+	tar -xvf js185-1.0.0.tar.gz
+	cd js/src
+	autoconf2.13
+	mkdir build_OPT.OBJ
+	cd build_OPT.OBJ
+	CC=clang CXX=clang++ CXXFLAGS="-stdlib=libc++ -mmacosx-version-min=10.7"  ../configure
 	make
 	sudo make install
 	# 2.2.2 or install spidermonkey lib binary
 	sudo apt-get install libmozjs185-1.0
 
 	#install openssl
+	# Mac user can pass this step
 	sudo apt-get install libssl-dev
 
 	#install nspr

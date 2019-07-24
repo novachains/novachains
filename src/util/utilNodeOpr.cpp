@@ -44,7 +44,7 @@
 #include "utilParam.hpp"
 #include "pd.hpp"
 
-#if defined( _LINUX )
+#if defined( _LINUX ) || defined ( _MACOS )
 #include <dirent.h>
 #endif //_LINUX
 
@@ -54,7 +54,7 @@ namespace engine
    static INT32 _utilCheckOrCleanNamedPipe( const CHAR *fullPipeName,
                                             OSSPID &pid )
    {
-#if defined( _LINUX )
+#if defined( _LINUX ) || defined ( _MACOS )
       INT32 rc = SDB_OK ;
       const CHAR *pPidPtr = NULL ;
 

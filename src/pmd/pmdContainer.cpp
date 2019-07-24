@@ -39,9 +39,18 @@
 #include "pmdContainer.hpp"
 #include "pmdTrace.hpp"
 #include "pd.hpp"
+#ifdef _MSC_VER
+#include "pmdCBMainEntry.hpp"
+#endif
 
 namespace engine
 {
+
+#ifdef _MSC_VER
+PMD_DEFINE_ENTRYPOINT( PMD_EDU_CBMAIN, TRUE,
+		       pmdCBMainEntry,
+		       "CBMAIN" ) ;
+#endif
 
    /*
       _pmdContainer implement

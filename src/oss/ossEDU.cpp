@@ -45,7 +45,7 @@
 #include "ossVer.hpp"
 #include "pdTrace.hpp"
 #include "ossTrace.hpp"
-#if defined(_LINUX)
+#if defined(_LINUX) || defined (_MACOS)
 #include <dlfcn.h>
 #include <execinfo.h>
 #endif
@@ -81,7 +81,7 @@ namespace  engine
       return &s_eduData ;
    }
 
-#if defined(_LINUX)
+#if defined(_LINUX) || defined (_MACOS)
 
    void ossOneTimeOnly()
    {
@@ -630,7 +630,7 @@ namespace  engine
 
 }  // namespace engine
 
-#ifdef _LINUX
+#if defined _LINUX || defined _MACOS
 
    _ossSigSet::_ossSigSet ()
    {
@@ -649,8 +649,10 @@ namespace  engine
    void _ossSigSet::fillSet ()
    {
       memset ( &_sigArray[1], 1, sizeof (_sigArray) ) ;
+#if defined _LINUX
       _sigArray[32] = 0 ;
       _sigArray[33] = 0 ;
+#endif
    }
 
    void _ossSigSet::sigAdd ( INT32 sigNum )

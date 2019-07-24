@@ -44,7 +44,7 @@
 
 namespace engine
 {
-#if defined(_LINUX)
+#if defined(_LINUX) || defined (_MACOS)
    void ossStackTrace( OSS_HANDPARMS, const CHAR * dumpDir ) ;
    void ossEDUCodeTrapHandler( OSS_HANDPARMS ) ;
 #elif defined(_WINDOWS)
@@ -66,12 +66,12 @@ namespace engine
       UINT64 ossEDUFlag ;
       SINT32 _depth ;
       SINT32 _nestedDepth ;
-   #if defined (_LINUX)
+   #if defined (_LINUX) || defined (_MACOS)
       OSS_SIGFUNCPTR ossEDUNestedSignalHandler ;
       // This long jump buffer is used to handle nested signal
       // and it is used by ossEDUNestedSignalHandler
    #endif
-   #if defined (_LINUX)
+   #if defined (_LINUX) || defined (_MACOS)
       sigjmp_buf ossNestedSignalHanderJmpBuf ;
    #elif defined (_WINDOWS)
       jmp_buf ossNestedSignalHanderJmpBuf ;
@@ -156,9 +156,15 @@ namespace engine
       }                                                                      \
    }
 }
+
 #if defined (_LINUX)
 #define OSS_MAX_SIGAL         (_NSIG-1)
+#elif  defined (_MACOS)
+#define OSS_MAX_SIGAL	      (NSIG-1)
+typedef void (*__sighandler_t)(int);
+#endif
 
+#if defined (_LINUX) || defined (_MACOS)
 /*
    ossSigSet define
 */

@@ -45,8 +45,10 @@
 #include "pdTrace.hpp"
 #include "ossTrace.hpp"
 
+#if defined (_LINUX) || defined (_MACOS)
 #if defined (_LINUX)
 #include <sys/prctl.h>
+#endif
 #include <dlfcn.h>
 #include <execinfo.h>
 #include <stdint.h>
@@ -81,8 +83,10 @@ void ossRestoreSystemSignal( const INT32 sigNum,
       setrlimit( RLIMIT_CORE, &rlim ) ;
    }
 
+#if defined (_LINUX)
    // Set the core dump file here.
    prctl(PR_SET_DUMPABLE, 1, 0, 0, 0 ) ;
+#endif
 
    // need to change to current working/dump directory
    if ( NULL != dumpDir )
@@ -622,6 +626,16 @@ void ossDumpStackTrace( OSS_HANDPARMS, ossPrimitiveFileOp * trapFile )
    PD_TRACE_EXIT ( SDB_OSSDUMPST );
 }
 
+#elif defined (_MACOS)
+void ossDumpRegistersInfo( ossSignalContext pContext,
+                           ossPrimitiveFileOp * trapFile )
+{
+}
+
+void ossDumpStackTrace( OSS_HANDPARMS, ossPrimitiveFileOp * trapFile )
+{
+}
+
 #elif defined (_LIN32)
 // PD_TRACE_DECLARE_FUNCTION ( SDB_OSSDUMPREGSINFO2, "ossDumpRegistersInfo" )
 void ossDumpRegistersInfo( ossSignalContext pContext,
@@ -948,6 +962,7 @@ void ossDumpStackTrace( OSS_HANDPARMS, ossPrimitiveFileOp * trapFile )
 #include "ossLatch.hpp"
 #include <windows.h>
 #include <dbgHelp.h>
+#pragma comment( lib, "Dbghelp.lib" )
 
 #if defined( _M_IA64 )
    #define OSS_THIS_IMAGE_MACHINE_TYPE IMAGE_FILE_MACHINE_IA64

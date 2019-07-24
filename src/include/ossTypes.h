@@ -63,7 +63,7 @@
 #define NULL 0
 #endif
 
-#if defined ( _LINUX ) || defined ( _AIX )
+#if defined ( _LINUX ) || defined ( _AIX ) || defined ( _MACOS )
    typedef int ossSystemError ;
 #elif defined ( _WINDOWS )
    typedef DWORD ossSystemError ;
@@ -73,7 +73,7 @@
    typedef unsigned char        UINT8;
    typedef unsigned char         BYTE;
    typedef signed char          SINT8;
-#if defined (_LINUX) || defined ( _AIX )
+#if defined (_LINUX) || defined ( _AIX ) || defined ( _MACOS )
    typedef signed char          INT8 ;
    #define SDB_DEV_NULL         "/dev/null"
 #endif
@@ -106,7 +106,7 @@
 
 
 
-#if defined (_LINUX) || defined ( _AIX )
+#if defined (_LINUX) || defined ( _AIX ) || defined ( _MACOS )
    typedef INT32                BOOLEAN;
 #endif
    typedef float                FLOAT32;
@@ -124,19 +124,26 @@
 
 #define SDB_PAGE_SIZE           4096
 
-#if defined (_LINUX) || defined ( _AIX )
+#if defined (_LINUX) || defined ( _AIX ) || defined ( _MACOS )
 typedef INT32 SOCKET ;
 #endif
 
-#if defined _LINUX || defined _AIX
+#if defined _LINUX || defined _AIX || defined _MACOS
+   #if defined _MACOS
+      #include <unistd.h>
+   #endif
    #include "pthread.h"
-   typedef pid_t           OSSPID ;
-   typedef pthread_t       OSSTID ;
-   typedef INT32           OSSHANDLE ;
+   typedef pid_t           	OSSPID ;
+   #if defined _MACOS
+   typedef unsigned long int    OSSTID ;
+   #else
+   typedef pthread_t       	OSSTID ;
+   #endif
+   typedef INT32           	OSSHANDLE ;
    #define OSS_INVALID_TID      ( ( OSSTID )NULL )
-   typedef uid_t           OSSUID ;
-   typedef gid_t           OSSGID ;
-   #define OSS_INLINE      inline
+   typedef uid_t           	OSSUID ;
+   typedef gid_t           	OSSGID ;
+   #define OSS_INLINE      	inline
    // any attempt to get TLS variable should use OSS_FORCE_INLINE
    // It may avoid calling __tls_get_addr (x86 only)instruction repeatedly if
    // there's any for loop

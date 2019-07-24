@@ -48,6 +48,7 @@
 #include "netTimer.hpp"
 #include "ossAtomic.hpp"
 #include "pmdInterface.hpp"
+#include "netMsgStream.hpp"
 
 #include <map>
 #include <vector>
@@ -114,7 +115,7 @@ namespace engine
 
       public:
          /// handler will not be freed by frame
-         _netFrame( _netMsgHandler *handler, _netRoute *pRoute ) ;
+         _netFrame( _netMsgHandler *handler, _netRoute *pRoute, _netMsgParser *parser=NULL ) ;
 
          ~_netFrame() ;
 
@@ -205,6 +206,10 @@ namespace engine
                           MsgHeader *header,
                           const netIOVec &iov ) ;
 
+	 INT32 syncSendBuf ( const _MsgRouteID &id,
+			     char *pBuf,
+			     const INT32 &bufLen) ;
+
          /// frame will not release handler for ever
          INT32 addTimer( UINT32 millsec, _netTimeoutHandler *handler,
                          UINT32 &timerid );
@@ -221,6 +226,8 @@ namespace engine
 
          void  handleMsg( NET_EH eh ) ;
 
+	 void  handleStream( NET_EH eh, MsgStream *pMsg) ;
+
          void  handleClose( NET_EH eh, _MsgRouteID id ) ;
 
          INT64 netIn() ;
@@ -228,6 +235,7 @@ namespace engine
          INT64 netOut() ;
 
          void  makeStat( UINT32 timeout ) ;
+
 
       protected:
          netEvSuitPtr      _getEvSuit( BOOLEAN needLock ) ;
@@ -276,6 +284,8 @@ namespace engine
          UINT32                           _beatTimeout ;
          UINT64                           _beatLastTick ;
          BOOLEAN                          _checkBeat ;
+
+	 _netMsgParser			  *_parser ;
 
          netInnerTimeHandle               _innerTimeHandle ;
 

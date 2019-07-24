@@ -41,7 +41,7 @@
 #include <boost/algorithm/string.hpp>
 #include "../bson/lib/md5.hpp"
 #include <string>
-#if defined(_LINUX)
+#if defined(_LINUX) || defined (_MACOS)
 #include <sys/stat.h>
 #include <unistd.h>
 #endif
@@ -1780,7 +1780,7 @@ namespace engine
       goto done ;
    }
 
-#if defined (_LINUX)
+#if defined (_LINUX) || defined (_MACOS)
    INT32 _sptUsrFileCommon::_extractListInfo( const CHAR* buf,
                                              BSONObjBuilder &builder,
                                              BOOLEAN showDetail )

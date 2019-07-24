@@ -46,7 +46,7 @@
 #include <vector>
 #include <string>
 
-#if defined (_LINUX)
+#if defined (_LINUX) || defined (_MACOS)
 #define PROC_SELF_EXE                  "/proc/self/exe"
 #define PROC_STATUS_ZOMBIE             'Z'
 #endif
@@ -168,7 +168,7 @@ INT32 ossStartService ( const CHAR *serviceName ) ;
 INT32 ossStopService( const CHAR *serviceName,
                       DWORD dwMilliseconds ) ;
 
-#elif defined (_LINUX)
+#elif defined (_LINUX) || defined (_MACOS)
 
 /*
    It calls waitpid until the given pid stop

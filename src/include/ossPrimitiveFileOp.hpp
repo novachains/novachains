@@ -44,7 +44,12 @@
 #include <stdio.h>
 #include <string.h>
 
-#if defined (_LINUX) || defined (_AIX)
+#if defined (_MACOS)
+   #define off64_t	off_t
+   #define lseek64	lseek
+#endif
+
+#if defined (_LINUX) || defined (_AIX) || defined (_MACOS)
    #define OSS_F_GETLK        F_GETLK64
    #define OSS_F_SETLK        F_SETLK64
    #define OSS_F_SETLKW       F_SETLKW64
@@ -98,7 +103,7 @@
 #define OSS_PRIMITIVE_FILE_OP_OPEN_ALWAYS   (((UINT32_64)1) << 4)
 #define OSS_PRIMITIVE_FILE_OP_OPEN_TRUNC    (((UINT32_64)1) << 5)
 
-#if defined (_LINUX) || defined (_AIX)
+#if defined (_LINUX) || defined (_AIX) || defined (_MACOS)
    #define OSS_PRIMITIVE_FILE_SEP "/"
    #define OSS_INVALID_HANDLE_FD_VALUE (-1)
 #elif defined (_WINDOWS)
@@ -112,7 +117,7 @@ public :
    class offsetType : public SDBObject
    {
    public :
-   #if defined (_LINUX) || defined (_AIX)
+   #if defined (_LINUX) || defined (_AIX) || defined (_MACOS)
       typedef oss_off_t ossOffset_t ;
    #elif defined (_WINDOWS)
       typedef SINT64 ossOffset_t ;
@@ -121,7 +126,7 @@ public :
       ossOffset_t offset ;
    } ;
 
-#if defined (_LINUX) || defined (_AIX)
+#if defined (_LINUX) || defined (_AIX) || defined (_MACOS)
    typedef  int    handleType ;
 #elif defined (_WINDOWS)
    typedef  int handleType ;

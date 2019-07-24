@@ -45,6 +45,9 @@
 #elif defined (_WINDOWS)
 // this defines DMS page size, need to verify with Windows page granularity
 #include "dms.hpp"
+#elif defined (_MACOS)
+#include <sys/mman.h>
+#define MADV_DONTFORK 0
 #endif
 
 #define OSS_MMAP_INIT_CAPACITY         ( 128 )
@@ -174,7 +177,7 @@ INT32 _ossMmapFile::map ( UINT64 offset, UINT32 length, void **pAddress )
    }
 
    // map region into memory
-#if defined (_LINUX)
+#if defined (_LINUX) || defined (_MACOS)
    segment = mmap( NULL, length, PROT_READ|PROT_WRITE, MAP_SHARED,
                    _file.fd, offset ) ;
    if ( MAP_FAILED == segment )
@@ -292,7 +295,7 @@ INT32 _ossMmapFile::flush ( UINT32 segmentID, BOOLEAN sync )
       rc = SDB_INVALIDARG ;
       goto error ;
    }
-#if defined (_LINUX)
+#if defined (_LINUX) || defined (_MACOS)
    if ( msync((void*)_pSegArray[segmentID]._ptr, _pSegArray[segmentID]._length,
               sync ? MS_SYNC:MS_ASYNC) )
    {
@@ -360,7 +363,7 @@ INT32 _ossMmapFile::flushBlock( UINT32 segmentID, UINT32 offset,
 
    ptr = pSegment->_ptr + offset ;
 
-#if defined (_LINUX)
+#if defined (_LINUX) || defined (_MACOS)
    if ( msync((void*)ptr, length, sync ? MS_SYNC : MS_ASYNC) )
    {
       err = ossGetLastError () ;

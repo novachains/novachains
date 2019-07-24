@@ -18,6 +18,7 @@
 #define MANPATH_DEFAULT "/usr/share/man:/usr/X11R6/man:/usr/local/man"
 #define HAVE_DIRENT_NAMLEN 0
 #if defined ( _WIN32 )
+#include <stddef.h>
 #define HAVE_ERR 0
 #else
 #define HAVE_ERR 0
@@ -37,8 +38,13 @@
 #define HAVE_SANDBOX_INIT 0
 #define HAVE_STRCASESTR 1
 #define HAVE_STRINGLIST 0
+#if defined (__APPLE__)
+#define HAVE_STRLCAT 1
+#define HAVE_STRLCPY 1
+#else
 #define HAVE_STRLCAT 0
 #define HAVE_STRLCPY 0
+#endif
 //#define HAVE_STRPTIME 1
 #define HAVE_STRPTIME 0
 #define HAVE_STRSEP 1

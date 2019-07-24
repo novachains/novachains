@@ -56,7 +56,13 @@ namespace engine
       public:
         virtual INT32   handleMsg( const NET_HANDLE &handle,
                                    const _MsgHeader *header,
-                                   const CHAR *msg ) = 0 ;
+                                   const CHAR *msg )
+	{
+	   return 0 ;
+	}
+
+	virtual INT32   handleStream( const _MsgRouteID &id,
+				      MsgStream *pMsg ) = 0 ;
 
         virtual void    handleClose( const NET_HANDLE &handle,
                                      _MsgRouteID id )
@@ -74,6 +80,20 @@ namespace engine
    } ;
 
    typedef _netMsgHandler INetMsgHandler ;
+
+   class _netCommHandler : public _netMsgHandler
+   {
+      public:
+        _netCommHandler(){}
+        virtual ~_netCommHandler(){}
+      public:
+        virtual INT32   handleStream( const _MsgRouteID &id,
+                                      MsgStream *pMsg )
+        {
+	   return 0 ;
+        }
+
+   } ; 
 
 }
 

@@ -50,7 +50,7 @@ typedef const OSS_INSTRUCTION * OSS_INSTRUCTION_PTR ;
 
 class ossPrimitiveFileOp ;
 
-#if defined (_LINUX)
+#if defined (_LINUX) || defined (_MACOS)
    #define OSS_MAX_BACKTRACE_FRAMES_SUPPORTED 128
 #elif defined (_WINDOWS)
    #if defined (_WINDOWS32)
@@ -60,7 +60,7 @@ class ossPrimitiveFileOp ;
    #endif
 #endif
 
-#if defined (_LINUX)
+#if defined (_LINUX) || defined (_MACOS)
 
    #include "ossSignal.hpp"
 

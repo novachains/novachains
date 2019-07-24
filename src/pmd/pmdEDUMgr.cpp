@@ -1692,7 +1692,7 @@ namespace engine
       return type ;
    }
 
-#if defined (_LINUX)
+#if defined (_LINUX) || defined (_MACOS)
    // PD_TRACE_DECLARE_FUNCTION ( SDB__PMDEDUMGR_GETEDUTRDID, "_pmdEDUMgr::getEDUThreadID" )
    void _pmdEDUMgr::getEDUThreadID ( set<pthread_t> &tidList )
    {
@@ -1867,7 +1867,7 @@ namespace engine
       {
          isHdlCreated = TRUE ;
       }
-#elif defined (_LINUX )
+#elif defined (_LINUX ) || defined (_MACOS)
       OSSTID tHdl = ossGetCurrentThreadID() ;
       cb->setThreadID ( ossPThreadSelf() ) ;
 #endif

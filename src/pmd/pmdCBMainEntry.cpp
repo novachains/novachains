@@ -36,6 +36,9 @@
 #include "pd.hpp"
 #include "pdTrace.hpp"
 #include "pmdTrace.hpp"
+#if defined _MSC_VER
+#include "pmdCBMainEntry.hpp"
+#endif
 
 namespace engine
 {
@@ -68,10 +71,12 @@ namespace engine
       goto done ;
    }
 
+#ifndef _MSC_VER
    /// Register
    PMD_DEFINE_ENTRYPOINT( PMD_EDU_CBMAIN, TRUE,
                           pmdCBMainEntry,
                           "CBMAIN" ) ;
+#endif
 
 }
 

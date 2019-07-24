@@ -109,6 +109,8 @@ _ossSocket::_ossSocket ( const CHAR *pHostname, UINT32 port,
    struct hostent_data hent_data ;
    hp = &hent ;
    if ( (0 == gethostbyname_r ( pHostname, &hent, &hent_data ) ) )
+#elif defined (_MACOS)
+   if ( (hp = gethostbyname ( pHostname )))
 #endif
    {
       UINT32 *pAddr = (UINT32 *)hp->h_addr_list[0] ;
@@ -275,9 +277,10 @@ INT32 _ossSocket::setKeepAlive( INT32 keepAlive, INT32 keepIdle,
       PD_LOG ( PDWARNING, "Failed to setsockopt, rc = %d",
                SOCKET_GETLASTERROR ) ;
    }
-   #if defined (_AIX)
+   #if defined (_AIX) || defined (_MACOS)
       #define SOL_TCP IPPROTO_TCP
    #endif
+#if defined (_LINUX) || defined (_AIX)
    rc = setsockopt( _fd, SOL_TCP, TCP_KEEPIDLE,
                     ( void *)&keepIdle, sizeof(keepIdle) ) ;
    if ( SDB_OK != rc )
@@ -299,6 +302,16 @@ INT32 _ossSocket::setKeepAlive( INT32 keepAlive, INT32 keepIdle,
       PD_LOG ( PDWARNING, "Failed to setsockopt, rc = %d",
                SOCKET_GETLASTERROR ) ;
    }
+#elif defined (_MACOS)
+   rc = setsockopt( _fd, SOL_TCP, TCP_KEEPALIVE,
+                    ( void *)&keepInterval, sizeof(keepInterval) ) ;
+   if ( SDB_OK != rc )
+   {
+      PD_LOG ( PDWARNING, "Failed to setsockopt, rc = %d",
+               SOCKET_GETLASTERROR ) ;
+   }
+#endif
+
 #endif // _WINDOWS
 
 done:
@@ -446,6 +459,16 @@ INT32 _ossSocket::send ( const CHAR *pMsg, INT32 len,
 #if defined (_WINDOWS)
       rc = ::send ( _fd, pMsg, len, flags ) ;
       if ( SOCKET_ERROR == rc )
+#elif defined (_MACOS)
+      int val = 1 ;
+      rc = setsockopt (_fd, SOL_SOCKET, SO_NOSIGPIPE, (void*)&val, sizeof(val));
+      if ( SDB_OK != rc )
+      {
+         PD_LOG ( PDWARNING, "Failed to setsockopt, rc = %d",
+                  SOCKET_GETLASTERROR ) ;
+      }
+      rc = ::send ( _fd, pMsg, len, flags ) ;
+      if ( rc )
 #else
       // MSG_NOSIGNAL : Requests not to send SIGPIPE on errors on stream
       // oriented sockets when the other end breaks the connection. The EPIPE
@@ -651,6 +674,15 @@ INT32 _ossSocket::recv ( CHAR *pMsg, INT32 len,
    {
 #if defined (_WINDOWS)
       rc = ::recv ( _fd, pMsg, len, flags ) ;
+#elif defined (_MACOS)
+      int val = 1 ;
+      rc = setsockopt (_fd, SOL_SOCKET, SO_NOSIGPIPE, (void*)&val, sizeof(val));
+      if ( SDB_OK != rc )
+      {
+         PD_LOG ( PDWARNING, "Failed to setsockopt, rc = %d",
+                  SOCKET_GETLASTERROR ) ;
+      }
+      rc = ::recv ( _fd, pMsg, len, flags ) ;
 #else
       // MSG_NOSIGNAL : Requests not to send SIGPIPE on errors on stream
       // oriented sockets when the other end breaks the connection. The EPIPE
@@ -727,7 +759,7 @@ INT32 _ossSocket::connect ( INT32 timeout )
    SDB_ASSERT ( !_peerAddress.sin_addr.s_addr,
                 "Cannot connect without close/init" ) ;
 
-#if defined (_LINUX) || defined (_AIX)
+#if defined (_LINUX) || defined (_AIX) || defined (_MACOS)
 
    INT32 flags = fcntl( native(), F_GETFL, 0) ;
    if ( fcntl( native(), F_SETFL, flags | O_NONBLOCK ) <0 )
@@ -1227,7 +1259,7 @@ INT32 _ossSocket::_complete( INT32 timeout )
 {
    INT32 rc = SDB_OK ;
    PD_TRACE_ENTRY( SDB__OSSSK__COMPLETE ) ;
-#if defined (_LINUX) || defined (_AIX)
+#if defined (_LINUX) || defined (_AIX) || defined (_MACOS)
    INT32 err = 0 ;
    socklen_t errlen = sizeof(err) ;
    timeval tv ;

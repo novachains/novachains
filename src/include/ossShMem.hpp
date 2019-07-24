@@ -37,7 +37,7 @@
 
 *******************************************************************************/
 #include "ossTypes.h"
-#if defined (_LINUX)
+#if defined (_LINUX) || defined (_MACOS)
 #include <sys/ipc.h>
 #include <sys/shm.h>
 #include <sys/types.h>
@@ -47,7 +47,7 @@
 #endif
 
 
-#if defined (_LINUX)
+#if defined (_LINUX) || defined (_MACOS)
 // to  create  a new segment.
 // If this flag is not used, then ossSHMAlloc() will find
 // the segment associated with key and check to see

@@ -29,9 +29,10 @@
    Restrictions: N/A
 
    Change Activity:
-   defect Date        Who Description
-   ====== =========== === ==============================================
-          20/07/2018  TW  Initial Draft
+   defect Date        Who   Description
+   ====== =========== ===== ==============================================
+          20/07/2018  TW    Initial Draft
+           1/07/2019  Jiaqi Adding ossNextPowerOf2 
 
    Last Changed =
 
@@ -40,16 +41,23 @@
 #include "pd.hpp"
 #include "pdTrace.hpp"
 #include "ossTrace.hpp"
-#if defined (_LINUX) || defined (_AIX)
+#if defined (_LINUX) || defined (_AIX) || defined (_MACOS)
 #include <sys/statvfs.h>
 #include <sys/utsname.h>
 #include <dirent.h>
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <unistd.h>
+#if defined (_LINUX) || defined (_AIX)
 #include <mntent.h>
+#else
+#include <sys/param.h>
+#include <sys/ucred.h>
+#include <sys/mount.h>
+#endif
 #elif defined (_WINDOWS)
 #include "Psapi.h"
+#pragma comment( lib, "psapi.lib" )
 #endif
 #include <sstream>
 
@@ -58,7 +66,7 @@
 // midnight (00:00:00), January 1, 1970, UTC
 void ossLocalTime ( time_t &Time, struct tm &TM )
 {
-#if defined (_LINUX ) || defined (_AIX)
+#if defined (_LINUX ) || defined (_AIX) || defined (_MACOS)
    localtime_r( &Time, &TM ) ;
 #elif defined (_WINDOWS)
    // The Time represents the seconds elapsed since midnight (00:00:00),
@@ -83,11 +91,28 @@ BOOLEAN ossIsPowerOf2( UINT32 num, UINT32 * pSquare )
    return bPowered ;
 }
 
+UINT64 ossNextPowerOf2( UINT32 num, UINT32 *pSquare )
+{
+   UINT32 square = 0 ;
+   UINT64 result = 1 ;
+
+   while ( num > result )
+   {
+      square++ ;
+      result <<= 1 ;
+   }
+   if ( pSquare )
+   {
+      *pSquare = square ;
+   }
+   return result ;
+}
+
 //  Wrapper of gmtime, converts a time value to a broken-down time structure.
 //  The Time is represented as seconds elapsed since the Epoch.
 void ossGmtime ( time_t &Time, struct tm &TM )
 {
-#if defined (_LINUX ) || defined (_AIX)
+#if defined (_LINUX ) || defined (_AIX) || defined (_MACOS)
    gmtime_r( &Time, &TM ) ;
 #elif defined (_WINDOWS)
    // Time is represented as seconds elapsed since midnight (00:00:00),
@@ -153,7 +178,7 @@ void ossStringToTimestamp( const CHAR * pStr, ossTimestamp &Tm )
 
 void ossGetCurrentTime( ossTimestamp &TM )
 {
-#if defined (_LINUX) || defined (_AIX)
+#if defined (_LINUX) || defined (_AIX) || defined (_MACOS)
    struct timeval tv ;
 
    // obtain the current time, expressed as seconds and microseconds since
@@ -237,7 +262,7 @@ SINT32 ossGetCPUUsage
       ossErr = GetLastError() ;
       rc = SDB_SYS ;
    }
-#elif defined (_LINUX) || defined (_AIX)
+#elif defined (_LINUX) || defined (_AIX) || defined (_MACOS)
 
    #if ( defined __GLIBC__ && ( __GLIBC__ >= 2 ) && ( __GLIBC_MINOR__ >= 2 ) )
       #define OSS_CLK_TCK CLOCKS_PER_SEC
@@ -327,7 +352,7 @@ SINT32 ossGetCPUUsage
 (
 #if defined (_WINDOWS)
    HANDLE tHandle,  // thread handle, e.g., GetCurrthenThread()
-#elif defined (_LINUX) || defined (_AIX)
+#elif defined (_LINUX) || defined (_AIX) || defined (_MACOS)
    OSSTID tid,      // lwp / kernel thread id, ossGetCurrentThreadID()
 #endif
    ossTime &usrTime,
@@ -360,7 +385,7 @@ SINT32 ossGetCPUUsage
       ossErr = GetLastError() ;
       rc = SDB_SYS ;
    }
-#elif defined (_LINUX) || defined (_AIX)
+#elif defined (_LINUX) || defined (_AIX) || defined (_MACOS)
 
    #if ( defined __GLIBC__ && ( __GLIBC__ >= 2 ) && ( __GLIBC_MINOR__ >= 2 ) )
       #define OSS_CLK_TCK CLOCKS_PER_SEC
@@ -581,7 +606,7 @@ static void ossInitTickFactor()
          g_tickFactor = 1 ;
       }
       g_tickFactor = countsPerSecond.QuadPart ;
-   #elif defined (_LINUX) || defined (_AIX)
+   #elif defined (_LINUX) || defined (_AIX) || defined (_MACOS)
       g_tickFactor = 1 ;
    #endif
 }
@@ -594,7 +619,7 @@ ossTickConversionFactor::ossTickConversionFactor()
 }
 
 /// Rand initialize
-#if defined (_LINUX) || defined (_AIX)
+#if defined (_LINUX) || defined (_AIX) || defined (_MACOS)
 static UINT32 g_randSeed = 0 ;
 static ossMutex g_randMutex ;
 #endif
@@ -605,7 +630,7 @@ static void ossSrand()
    PD_TRACE_ENTRY ( SDB_OSSSRAND ) ;
 #if defined (_WINDOWS)
       srand ( (UINT32) time ( NULL ) ) ;
-#elif defined (_LINUX) || defined (_AIX)
+#elif defined (_LINUX) || defined (_AIX) || defined (_MACOS)
       g_randSeed = time ( NULL ) ;
 #endif
    PD_TRACE_EXIT ( SDB_OSSSRAND );
@@ -617,13 +642,13 @@ class ossRandAssit
       ossRandAssit()
       {
          ossSrand() ;
-#if defined (_LINUX) || defined (_AIX)
+#if defined (_LINUX) || defined (_AIX) || defined (_MACOS)
          ossMutexInit( &g_randMutex ) ;
 #endif
       }
       ~ossRandAssit()
       {
-#if defined (_LINUX) || defined (_AIX)
+#if defined (_LINUX) || defined (_AIX) || defined (_MACOS)
          ossMutexDestroy( &g_randMutex ) ;
 #endif
       }
@@ -646,7 +671,7 @@ UINT32 ossRand ()
 
 #if defined (_WINDOWS)
    rand_s ( &randVal ) ;
-#elif defined (_LINUX) || defined (_AIX)
+#elif defined (_LINUX) || defined (_AIX) || defined (_MACOS)
    ossMutexLock( &g_randMutex ) ;
    randVal = rand_r ( &g_randSeed ) ;
    ossMutexUnlock( &g_randMutex ) ;
@@ -890,7 +915,7 @@ exit :
    return  ( (UINT32)( curPos - szOutBuf ) ) ;
 }
 
-#if defined (_LINUX) || defined (_AIX)
+#if defined (_LINUX) || defined (_AIX) || defined (_MACOS)
 #define OSS_GET_MEM_INFO_FILE             "/proc/meminfo"
 #define OSS_GET_MEM_INFO_OVERCOMMIT_FILE  "/proc/sys/vm/overcommit_memory"
 #define OSS_GET_MEM_INFO_MEMTOTAL         "MemTotal"
@@ -945,7 +970,7 @@ INT32 ossGetMemoryInfo ( INT32 &loadPercent,
    }
    // There is not over commit in windows, only in linux
    overCommitMode = 0 ;
-#elif defined (_LINUX) || defined (_AIX)
+#elif defined (_LINUX) || defined (_AIX) || defined (_MACOS)
    CHAR pathName[OSS_PROC_PATH_LEN_MAX + 1] = {0} ;
    CHAR lineBuffer [OSS_PROC_PATH_LEN_MAX+1] = {0} ;
    INT32 inputNum = 0 ;
@@ -1211,6 +1236,75 @@ INT32 ossGetDiskInfo ( const CHAR *pPath, INT64 &totalBytes, INT64 &freeBytes,
       fsName[ fsNameSize ] = '\0' ;
    }
 
+#elif defined (_MACOS)
+   struct statvfs vfs ;
+   struct stat pathStat ;
+   INT32 retcode = 0 ;
+   BOOLEAN findOut = FALSE ;
+   dev_t pathDevID ;
+   struct statfs *fs ;
+   INT32 num_fs ;
+
+   /// 1. get total and free space
+   retcode = statvfs ( pPath, &vfs ) ;
+   PD_CHECK( 0 == retcode, SDB_SYS, error, PDERROR, "Failed to statvfs"
+             ", errno: %d, rc = %d", ossGetLastError (), rc );
+
+   totalBytes = vfs.f_frsize * vfs.f_blocks ;
+   freeBytes = vfs.f_bsize * vfs.f_bfree ;
+
+   /// 2. get disk name ( device name )
+   if ( NULL == fsName )
+   {
+      goto done ;
+   }
+
+   // 2.1 get device id of the specified path
+   retcode = stat ( pPath, &pathStat );
+   PD_CHECK( 0 == retcode, SDB_SYS, error, PDERROR, "Failed to stat"
+             ", errno: %d, rc = %d", ossGetLastError (), rc );
+   pathDevID = pathStat.st_dev ;
+
+   // 2.2 get the disk name of the specified name
+   // get the arrary of the mounted file system
+   num_fs = getmntinfo(&fs, MNT_WAIT) ;
+   if ( num_fs <= 0)
+   {
+      PD_LOG ( PDERROR, "Failed to get mounted file system info of %s, errno: %d",
+                  pPath, errno ) ;
+      goto done ;
+   }
+
+   for ( int i = 0; i < num_fs ; i++ )
+   {
+      struct stat fsStat ;
+      INT32 retcode = stat ( fs[i].f_mntfromname, &fsStat );
+      if ( -1 == retcode )
+      {
+         //skip error
+         PD_LOG ( PDINFO, "Failed to stat %s, errno: %d, rc = %d",
+                  fs[i].f_mntfromname, errno, rc ) ;
+      }
+      else
+      {
+         dev_t devID = fsStat.st_rdev ;
+         if ( pathDevID == devID )
+         {
+            ossStrncpy( fsName, fs[i].f_mntfromname, fsNameSize -1 ) ;
+            fsName[ fsNameSize ] = '\0' ;
+            findOut = TRUE ;
+            break ;
+         }
+      }
+   }
+
+   // set disk name, if it hasn't find out
+   if ( FALSE == findOut )
+   {
+      ossStrncpy( fsName, "unknown-disk", fsNameSize -1 ) ;
+      fsName[ fsNameSize ] = '\0' ;
+   }
+
 #endif
 done :
 #if defined (_WINDOWS)
@@ -1246,7 +1340,7 @@ INT32 ossGetFileDesp ( INT64 &usedNum )
    PD_TRACE_ENTRY ( SDB_OSSGETFILEDESP ) ;
    INT32 rc = SDB_OK ;
 
-#if defined (_LINUX) || defined (_AIX)
+#if defined (_LINUX) || defined (_AIX) || defined (_MACOS)
 
    CHAR pathName[ OSS_PROC_PATH_LEN_MAX + 1 ] = { 0 } ;
    DIR *dp = NULL ;
@@ -1300,7 +1394,7 @@ done :
    return rc ;
 error :
 
-#if defined (_LINUX) || defined (_AIX)
+#if defined (_LINUX) || defined (_AIX) || defined (_MACOS)
    if( isOpen )
    {
       closedir( dp ) ;
@@ -1309,7 +1403,7 @@ error :
    goto done ;
 }
 
-#if defined (_LINUX) || defined (_AIX)
+#if defined (_LINUX) || defined (_AIX) || defined (_MACOS)
 #define OSS_GET_PROC_MEM_VMSIZE   "VmSize"
 #define OSS_GET_PROC_MEM_VMRSS    "VmRSS"
 #endif
@@ -1335,7 +1429,7 @@ INT32 ossGetProcessMemory( OSSPID pid, INT64 &vmRss, INT64 &vmSize )
       goto error ;
    }
 
-#elif defined (_LINUX) || defined (_AIX)
+#elif defined (_LINUX) || defined (_AIX) || defined (_MACOS)
    CHAR pathName[OSS_PROC_PATH_LEN_MAX + 1] = {0} ;
    CHAR lineBuffer [OSS_PROC_PATH_LEN_MAX+1] = {0} ;
    INT32 inputNum = 0 ;
@@ -1388,7 +1482,7 @@ INT32 ossReadlink ( const CHAR *pPath, CHAR *pLinkedPath, INT32 maxLen )
 
    PD_TRACE_ENTRY ( SDB_OSSREADLINK ) ;
 
-#if defined (_LINUX) || defined (_AIX)
+#if defined (_LINUX) || defined (_AIX) || defined (_MACOS)
    INT32 len = readlink( pPath, pLinkedPath, maxLen ) ;
    if ( len <= 0 || len >= maxLen )
    {
@@ -1405,7 +1499,7 @@ error :
    goto done ;
 }
 
-#if defined (_LINUX) || defined (_AIX)
+#if defined (_LINUX) || defined (_AIX) || defined (_MACOS)
 #define OSS_DISK_IO_STAT_FILE "/proc/diskstats"
 #endif
 
@@ -1416,7 +1510,7 @@ INT32 ossGetDiskIOStat ( const CHAR *pDriverName, ossDiskIOStat &ioStat )
 
    PD_TRACE_ENTRY ( SDB_OSSGETDISKIOSTAT ) ;
 
-#if defined (_LINUX) || defined (_AIX)
+#if defined (_LINUX) || defined (_AIX) || defined (_MACOS)
    INT32 ossErr = 0 ;
    CHAR pathName[ OSS_PROC_PATH_LEN_MAX + 1 ] = {0} ;
    CHAR lineBuffer[ OSS_PROC_PATH_LEN_MAX + 1 ] = {0} ;
@@ -1507,7 +1601,7 @@ typedef NTSTATUS (__stdcall *NTQUERYSYSTEMINFORMATION)
                   ULONG,
                   PULONG ) ;
 #define OSS_NTQUERYSYSTEMINFORMATION_STR "NtQuerySystemInformation"
-#elif defined (_LINUX) || defined (_AIX)
+#elif defined (_LINUX) || defined (_AIX) || defined (_MACOS)
 #define OSS_GET_CPU_INFO_FILE      "/proc/stat"
 #define OSS_GET_CPU_INFO_PATTERN   "%lld%lld%lld%lld%lld%lld%lld"
 #endif
@@ -1535,7 +1629,7 @@ INT32 ossGetCPUInfo ( SINT64 &user, SINT64 &sys,
    // sys time also includes idle time
    sys -= idle ;
    user /= 10000 ;
-#elif defined (_LINUX) || defined (_AIX)
+#elif defined (_LINUX) || defined (_AIX) || defined (_MACOS)
    CHAR pathName [ OSS_PROC_PATH_LEN_MAX + 1 ] = { 0 } ;
    CHAR buffer [ OSS_PROC_PATH_LEN_MAX + 1 ] = { 0 } ;
    SINT64 userTime = 0 ;
@@ -1626,7 +1720,7 @@ INT32 ossGetProcMemInfo( ossProcMemInfo &memInfo,
                   "failed to get process memory info(errorno:%d)",
                   GetLastError() ) ;
    }
-#elif defined (_LINUX) || defined (_AIX)
+#elif defined (_LINUX) || defined (_AIX) || defined (_MACOS)
    ossProcStatInfo procInfo( pid ) ;
    memInfo.rss = procInfo._rss ;
    memInfo.vSize = procInfo._vSize ;
@@ -1644,7 +1738,7 @@ error:
    goto done;
 }
 
-#if defined (_LINUX) || defined (_AIX)
+#if defined (_LINUX) || defined (_AIX) || defined (_MACOS)
 ossProcStatInfo::ossProcStatInfo( OSSPID pid )
 :_pid(-1),_state(0),_ppid(-1),_pgrp(-1),
 _session(-1),_tty(-1),_tpgid(-1),_flags(0),
@@ -1716,7 +1810,7 @@ ossIPInfo::~ossIPInfo()
    _ipNum = 0 ;
 }
 
-#if defined (_LINUX) || defined (_AIX)
+#if defined (_LINUX) || defined (_AIX) || defined (_MACOS)
 #include <sys/socket.h>
 #include <sys/ioctl.h>
 #include <net/if.h>
@@ -1889,8 +1983,13 @@ ossProcLimits::ossProcLimits()
    }
 }
 
-#if defined (_LINUX) || defined (_AIX)
+#if defined (_LINUX) || defined (_AIX) || defined (_MACOS)
 #include <sys/resource.h>
+#if defined (_MACOS)
+#define RLIMIT_LOCKS	10
+#define RLIMIT_MSGQUEUE 12
+#define RLIMIT_RTPRIO	14
+#endif
 
 std::string ossProcLimits::str()const
 {
@@ -1999,6 +2098,7 @@ INT32 ossProcLimits::setLimit( const CHAR *str, INT64 soft, INT64 hard )
    {
       resource = RLIMIT_NOFILE ;
    }
+#if !defined (_AIX)  //currently not implemented on the platform
    else if ( ossStrcmp( str, OSS_LIMIT_FILE_LOCK ) == 0 )
    {
       resource = RLIMIT_LOCKS ;
@@ -2019,6 +2119,7 @@ INT32 ossProcLimits::setLimit( const CHAR *str, INT64 soft, INT64 hard )
    {
       resource = RLIMIT_NPROC ;
    }
+#endif
    else
    {
       rc = SDB_SYS ;
@@ -2070,7 +2171,7 @@ std::string ossProcLimits::str()const
 {
    return "" ;
 }
-#endif // defined (_LINUX) || defined (_AIX)
+#endif // defined (_LINUX) || defined (_AIX) || defined (_MACOS)
 
 BOOLEAN ossNetIpIsValid( const CHAR *ip, INT32 len )
 {

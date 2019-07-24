@@ -47,7 +47,7 @@
 #include "ossFeat.hpp"
 #include "ossTypes.hpp"
 
-#if defined ( _LINUX )
+#if defined ( _LINUX ) || defined (_MACOS)
 
    #define ossCompilerFence() __asm__ __volatile__ ( "" ::: "memory" )
 
@@ -103,7 +103,7 @@
 
 // atomic compare and swap of a 32bit value.
 // return: the previous value before the operation
-#if defined (_LINUX) || defined (_AIX)
+#if defined (_LINUX) || defined (_AIX) || defined (_MACOS)
 #define ossCompareAndSwap32WithReturn(pAddr,iCompareValue,iNewValue) \
           __sync_val_compare_and_swap((volatile SINT32*)pAddr,\
                                       (SINT32)iCompareValue,\
@@ -131,7 +131,7 @@ static OSS_INLINE SINT32 ossCompareAndSwap32WithReturn
 // atomic compare and swap of a 32bit value.
 // return : 1 success
 //          0 failure
-#if defined (_LINUX) || defined (_AIX)
+#if defined (_LINUX) || defined (_AIX) || defined (_MACOS)
 #define ossCompareAndSwap32(pAddr,iCompareValue,iNewValue)                    \
    ( __sync_val_compare_and_swap((volatile SINT32*)pAddr,                    \
        (SINT32)iCompareValue, (SINT32)iNewValue ) == (SINT32)iCompareValue )
@@ -159,7 +159,7 @@ static OSS_INLINE BOOLEAN ossCompareAndSwap32
 
 // atomic compare and swap of a 64bit value.
 // return: the previous value before the operation
-#if defined (_LINUX) || defined (_AIX)
+#if defined (_LINUX) || defined (_AIX)  || defined (_MACOS)
 #define ossCompareAndSwap64WithReturn(pAddr,iCompareValue,iNewValue) \
           __sync_val_compare_and_swap((volatile SINT64*)pAddr,\
                                       (SINT64)iCompareValue,\
@@ -188,7 +188,7 @@ static OSS_INLINE SINT64 ossCompareAndSwap64WithReturn
 // atomic compare and swap of a 64bit value.
 // return : 1 success
 //          0 failure
-#if defined (_LINUX) || defined (_AIX)
+#if defined (_LINUX) || defined (_AIX) || defined (_MACOS)
 #define ossCompareAndSwap64(pAddr,iCompareValue,iNewValue)                   \
    ( __sync_val_compare_and_swap((volatile SINT64*)pAddr,                    \
        (SINT64)iCompareValue,(SINT64)iNewValue) == (SINT64)iCompareValue )
@@ -280,7 +280,7 @@ static OSS_INLINE BOOLEAN ossCompareAndSwapPtr
 
 // atomic 32bit add
 // return : the value before the addition.
-#if defined (_LINUX) || defined (_AIX)
+#if defined (_LINUX) || defined (_AIX) || defined (_MACOS)
 #define ossFetchAndAdd32(pAddr, iAddVale) \
         __sync_fetch_and_add( (volatile SINT32*)pAddr, (SINT32)iAddVale )
 #elif defined (_WINDOWS)
@@ -304,7 +304,7 @@ static OSS_INLINE SINT32 ossFetchAndAdd32
 
 // atomic 32bit OR operation
 // return : the value before the OR operation
-#if defined (_LINUX) || defined (_AIX)
+#if defined (_LINUX) || defined (_AIX) || defined (_MACOS)
 #define ossFetchAndOR32(pAddr, iValue) \
         __sync_fetch_and_or( (volatile SINT32*)pAddr, (SINT32)iValue )
 #elif defined (_WINDOWS)
@@ -328,7 +328,7 @@ static OSS_INLINE SINT32 ossFetchAndOR32
 
 // atomic 32bit AND operation
 // return : the value before the AND operation
-#if defined (_LINUX) || defined (_AIX)
+#if defined (_LINUX) || defined (_AIX) || defined (_MACOS)
 #define ossFetchAndAND32(pAddr,iValue) \
         __sync_fetch_and_and((volatile SINT32*)pAddr,(SINT32)iValue)
 #elif defined (_WINDOWS)
@@ -352,7 +352,7 @@ static OSS_INLINE SINT32 ossFetchAndAND32
 
 // atomic 32bit XOR operation
 // return : the value before the XOR operation
-#if defined (_LINUX) || defined (_AIX)
+#if defined (_LINUX) || defined (_AIX) || defined (_MACOS)
 #define ossFetchAndXOR32(pAddr, iValue) \
         __sync_fetch_and_xor((volatile SINT32*)pAddr, (SINT32)iValue)
 #elif defined (_WINDOWS)
@@ -396,7 +396,7 @@ static OSS_INLINE SINT32 ossFetchAndDecrement32( volatile SINT32 * const pAddr )
 
 // atomic 64bit add
 // return : the value before the addition.
-#if defined (_LINUX) || defined (_AIX)
+#if defined (_LINUX) || defined (_AIX) || defined (_MACOS)
 #define ossFetchAndAdd64(pAddr,iAddVale) \
         __sync_fetch_and_add((volatile SINT64*)pAddr,(SINT64)iAddVale)
 #elif defined (_WINDOWS)
@@ -420,7 +420,7 @@ static OSS_INLINE SINT64 ossFetchAndAdd64
 
 // atomic 64bit OR operation
 // return : the value before the OR operation
-#if defined (_LINUX) || defined (_AIX)
+#if defined (_LINUX) || defined (_AIX) || defined (_MACOS)
 #define ossFetchAndOR64(pAddr,iValue) \
         __sync_fetch_and_or((volatile SINT64*)pAddr,(SINT64)iValue)
 #elif defined (_WINDOWS)
@@ -434,7 +434,7 @@ static OSS_INLINE SINT64 ossFetchAndOR64
    SINT64                  iValue
 )
 {
-#if defined ( _LINUX ) || defined (_AIX)
+#if defined ( _LINUX ) || defined (_AIX) || defined (_MACOS)
    return ( __sync_fetch_and_or( pAddr, iValue ) ) ;
 #elif defined ( _WINDOWS )
    return ( InterlockedOr64( (long long*)pAddr, (long long)iValue ) ) ;
@@ -444,7 +444,7 @@ static OSS_INLINE SINT64 ossFetchAndOR64
 
 // atomic 64bit XOR operation
 // return : the value before the XOR operation
-#if defined (_LINUX) || defined (_AIX)
+#if defined (_LINUX) || defined (_AIX) || defined (_MACOS)
 #define ossFetchAndXOR64(pAddr, iValue) \
         __sync_fetch_and_xor((volatile SINT64*)pAddr,(SINT64)iValue)
 #elif defined (_WINDOWS)
@@ -468,7 +468,7 @@ static OSS_INLINE SINT64 ossFetchAndXOR64
 
 // atomic 64bit AND operation
 // return : the value before the AND operation
-#if defined (_LINUX) || defined (_AIX)
+#if defined (_LINUX) || defined (_AIX) || defined (_MACOS)
 #define ossFetchAndAND64(pAddr, iValue) \
         __sync_fetch_and_and((volatile SINT64*)pAddr,(SINT64)iValue)
 #elif defined (_WINDOWS)
@@ -521,7 +521,7 @@ static OSS_INLINE SINT64 ossFetchAndDecrement64( volatile SINT64 * const pAddr )
 
 // atomic 32bit exchange
 // return: previous value
-#if defined (_LINUX) || defined (_AIX)
+#if defined (_LINUX) || defined (_AIX) || defined (_MACOS)
 #define ossAtomicExchange32(pAddr,iNewValue) \
         __sync_lock_test_and_set((volatile INT32*)pAddr,(SINT32)iNewValue)
 #elif defined (_WINDOWS)
@@ -545,7 +545,7 @@ static OSS_INLINE SINT32 ossAtomicExchange32
 
 // atomic 64bit exchange
 // return: previous value
-#if defined (_LINUX) || defined (_AIX)
+#if defined (_LINUX) || defined (_AIX) || defined (_MACOS)
 #define ossAtomicExchange64(pAddr,iNewValue) \
         __sync_lock_test_and_set((volatile SINT64*)pAddr,(SINT64)iNewValue)
 #elif defined (_WINDOWS)

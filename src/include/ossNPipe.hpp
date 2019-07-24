@@ -83,7 +83,7 @@ public :
    HANDLE _handle ;
    INT32 _overlappedFlag ;
    OVERLAPPED _overlapped ;
-#elif defined (_LINUX)
+#elif defined (_LINUX) || defined (_MACOS)
    INT32 _handle ;
    INT32 _bufSize ;
 #endif
@@ -127,7 +127,7 @@ typedef class _OSSNPIPE OSSNPIPE ;
 #define OSS_NPIPE_OVERLAP_ENABLED          0x00000001
 // this bit is set by internal, indicating the pipe is waiting for IO
 #define OSS_NPIPE_OVERLAP_IOPENDING        0x00000002
-#elif defined (_LINUX)
+#elif defined (_LINUX) || defined (_MACOS)
 #define OSS_NPIPE_UNLIMITED_INSTANCES      0
 #endif
 

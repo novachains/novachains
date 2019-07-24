@@ -64,6 +64,16 @@
    #define  _ossAccess  access
 #endif
 
+#if defined (_MACOS)
+   #include <sys/mount.h>
+   #include <pwd.h>
+   #include <unistd.h>
+
+   #define  _ossGetCWD  getcwd
+   #define  _ossChDir   chdir
+   #define  _ossAccess  access
+#endif
+
 #ifdef _WINDOWS
    #include "io.h"
    #include <direct.h>
@@ -273,7 +283,7 @@ done:
    return rc;
 error :
    goto done ;
-#elif defined (_LINUX)
+#elif defined (_LINUX) || defined (_MACOS)
     // open/create mode
     switch ( iMode & OSS_CREATE )
     {
@@ -321,11 +331,13 @@ error :
        break ;
     }
 
+#if defined (_LINUX)
     // direct io
     if ( iMode & OSS_DIRECTIO )
     {
        direct = O_DIRECT ;
     }
+#endif
 
     // sync IO
     if ( iMode & OSS_WRITETHROUGH )
@@ -355,7 +367,11 @@ error :
        {
           // some version of file system may not implement DIO,
           // then we remove the flag and try again
-          if( ( EINVAL == err ) && ( O_DIRECT == direct) )
+          if( ( EINVAL == err )
+#if defined (_LINUX)
+              && ( O_DIRECT == direct)
+#endif
+                                      )
           {
              direct = 0 ;
              continue ; // remove direct io bit, retry open the file again
@@ -424,7 +440,7 @@ INT32 ossClose(OSSFILE &pFile)
       rc = SDB_OK ;
       pFile.hFile = 0 ;
    }
-#elif defined (_LINUX)
+#elif defined (_LINUX) || defined (_MACOS)
    if( 0 == pFile.fd )
    {
       rc = SDB_OK;
@@ -947,7 +963,7 @@ INT32 ossRead( OSSFILE* pFile,
       rc = SDB_EOF ;
    if ( pLenRead )
       *pLenRead = readBytes ;
-#elif defined (_LINUX)
+#elif defined (_LINUX) || defined (_MACOS)
    readSize = read ( pFile->fd, pBufferRead, iLenToRead ) ;
    if( -1 == readSize )
    {
@@ -1066,7 +1082,7 @@ INT32 ossWrite( OSSFILE  *pFile,
    }
    if ( pLenWritten )
       *pLenWritten = writeBytes ;
-#elif defined (_LINUX)
+#elif defined (_LINUX) || defined (_MACOS)
    SDB_ASSERT ( pFile->fd, "pFile->fd is NULL" ) ;
 
    writeSize = write ( pFile->fd, pBufferWrite, iLenToWrite ) ;
@@ -1136,7 +1152,7 @@ INT32 ossSeek ( OSSFILE  *pFile,
 
    SDB_ASSERT ( pFile , "pFile is NULL" ) ;
 
-#if defined (_LINUX)
+#if defined (_LINUX) || defined (_MACOS)
    INT64 seekOff = 0 ;
    seekOff = lseek ( pFile->fd, (INT64)offset, whence ) ;
    if ( -1 == seekOff )
@@ -1300,7 +1316,7 @@ INT32 ossSeekAndRead( OSSFILE   *pFile,
       if ( pLenRead )
          *pLenRead = readBytes ;
    }
-#elif defined (_LINUX)
+#elif defined (_LINUX) || defined (_MACOS)
    readSize = pread ( pFile->fd, pBufferRead, iLenToRead, offset ) ;
    if ( -1 == readSize )
    {
@@ -1444,7 +1460,7 @@ INT32 ossSeekAndWrite ( OSSFILE    *pFile,
       if ( pLenWritten )
          *pLenWritten = writeBytes ;
    }
-#elif defined (_LINUX)
+#elif defined (_LINUX) || defined (_MACOS)
    writeSize = pwrite ( pFile->fd, pBufferWrite, iLenToWrite, offset ) ;
    if( -1 == writeSize )
    {
@@ -1521,7 +1537,7 @@ done :
    return rc ;
 error :
    goto done ;
-#elif defined (_LINUX)
+#elif defined (_LINUX) || defined (_MACOS)
    rc = fsync ( pFile->fd ) ;
    if( rc )
    {
@@ -1570,7 +1586,7 @@ INT32 ossGetPathType ( const CHAR  *pPath, SDB_OSS_FILETYPE *pFileType )
 #if defined (_WINDOWS)
    WCHAR FileNameUnicode[OSS_MAX_PATHSIZE+1] ;
    DWORD dwAttrs ;
-#elif defined (_LINUX)
+#elif defined (_LINUX) || defined (_MACOS)
    struct stat sb ;
 #endif
 
@@ -1578,7 +1594,7 @@ INT32 ossGetPathType ( const CHAR  *pPath, SDB_OSS_FILETYPE *pFileType )
    SDB_ASSERT ( pPath     , "pPath is NULL" ) ;
    SDB_ASSERT ( pFileType , "pFileType is NULL" ) ;
 
-#if defined (_LINUX)
+#if defined (_LINUX) || defined (_MACOS)
    if ( 0 == ossStrncmp ( SDB_DEV_NULL, pPath, ossStrlen(SDB_DEV_NULL) ) )
    {
       SDB_VALIDATE_GOTOERROR ( FALSE, SDB_INVALIDSIZE,
@@ -1630,7 +1646,7 @@ INT32 ossGetPathType ( const CHAR  *pPath, SDB_OSS_FILETYPE *pFileType )
                                "Failed to GetFileAttributes()" ) ;
    }
 
-#elif defined (_LINUX)
+#elif defined (_LINUX) || defined (_MACOS)
 
    err = stat ( pPath, &sb ) ;
    if ( -1 == err )
@@ -1707,7 +1723,7 @@ INT32 ossGetFileSizeByName ( const CHAR* pFileName, INT64 *pFileSize )
    BOOL     fOk = TRUE ;
    WIN32_FILE_ATTRIBUTE_DATA   fileInfo ;
    WCHAR FileNameUnicode[OSS_MAX_PATHSIZE+1] ;
-#elif defined (_LINUX)
+#elif defined (_LINUX) || defined (_MACOS)
    struct stat sb;
 #endif
    // sanity check, only take effect in debug build
@@ -1754,7 +1770,7 @@ done :
    return rc ;
 error :
    goto done ;
-#elif defined (_LINUX)
+#elif defined (_LINUX) || defined (_MACOS)
    rc = stat ( pFileName, &sb ) ;
    if ( -1 == rc )
    {
@@ -1815,7 +1831,7 @@ INT32 ossGetFileSize ( OSSFILE *pFile, INT64 *pfsize )
 
 #if defined (_WINDOWS)
    LARGE_INTEGER li ;
-#elif defined (_LINUX)
+#elif defined (_LINUX) || defined (_MACOS)
    struct stat sb ;
 #endif
    // sanity check, only take effect in debug build
@@ -1835,7 +1851,7 @@ done:
    return rc ;
 error :
    goto done ;
-#elif defined (_LINUX)
+#elif defined (_LINUX) || defined (_MACOS)
    rc = fstat ( pFile->fd, &sb ) ;
    if ( -1 == rc )
    {
@@ -1887,7 +1903,7 @@ INT32 ossTruncateFile ( OSSFILE *pFile, const INT64 fileLen )
    INT32 rc = SDB_OK ;
    PD_TRACE_ENTRY ( SDB_OSSTRUNCATEFILE ) ;
    SDB_ASSERT ( pFile, "input file is NULL" ) ;
-#if defined (_LINUX)
+#if defined (_LINUX) || defined (_MACOS)
    rc = ftruncate ( pFile->fd, fileLen ) ;
    if ( rc )
    {
@@ -2098,7 +2114,7 @@ CHAR  *ossGetRealPath( const CHAR  *pPath,
       }
       // try to get real path
       ret =
-#if defined (_LINUX)
+#if defined (_LINUX) || defined (_MACOS)
          realpath ( pathBuffer, tempBuffer ) ;
 #elif defined (_WINDOWS)
          _fullpath ( tempBuffer, pathBuffer, sizeof(tempBuffer) ) ;
@@ -2172,7 +2188,7 @@ INT32 ossGetFSType ( const CHAR  *pFileName, OSS_FS_TYPE  *ossFSType )
    DWORD fileSystemFlags                      = 0 ;
    CHAR  NewFileName[OSS_MAX_PATHSIZE + 1]    = { 0 } ;
    WCHAR NTFSName[OSS_MAX_PATHSIZE + 1]       = { 0 } ;
-#elif defined (_LINUX)
+#elif defined (_LINUX) || defined (_MACOS)
    struct stat   sb ;
    struct statfs sfs ;
 #endif
@@ -2264,7 +2280,7 @@ INT32 ossGetFSType ( const CHAR  *pFileName, OSS_FS_TYPE  *ossFSType )
          goto done;
       }
    }
-#elif defined (_LINUX)
+#elif defined (_LINUX) || defined (_MACOS)
    err = stat ( pFileName, &sb ) ;
    if ( -1 == err )
    {
@@ -2336,7 +2352,7 @@ done :
    PD_TRACE_EXITRC ( SDB_OSSRENMPATH, rc );
    return rc ;
 error :
-#if defined (_LINUX)
+#if defined (_LINUX) || defined (_MACOS)
    switch ( err )
    {
    case ENOENT:
@@ -2377,7 +2393,7 @@ INT32 ossLockFile ( OSSFILE *pFile, OSS_FILE_LOCK lockType )
    INT32 rc = SDB_OK ;
    PD_TRACE_ENTRY ( SDB_OSSLOCKFILE ) ;
    SDB_ASSERT ( pFile, "input file is NULL" ) ;
-#if defined (_LINUX)
+#if defined (_LINUX) || defined (_MACOS)
    struct flock lock ;
    ossMemset ( &lock, 0, sizeof(lock) ) ;
    switch ( lockType )
@@ -2650,7 +2666,7 @@ INT32 ossGetUserInfo( const CHAR * username, OSSUID & uid, OSSGID & gid )
 {
    INT32 rc = SDB_OK ;
 
-#if defined( _LINUX )
+#if defined( _LINUX ) || defined (_MACOS)
    struct passwd pwdinfo ;
    struct passwd *pwd = NULL ;
    UINT32 buffLen = 0 ;
@@ -2697,7 +2713,7 @@ INT32 ossGetUserInfo( OSSUID uid, CHAR *pUserName, UINT32 nameLen )
       pUserName[ nameLen - 1 ] = 0 ;
    }
 
-#if defined( _LINUX )
+#if defined( _LINUX ) || defined (_MACOS)
    struct passwd pwdinfo ;
    struct passwd *pwd = NULL ;
    UINT32 buffLen = 0 ;
