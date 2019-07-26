@@ -55,6 +55,8 @@ namespace engine
 
          INT32    open( const CHAR *pDataPath ) ;
 
+         _dmsBlockData *data() { return _pDataSu ; }
+
          INT32    insertRecord ( const CHAR *pName,
                                  BSONObj &record,
                                  pmdEDUCB *cb,
@@ -67,6 +69,7 @@ namespace engine
          _dmsBlockData                     *_pDataSu ;
          dmsStorageInfo                   _storageInfo ;
    };
+   typedef _dmsBlockUnit dmsBlockUnit ;
 
 }
 

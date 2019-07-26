@@ -813,7 +813,7 @@
       <code>
          <name>SDB_UNKNOWN_MESSAGE</name>
          <description>
-            <en>Unknown mesage is received</en>
+            <en>Unknown message is received</en>
             <cn>未知消息</cn>
          </description>
       </code>
@@ -2085,8 +2085,8 @@
       <code>
          <name>SDB_OUT_OF_BOUND</name>
          <description>
-            <en>Stored procedure arguments are out of bound</en>
-            <cn>存储过程参数越界</cn>
+            <en>Arguments are out of bound</en>
+            <cn>参数越界</cn>
          </description>
       </code>
 
@@ -2115,7 +2115,7 @@
       </code>
 
       <code>
-         <name>SDB_OM_PASSWD_CHANGE_SUGGUEST</name>
+         <name>SDB_OM_PASSWD_CHANGE_SUGGEST</name>
          <description>
             <en>Changing password is required</en>
             <cn>提示用户修改登陆密码</cn>
@@ -2137,7 +2137,7 @@
             <cn>不同版本的OMAgent已运行</cn>
          </description>
       </code>
-      
+
       <code>
          <name>SDB_OM_TASK_NOT_EXIST</name>
          <description>
@@ -2145,7 +2145,7 @@
             <cn>无法找到后台任务信息</cn>
          </description>
       </code>
-      
+
       <code>
          <name>SDB_OM_TASK_ROLLBACK</name>
          <description>
@@ -2318,7 +2318,7 @@
          <name>SDB_RTN_QUERYMODIFY_SORT_NO_IDX</name>
          <description>
             <en>Sorting of 'query and modify' must use index</en>
-            <cn>在’查询并修改‘操作使用排序时必须使用索引</cn>
+            <cn>在 “查询并修改” 操作使用排序时必须使用索引</cn>
          </description>
       </code>
 
@@ -2326,7 +2326,7 @@
          <name>SDB_RTN_QUERYMODIFY_MULTI_NODES</name>
          <description>
             <en>'query and modify' can't use skip and limit in multiple nodes or sub-collections</en>
-            <cn>’查询并修改‘操作不能在多个节点或子表上执行skip和limit操作</cn>
+            <cn>“查询并修改” 操作不能在多个节点或子表上执行skip和limit操作</cn>
          </description>
       </code>
 
@@ -2377,7 +2377,7 @@
             <cn>指定用户已存在</cn>
          </description>
       </code>
-      
+
       <code>
          <name>SDB_DMS_EMPTY_COLLECTION</name>
          <description>
@@ -2513,7 +2513,7 @@
            <cn>复制日志未归档</cn>
         </description>
       </code>
-      
+
       <code>
         <name>SDB_DS_NOT_INIT</name>
         <description>
@@ -2584,7 +2584,151 @@
             <en>Some configuration changes didn't take effect</en>
             <cn>部分配置修改未生效</cn>
          </description>
-      </code>   
+      </code>
+
+      <code>
+         <name>SDB_SEQUENCE_EXIST</name>
+         <description>
+            <en>Sequence already exists</en>
+            <cn>序列已存在</cn>
+         </description>
+      </code>
+
+      <code>
+         <name>SDB_SEQUENCE_NOT_EXIST</name>
+         <description>
+            <en>Sequence not exists</en>
+            <cn>序列不存在</cn>
+         </description>
+      </code>
+
+      <code>
+         <name>SDB_SEQUENCE_EXCEEDED</name>
+         <description>
+            <en>Sequence is exceeded</en>
+            <cn>序列值超出范围</cn>
+         </description>
+      </code>
+
+      <code>
+         <name>SDB_DMS_CS_UNIQUEID_CONFLICT</name>
+         <description>
+            <en>CS uniqueID conflict</en>
+            <cn>集合空间的UniqueID冲突</cn>
+         </description>
+      </code>
+
+      <code>
+         <name>SDB_DMS_UNIQUEID_CONFLICT</name>
+         <description>
+            <en>CL uniqueID conflict</en>
+            <cn>集合的UniqueID冲突</cn>
+         </description>
+      </code>
+
+      <code>
+         <name>SDB_DMS_CS_REMAIN</name>
+         <description>
+            <en>CS uniqueID conflict with remain cs</en>
+            <cn>集合空间的UniqueID与残留的集合空间冲突</cn>
+         </description>
+      </code>
+
+      <code>
+         <name>SDB_DMS_REMAIN</name>
+         <description>
+            <en>CL uniqueID conflict with remain cl</en>
+            <cn>集合的UniqueID与残留的集合冲突</cn>
+         </description>
+      </code>
+
+      <code>
+         <name>SDB_CAT_CS_UNIQUEID_EXCEEDED</name>
+         <description>
+            <en>CS uniqueID exceeds the maximum</en>
+            <cn>集合空间的UniqueID达到上限</cn>
+         </description>
+      </code>
+
+      <code>
+         <name>SDB_CAT_CL_UNIQUEID_EXCEEDED</name>
+         <description>
+            <en>CL uniqueID exceeds the maximum</en>
+            <cn>集合的UniqueID达到上限</cn>
+         </description>
+      </code>
+
+      <code>
+         <name>SDB_AUTOINCREMENT_FIELD_CONFLICT</name>
+         <description>
+            <en>Autoincrement field conflicts on collection</en>
+            <cn>自增字段冲突</cn>
+         </description>
+      </code>
+
+      <code>
+         <name>SDB_AUTOINCREMENT_FIELD_NOT_EXIST</name>
+         <description>
+            <en>Autoincrement field does not exist on collection</en>
+            <cn>自增字段不存在</cn>
+         </description>
+      </code>
+
+      <code>
+         <name>SDB_OPERATION_CONFLICT</name>
+         <description>
+            <en>Operations conflict</en>
+            <cn>操作冲突</cn>
+         </description>
+      </code>
+
+      <code>
+         <name>SDB_CAT_GLOBALID_EXCEEDED</name>
+         <description>
+            <en>GlobalID exceeds the maximum</en>
+            <cn>GlobalID达到上限</cn>
+         </description>
+      </code>
+
+      <code>
+         <name>SDB_DPS_INVALID_LOCK_UPGRADE_REQUEST</name>
+         <description>
+            <en>Invalid lock upgrade request</en>
+            <cn>非法锁升级请求</cn>
+         </description>
+      </code>
+
+      <code>
+         <name>SDB_DMS_CS_RENAMING</name>
+         <description>
+            <en>Renaming the collection space is in progress</en>
+            <cn>正在对集合空间改名</cn>
+         </description>
+      </code>
+
+      <code>
+         <name>SDB_CLS_DATA_NOT_SYNC</name>
+         <description>
+            <en>Data not yet synchronized</en>
+            <cn>数据未同步</cn>
+         </description>
+      </code>
+
+      <code>
+         <name>SDB_IXM_KEY_NOTNULL</name>
+         <description>
+            <en>Any field of index key should exist and cannot be null</en>
+            <cn>索引键的任意一个字段都不允许不存在或者为NULL</cn>
+         </description>
+      </code>
+
+      <code>
+         <name>SDB_RTN_EXIST_INDOUBT_TRANS</name>
+         <description>
+            <en>Exists in-doubt transaction</en>
+            <cn>存在未确认事务</cn>
+         </description>
+      </code>
 
    </codelist>
 </rclist>

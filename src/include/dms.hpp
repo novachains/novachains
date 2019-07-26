@@ -415,23 +415,8 @@ namespace engine
       }                                                            \
    }
 
-   /****************************************************************************
-    * Specify the matrix for collection flag and access type, returns TRUE means
-    * access is allowed, otherwise return FALSE
-    * AccessType:       Query  Fetch  Insert  Update  Delete  Truncate CRT-IDX  DROP-IDX
-    *  FREE                N      N       N       N       N       N       N         N
-    *  NORMAL              Y      Y       Y       Y       Y       Y       Y         Y
-    *  DROPPED             N      N       N       N       N       N       N         N
-    *  OFFLINE REORG       N (only alloed in shadow copy phase, rebuild )
-    *                             N       N       N       N       N ( only allowed in
-    *  truncate phase )                                                   N         N
-    *  ONLINE REORG        Y      Y       Y       Y       Y       Y       Y         Y
-    *  Load                Y      Y       Y       Y       Y       N       Y         Y
-    ***************************************************************************/
-   BOOLEAN dmsAccessAndFlagCompatiblity ( UINT16 collectionFlag,
-                                          DMS_ACCESS_TYPE accessType ) ;
 
-   // helper function, check DMS/IXM object name validity
+   // helper function, check DMS object name validity
    BOOLEAN  dmsIsSysCSName ( const CHAR *collectionSpaceName ) ;
    INT32    dmsCheckCSName ( const CHAR *collectionSpaceName,
                              BOOLEAN sys = FALSE ) ;
@@ -441,9 +426,6 @@ namespace engine
                              BOOLEAN sys = FALSE ) ;
    INT32    dmsCheckFullCLName ( const CHAR *collectionName,
                                  BOOLEAN sys = FALSE ) ;
-   BOOLEAN  dmsIsSysIndexName ( const CHAR *indexName ) ;
-   INT32    dmsCheckIndexName ( const CHAR *indexName,
-                                BOOLEAN sys = FALSE ) ;
 
    std::string dmsGetCSNameFromFullName( const std::string &fullName ) ;
 
