@@ -63,9 +63,6 @@ namespace engine
       _storageInfo._suName[DMS_SU_NAME_SZ] = 0 ;
       _storageInfo._csUniqueID = csUniqueID ;
       _storageInfo._sequence = sequence ;
-      // make secret value
-      _storageInfo._secretValue = ossPack32To64( (UINT32)time(NULL),
-                                                 (UINT32)(ossRand()*239641) ) ;
       _storageInfo._type = type ;
 
    }
