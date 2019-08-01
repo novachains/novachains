@@ -115,7 +115,7 @@ namespace engine
       if ( !itemList.empty() )
       {
          _mtx.get() ;
-         for ( int i = 0; i< itemList.size(); i++)
+         for ( unsigned int i = 0; i< itemList.size(); i++ )
          {
             SDB_ASSERT( itemList[i] != NULL , "A stale item is found in the item list" ) ;
             SDB_OSS_DEL itemList[i] ;
@@ -142,7 +142,7 @@ namespace engine
    {
       SDB_ASSERT( *ppItem, " NULL net service item") ;
       _mtx.get() ;
-      for ( int i = 0; i< itemList.size(); i++)
+      for ( unsigned int i = 0; i< itemList.size(); i++ )
       {
           if (*ppItem == itemList[i])
           {

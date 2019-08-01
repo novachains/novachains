@@ -18,6 +18,7 @@
 /* FVT test program for dms component */
 
 #include "dmsBlockUnit.hpp"
+#include "dmsScanner.hpp"
 
 #define DFT_FILENAME "testDMS.dat"
 #define DFT_SEGSIZE  1024*1024
@@ -32,11 +33,17 @@ using namespace bson ;
 using namespace std ;
 
 UINT32  TESTTHREADS = 10 ;
-UINT32  LOOPNUM     = 100000 ;
+UINT32  LOOPNUM     = 10000 ;
 UINT32  TESTCREATETABLES = 10 ;
 CHAR *  defaultCollectionName = "foo" ;
 CHAR *  COLLECTIONNAME = defaultCollectionName ;
 dmsBlockUnit *myUnit = NULL ;
+dmsMBContext *context = NULL ;
+dmsRecordGenerator generator ;
+dmsExtScannerBase *scanner ;
+dmsRecordID recordID ;
+ossValuePtr recordDataPtr = 0 ;
+
 BSONObj sampleObj = BSON("name"<<"insert block data") ;
 
 int main ()
@@ -80,5 +87,16 @@ int main ()
       }
    }
    cout<< "insert success" << endl;
+
+   rc = myUnit->data()->getMBContext( &context, COLLECTIONNAME, SHARED ) ;
+
+   scanner = SDB_OSS_NEW dmsExtScanner( myUnit->data(), context, context->mb()->_firstExtentID ) ;
+
+   while ( SDB_OK == ( rc = scanner->advance( recordID, generator, NULL ) ) )
+         {
+            generator.getDataPtr( recordDataPtr ) ;
+            BSONObj obj( (const CHAR*)recordDataPtr ) ;
+            cout<< "data is: " << obj.toString().c_str()<< endl;
+         }
 
 }

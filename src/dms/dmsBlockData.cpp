@@ -2005,6 +2005,49 @@ namespace engine
       goto done ;
    }
 
+   INT32 _dmsBlockData::extractData( const dmsMBContext *mbContext,
+                                     const dmsRecordRW &recordRW,
+                                     dmsRecordData &recordData )
+   {
+      INT32 rc                = SDB_OK ;
+      const dmsRecord *pRecord= recordRW.readPtr( 0 ) ;
+
+      recordData.reset() ;
+
+      if ( !mbContext->isMBLock() )
+      {
+         PD_LOG( PDERROR, "MB Context must be locked" ) ;
+         rc = SDB_SYS ;
+         goto error ;
+      }
+
+      /// if ovf, need to get the ovt's data
+      if ( pRecord->isOvf() )
+      {
+         dmsRecordID ovfRID = pRecord->getOvfRID() ;
+         dmsRecordRW ovfRW = record2RW( ovfRID, mbContext->mbID() ) ;
+         // Inherit no-throw property
+         ovfRW.setNothrow( recordRW.isNothrow() ) ;
+         pRecord = ovfRW.readPtr( 0 ) ;
+         if ( NULL == pRecord )
+         {
+            rc = pdGetLastError() ? pdGetLastError() : SDB_SYS ;
+            PD_LOG( PDERROR, "Failed to get record from address[%d.%d]",
+                    ovfRID._extent, ovfRID._offset ) ;
+            goto error ;
+         }
+         SDB_ASSERT( pRecord->isOvt(), "Record must be ovt" ) ;
+      }
+
+      recordData.setData( pRecord->getData(), pRecord->getDataLength(),
+                          UTIL_COMPRESSOR_INVALID, TRUE ) ;
+   done:
+      return rc ;
+   error:
+      goto done ;
+
+   }
+
    INT32 _dmsBlockData::_initializeStorageUnit ()
    {
       INT32   rc        = SDB_OK ;

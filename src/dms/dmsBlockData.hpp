@@ -936,9 +936,9 @@ namespace engine
 
       INT32 _postOpen( INT32 cause ) ;
 
-      void _collectionInsert( const CHAR * pName,
-                              UINT16 mbID,
-                              utilCLUniqueID clUniqueID ) ;
+      void  _collectionInsert( const CHAR * pName,
+                               UINT16 mbID,
+                               utilCLUniqueID clUniqueID ) ;
 
       void  _markHeaderInvalid( INT32 collectionID,
                                 BOOLEAN isAll ) ;
@@ -977,6 +977,10 @@ namespace engine
 
       INT32 openStorage ( const CHAR *pPath,
                           BOOLEAN createNew = TRUE ) ;
+
+      INT32 extractData( const dmsMBContext *mbContext,
+                         const dmsRecordRW &recordRW,
+                         dmsRecordData &recordData ) ;
 
       //TODO need to be implemented
       INT32 removeStorage()
@@ -1168,6 +1172,7 @@ namespace engine
       CHAR                                _suFileName[ DMS_SU_FILENAME_SZ + 1 ] ;
 
    } ;
+   typedef _dmsBlockData dmsBlockData ;
 
    /*
       OSS_INLINE functions :
