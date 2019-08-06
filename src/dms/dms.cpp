@@ -29,9 +29,9 @@
    Restrictions: N/A
 
    Change Activity:
-   defect Date        Who Description
-   ====== =========== === ==============================================
-          12/19/2018  JWH  Initial Draft
+   defect Date        Who   Description
+   ====== =========== ===== ==============================================
+          12/19/2018  jiaqi Initial Draft
 
    Last Changed =
 
