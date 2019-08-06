@@ -383,38 +383,6 @@ namespace engine
    /*
       DMS Other define
    */
-#define DMS_MON_OP_COUNT_INC( _pMonAppCB_, op, delta )     \
-   {                                                       \
-      if ( NULL != _pMonAppCB_ )                           \
-      {                                                    \
-         _pMonAppCB_->monOperationCountInc( op, delta ) ;  \
-      }                                                    \
-   }
-
-#define DMS_MON_OP_TIME_INC( _pMonAppCB_, op, delta )      \
-   {                                                       \
-      if ( NULL != _pMonAppCB_ )                           \
-      {                                                    \
-         _pMonAppCB_->monOperationTimeInc( op, delta ) ;   \
-      }                                                    \
-   }
-
-#define DMS_MON_CONTEXT_COUNT_INC( _monContextCB_, op, delta )     \
-   {                                                               \
-      if ( NULL != _monContextCB_ )                                \
-      {                                                            \
-         _monContextCB_->monOperationCountInc ( op, delta ) ;      \
-      }                                                            \
-   }
-
-#define DMS_MON_CONTEXT_TIME_INC( _monContextCB_, op, delta )      \
-   {                                                               \
-      if ( NULL != _monContextCB_ )                                \
-      {                                                            \
-         _monContextCB_->monOperationTimeInc ( op, delta ) ;       \
-      }                                                            \
-   }
-
 
    // helper function, check DMS object name validity
    BOOLEAN  dmsIsSysCSName ( const CHAR *collectionSpaceName ) ;

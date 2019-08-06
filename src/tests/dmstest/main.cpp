@@ -16,8 +16,9 @@
    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 *******************************************************************************/
 /* FVT test program for dms component */
-
+#include <string>
 #include "dmsBlockUnit.hpp"
+#include "dmsScanner.hpp"
 
 #define DFT_FILENAME "testDMS.dat"
 #define DFT_SEGSIZE  1024*1024
@@ -32,53 +33,207 @@ using namespace bson ;
 using namespace std ;
 
 UINT32  TESTTHREADS = 10 ;
-UINT32  LOOPNUM     = 100000 ;
+UINT32  LOOPNUM     = 10000 ;
 UINT32  TESTCREATETABLES = 10 ;
 CHAR *  defaultCollectionName = "foo" ;
 CHAR *  COLLECTIONNAME = defaultCollectionName ;
-dmsBlockUnit *myUnit = NULL ;
+dmsRecordGenerator generator ;
+dmsRecordID recordID ;
+ossValuePtr recordDataPtr = 0 ;
+
 BSONObj sampleObj = BSON("name"<<"insert block data") ;
 
-int main ()
+class processor
 {
+   public:
+      processor() ;
+      ~processor() ;
 
-   cout << "dmsMetadataBlock size is " << sizeof(dmsMetadataBlock) <<endl ;
+      INT32 prepare() ;
+      INT32 insert() ;
+      INT32 query() ;
+      void run() ;
+   private:
+      dmsBlockUnit *pSu ;
+} ;
+
+processor::processor()
+{
+   pSu = NULL ;
+}
+
+processor::~processor()
+{
+   if ( pSu )
+   {
+      SDB_OSS_DEL pSu ;
+   }
+}
+
+INT32 processor::prepare()
+{
    INT32 rc = 0 ;
    UINT32 pages = rand()%99+1 ;
-   myUnit = new dmsBlockUnit( COLLECTIONNAME ,1, 0 ) ;
+   CHAR * errorMsg ;
+   if (!pSu)
+   {
+      pSu = SDB_OSS_NEW dmsBlockUnit( COLLECTIONNAME ,1, 0 ) ;
 
-   if ( !myUnit )
-   {
-      printf ("Failed to allocate memory for myUnit\n" );
-      return 0 ;
-   }
-   rc = myUnit->open( "./") ;
-   if ( rc )
-   {
-      printf("Failed to open SU, rc = %d\n", rc );
-      return 0 ;
+      if ( pSu )
+      {
+         rc = pSu->open( "./") ;
+         if ( !rc )
+         {
+            rc = pSu->data()->addCollection( COLLECTIONNAME, NULL,
+                                             UTIL_UNIQUEID_NULL, 0, NULL,
+                                             pages ) ;
+            if ( rc )
+            {
+               errorMsg = "Failed to create collection\n" ;
+            }
+         }
+         else
+         {
+            errorMsg = "Failed to open storage\n" ;
+         }  
+      }
+      else
+      {
+         errorMsg = "Failed to allocate memory for pSu\n" ;
+         rc = -1 ;
+      }
    }
 
-   cout<< "open success" << endl;
-   rc = myUnit->data()->addCollection( COLLECTIONNAME, NULL,
-                                       UTIL_UNIQUEID_NULL, 0, NULL,
-                                       pages ) ;
-   if ( rc )
+   if (rc)
    {
-      printf("Failed to create collection, rc=%d\n", rc ) ;
+      cout<<errorMsg<<endl ;
    }
-   cout<< "add collection success" << endl;
-
-   for(unsigned int i=0; i<LOOPNUM; i++)
+   else
    {
-      rc = myUnit->insertRecord( COLLECTIONNAME, sampleObj,
+      cout<< "storage unit open succeed, now you can insert" <<endl ;
+   }
+
+   return rc ;
+}
+
+INT32 processor::insert()
+{
+   INT32 rc = 0 ;
+   if( pSu )
+   {
+      rc = pSu->insertRecord( COLLECTIONNAME, sampleObj,
                               NULL, FALSE ) ;
       if ( rc )
       {
-         printf("Failed to append record, rc=%d\n", rc);
-         return 0 ;
+         cout<<"Failed to insert record, rc="<<rc<<endl ;
+      }
+      else
+      {
+         cout<<"insert succeed"<<endl ;
       }
    }
-   cout<< "insert success" << endl;
+   else
+   {
+      cout<<"no storage unit exists, please do prepare first"<<endl ;
+   }
+   return rc ;
+}
 
+INT32 processor::query()
+{
+   INT32 rc = 0 ;
+   dmsExtScanner *pScanner = NULL;
+   dmsMBContext *pContext = NULL ;
+
+   rc = pSu->data()->getMBContext( &pContext, COLLECTIONNAME, SHARED ) ;
+   if (!rc)
+   {
+      pScanner = SDB_OSS_NEW dmsExtScanner( pSu->data(), pContext, pContext->mb()->_firstExtentID ) ;
+      if ( !pScanner )
+      {
+         cout<<"failed to allocate canner"<<endl ;
+         rc = -1 ;
+      }
+   }
+   else
+   {
+      cout<<"failed to get mbContext"<<endl;
+   }
+
+   if ( !rc )
+   {
+      while ( SDB_OK == ( rc = pScanner->advance( recordID, generator, NULL ) ) )
+      {
+         generator.getDataPtr( recordDataPtr ) ;
+         BSONObj obj( (const CHAR*)recordDataPtr ) ;
+         cout<< "data is: " << obj.toString().c_str()<< endl;
+      }
+      if ( SDB_DMS_EOC != rc )
+      {
+         cout<<"extent scan failed and rc is "<<rc<<endl ;
+      }
+      else
+      {
+         rc = 0 ;
+         cout<<"query finished"<< endl ;
+      }
+   }
+
+   if ( pContext )
+   {
+      pSu->data()->releaseMBContext(pContext) ;
+   }
+
+   if ( pScanner )
+   {
+      SDB_OSS_DEL pScanner ;
+   }
+
+   return rc ;
+}
+
+void processor::run()
+{
+   INT32 rc = 0 ;
+   char request[10] ;
+
+
+   while (true)
+   {
+      cin.get(request, 10).get() ;
+
+        if (!strcmp(request, "prepare"))
+        {
+           rc = prepare() ;
+        }
+        else if (!strcmp(request, "insert"))
+        {
+           rc = insert() ;
+        }
+        else if (!strcmp(request, "query"))
+        {
+           rc = query() ;
+        }
+        else if (!strcmp(request, "quit"))
+        {
+           cout<<"terminate program"<<endl ;
+           break ;
+        }
+        else
+        {
+           cout<<"invalid request"<<endl ;
+           rc = -1 ;
+        }
+
+     if (rc)
+     {
+        break ;
+     }
+   }
+}
+
+int main()
+{
+   processor pro ;
+   pro.run() ;
 }

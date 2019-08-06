@@ -51,7 +51,7 @@ namespace engine
                            UINT32 sequence,
                            INT32 pageSize = DMS_PAGE_SIZE_DFT,
                            DMS_STORAGE_TYPE type = DMS_STORAGE_NORMAL ) ;
-         ~_dmsBlockUnit() ;
+         ~_dmsBlockUnit() { SDB_OSS_DEL _pDataSu ; }
 
          INT32    open( const CHAR *pDataPath ) ;
 
