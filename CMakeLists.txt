@@ -18,7 +18,7 @@ set ( LIBRARY_OUTPUT_PATH "${NOVA_OUTPUT_DIR}/lib" )
 list( APPEND CMAKE_MODULE_PATH "${NOVA_ROOT_DIR}/cmake/Modules" )
 
 # set include directory
-set ( NOVA_INCLUDE_DIR "${NOVA_ROOT_DIR}/src/include" "${NOVA_ROOT_DIR}/src/pmd" "${NOVA_ROOT_DIR}/src/dms" )
+set ( NOVA_INCLUDE_DIR "${NOVA_ROOT_DIR}/src/include" "${NOVA_ROOT_DIR}/src/pmd" "${NOVA_ROOT_DIR}/src/dms" "${NOVA_ROOT_DIR}/src/dps")
 INCLUDE_DIRECTORIES( ${NOVA_INCLUDE_DIR} )
 LINK_DIRECTORIES(${LIBRARY_OUTPUT_PATH})
 

@@ -41,16 +41,14 @@ dmsRecordGenerator generator ;
 dmsRecordID recordID ;
 ossValuePtr recordDataPtr = 0 ;
 
-BSONObj sampleObj = BSON("name"<<"insert block data") ;
-
 class processor
 {
    public:
       processor() ;
       ~processor() ;
 
-      INT32 prepare() ;
-      INT32 insert() ;
+      INT32 prepare(BOOLEAN createNew = TRUE) ;
+      INT32 insert(CHAR * data) ;
       INT32 query() ;
       void run() ;
    private:
@@ -70,7 +68,7 @@ processor::~processor()
    }
 }
 
-INT32 processor::prepare()
+INT32 processor::prepare( BOOLEAN createNew )
 {
    INT32 rc = 0 ;
    UINT32 pages = rand()%99+1 ;
@@ -81,8 +79,8 @@ INT32 processor::prepare()
 
       if ( pSu )
       {
-         rc = pSu->open( "./") ;
-         if ( !rc )
+         rc = pSu->open( "./", createNew) ;
+         if ( !rc && createNew )
          {
             rc = pSu->data()->addCollection( COLLECTIONNAME, NULL,
                                              UTIL_UNIQUEID_NULL, 0, NULL,
@@ -92,10 +90,10 @@ INT32 processor::prepare()
                errorMsg = "Failed to create collection\n" ;
             }
          }
-         else
+         else if ( rc )
          {
             errorMsg = "Failed to open storage\n" ;
-         }  
+         }
       }
       else
       {
@@ -116,9 +114,12 @@ INT32 processor::prepare()
    return rc ;
 }
 
-INT32 processor::insert()
+INT32 processor::insert(CHAR  data[])
 {
    INT32 rc = 0 ;
+   CHAR * key = strtok(data, ":") ;
+   CHAR * value = strtok(NULL, ":") ;
+   BSONObj sampleObj = BSON(key<<value) ;
    if( pSu )
    {
       rc = pSu->insertRecord( COLLECTIONNAME, sampleObj,
@@ -195,20 +196,25 @@ INT32 processor::query()
 void processor::run()
 {
    INT32 rc = 0 ;
-   char request[10] ;
+   CHAR request[100] ;
 
 
    while (true)
    {
-      cin.get(request, 10).get() ;
+      cin.getline(request, 100) ;
 
-        if (!strcmp(request, "prepare"))
+        if (!strcmp(request, "create"))
         {
            rc = prepare() ;
         }
-        else if (!strcmp(request, "insert"))
+        else if (!strcmp(request, "prepare"))
         {
-           rc = insert() ;
+           rc = prepare(FALSE) ;
+        }
+        else if (!strncmp(request, "insert", 6))
+        {
+           CHAR * data = request +7 ;
+           rc = insert(data) ;
         }
         else if (!strcmp(request, "query"))
         {
@@ -219,10 +225,16 @@ void processor::run()
            cout<<"terminate program"<<endl ;
            break ;
         }
+        else if (!strcmp(request, "help"))
+        {
+           cout<<"To initialize the storage unit, input command: create"<<endl ;
+           cout<<"To open the initialized storage unit, input command: prepare"<<endl ;
+           cout<<"To insert data, input command: insert <data>. The data format need to be key:value"<<endl ;
+           cout<<"To query the stored data, input command: query"<<endl ;
+        }
         else
         {
-           cout<<"invalid request"<<endl ;
-           rc = -1 ;
+           cout<<"Invalid request, please try again or type help to see the menu"<<endl ;
         }
 
      if (rc)

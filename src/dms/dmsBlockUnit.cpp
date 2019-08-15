@@ -64,11 +64,10 @@ namespace engine
       _storageInfo._csUniqueID = csUniqueID ;
       _storageInfo._sequence = sequence ;
       _storageInfo._type = type ;
-
    }
 
 
-   INT32 _dmsBlockUnit::open( const CHAR *pDataPath )
+   INT32 _dmsBlockUnit::open( const CHAR *pDataPath, BOOLEAN createNew )
    {
       INT32 rc = SDB_OK ;
       CHAR dataFileName[DMS_SU_FILENAME_SZ + 1] = {0} ;
@@ -79,7 +78,7 @@ namespace engine
 
       _pDataSu = SDB_OSS_NEW _dmsBlockData( dataFileName, &_storageInfo) ;
 
-      rc = _pDataSu->openStorage( pDataPath ) ;
+      rc = _pDataSu->openStorage( pDataPath, createNew ) ;
 
       if ( rc )
       {

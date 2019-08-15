@@ -53,7 +53,7 @@ namespace engine
                            DMS_STORAGE_TYPE type = DMS_STORAGE_NORMAL ) ;
          ~_dmsBlockUnit() { SDB_OSS_DEL _pDataSu ; }
 
-         INT32    open( const CHAR *pDataPath ) ;
+         INT32    open( const CHAR *pDataPath, BOOLEAN createNew = TRUE ) ;
 
          _dmsBlockData *data() { return _pDataSu ; }
 
